@@ -57,7 +57,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\AssemblyBuilder.cs" />
+    <Compile Include="CommandScanner.cs" />
+    <Compile Include="ICommand.cs" />
+    <Compile Include="ICommandArguments.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestCommandScanner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
