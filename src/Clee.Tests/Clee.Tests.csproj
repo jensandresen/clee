@@ -61,6 +61,7 @@
     <Compile Include="CommandLineParser.cs" />
     <Compile Include="Builders\AssemblyBuilder.cs" />
     <Compile Include="CommandScanner.cs" />
+    <Compile Include="ITypeFactory.cs" />
     <Compile Include="TestCommandLineParser.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandArguments.cs" />
