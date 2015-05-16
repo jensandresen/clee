@@ -64,6 +64,7 @@
     <Compile Include="DefaultTypeFactory.cs" />
     <Compile Include="ITypeFactory.cs" />
     <Compile Include="ManualTypeFactory.cs" />
+    <Compile Include="TestArgumentsMapper.cs" />
     <Compile Include="TestCommandLineParser.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandArguments.cs" />
