@@ -43,7 +43,7 @@
     <Compile Include="ArgumentMapper.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandArguments.cs" />
-    <Compile Include="OptionalAttribute.cs" />
+    <Compile Include="ValueAttribute.cs" />
     <Compile Include="Parsing\BooleanParser.cs" />
     <Compile Include="Parsing\CommandLineParser.cs" />
     <Compile Include="Parsing\GuidParser.cs" />

@@ -51,11 +51,9 @@ namespace Clee
                     }
                     else
                     {
-                        var optionalAttribute = property.GetCustomAttribute<OptionalAttribute>();
-
-                        if (optionalAttribute == null)
+                        if (!IsOptional(property))
                         {
-                            throw new Exception(string.Format("Property {0} is NOT marked with the optional attribute and is therefore required.", name));
+                            throw new Exception(string.Format("Property {0} is NOT marked as optional and is therefore required.", name));
                         }
                     }
                 }
@@ -67,6 +65,18 @@ namespace Clee
             }
 
             return result;
+        }
+
+        private static bool IsOptional(PropertyInfo property)
+        {
+            var valueAttribute = property.GetCustomAttribute<ValueAttribute>();
+
+            if (valueAttribute != null)
+            {
+                return valueAttribute.IsOptional;
+            }
+
+            return false;
         }
 
         private object ConvertInputValueToTargetType(string inputValue, Type targetType, IFormatProvider format)

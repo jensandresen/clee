@@ -232,52 +232,52 @@ namespace Clee.Tests
 
         private class RelaxedArgument : ICommandArguments
         {
-            [Optional]
+            [Value(IsOptional = true)]
             public string String { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public double Double { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public decimal Decimal { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public DateTime DateTime { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public Guid Guid { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public int Byte { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public int SByte { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public short Short { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public ushort UShort { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public int Int { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public int UInt { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public long Long { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public ulong ULong { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public float Float { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public char Char { get; set; }
 
-            [Optional]
+            [Value(IsOptional = true)]
             public bool Bool { get; set; }
         }
 
