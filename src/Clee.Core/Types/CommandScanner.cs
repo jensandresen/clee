@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace Clee.Tests
+namespace Clee.Types
 {
     public class CommandScanner
     {

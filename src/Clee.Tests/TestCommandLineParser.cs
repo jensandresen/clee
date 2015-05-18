@@ -1,4 +1,5 @@
 using System.Linq;
+using Clee.Parsing;
 using Xunit;
 
 namespace Clee.Tests

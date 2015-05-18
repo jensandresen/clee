@@ -1,6 +1,6 @@
 using System;
 
-namespace Clee.Tests
+namespace Clee.Types
 {
     public class DefaultTypeFactory : ITypeFactory
     {

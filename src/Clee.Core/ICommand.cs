@@ -1,4 +1,4 @@
-namespace Clee.Tests
+namespace Clee
 {
     public interface ICommand<T> where T : ICommandArguments, new()
     {

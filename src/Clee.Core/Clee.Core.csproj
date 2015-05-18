@@ -39,7 +39,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Argument.cs" />
+    <Compile Include="ArgumentMapper.cs" />
+    <Compile Include="ICommand.cs" />
+    <Compile Include="ICommandArguments.cs" />
+    <Compile Include="OptionalAttribute.cs" />
+    <Compile Include="Parsing\BooleanParser.cs" />
+    <Compile Include="Parsing\CommandLineParser.cs" />
+    <Compile Include="Parsing\GuidParser.cs" />
+    <Compile Include="Parsing\IValueParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Types\CommandScanner.cs" />
+    <Compile Include="Types\DefaultTypeFactory.cs" />
+    <Compile Include="Types\ITypeFactory.cs" />
+    <Compile Include="Types\ManualTypeFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

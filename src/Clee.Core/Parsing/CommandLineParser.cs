@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Clee.Tests
+namespace Clee.Parsing
 {
     public class CommandLineParser
     {

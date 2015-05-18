@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Clee.Parsing;
 
-namespace Clee.Tests
+namespace Clee
 {
     public class ArgumentMapper
     {
