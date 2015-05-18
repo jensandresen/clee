@@ -79,6 +79,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Clee.Core\Clee.Core.csproj">
+      <Project>{c2e4c9dc-67e9-4ba7-8887-2e00d212b75a}</Project>
+      <Name>Clee.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
