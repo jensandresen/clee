@@ -8,6 +8,11 @@ namespace Clee.Tests.Builders
     {
         public Assembly Build()
         {
+            return BuildAsAssemblyBuilder();
+        }
+
+        public System.Reflection.Emit.AssemblyBuilder BuildAsAssemblyBuilder()
+        {
             var name = new AssemblyName("MyTestAssembly");
             var assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
 
