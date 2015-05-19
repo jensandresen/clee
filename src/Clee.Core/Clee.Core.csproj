@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="Argument.cs" />
     <Compile Include="ArgumentMapper.cs" />
+    <Compile Include="DefaultCommandExecutor.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandArguments.cs" />
     <Compile Include="ValueAttribute.cs" />

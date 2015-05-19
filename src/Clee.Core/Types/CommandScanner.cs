@@ -23,7 +23,7 @@ namespace Clee.Types
                 .ToArray();
         }
 
-        private static bool IsAssignableToGenericType(Type givenType, Type genericType)
+        public static bool IsAssignableToGenericType(Type givenType, Type genericType)
         {
             var interfaceTypes = givenType.GetInterfaces();
 
