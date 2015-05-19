@@ -63,6 +63,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestCommandScanner.cs" />
     <Compile Include="TestDefaultCommandExecutor.cs" />
+    <Compile Include="TestTypeUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

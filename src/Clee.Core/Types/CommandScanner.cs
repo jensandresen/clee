@@ -12,7 +12,7 @@ namespace Clee.Types
                 .GetTypes()
                 .Where(x => x.IsClass)
                 .Where(x => x.IsPublic  || x.IsNestedPublic)
-                .Where(x => IsAssignableToGenericType(x, typeof(ICommand<>)))
+                .Where(x => TypeUtils.IsAssignableToGenericType(x, typeof(ICommand<>)))
                 .ToArray();
         }
 
@@ -21,33 +21,6 @@ namespace Clee.Types
             return Scan(assembly)
                 .Where(x => x.Namespace.StartsWith(namespaceQualifier))
                 .ToArray();
-        }
-
-        public static bool IsAssignableToGenericType(Type givenType, Type genericType)
-        {
-            var interfaceTypes = givenType.GetInterfaces();
-
-            foreach (var it in interfaceTypes)
-            {
-                if (it.IsGenericType && it.GetGenericTypeDefinition() == genericType)
-                {
-                    return true;
-                }
-            }
-
-            if (givenType.IsGenericType && givenType.GetGenericTypeDefinition() == genericType)
-            {
-                return true;
-            }
-
-            Type baseType = givenType.BaseType;
-
-            if (baseType == null)
-            {
-                return false;
-            }
-
-            return IsAssignableToGenericType(baseType, genericType);
         }
     }
 }

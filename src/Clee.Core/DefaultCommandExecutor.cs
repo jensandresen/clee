@@ -14,7 +14,7 @@ namespace Clee
         {
             var commandType = command.GetType();
 
-            var isRealCommand = CommandScanner.IsAssignableToGenericType(commandType, typeof(ICommand<>));
+            var isRealCommand = TypeUtils.IsAssignableToGenericType(commandType, typeof(ICommand<>));
             if (!isRealCommand)
             {
                 throw new NotSupportedException(string.Format("Command {0} does not implement required interface {1}", commandType.FullName, typeof(ICommand<>).FullName));
