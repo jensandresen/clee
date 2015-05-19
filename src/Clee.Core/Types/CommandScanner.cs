@@ -11,7 +11,8 @@ namespace Clee.Types
             return assembly
                 .GetTypes()
                 .Where(x => x.IsClass)
-                .Where(x => IsAssignableToGenericType(x, typeof (ICommand<>)))
+                .Where(x => x.IsPublic  || x.IsNestedPublic)
+                .Where(x => IsAssignableToGenericType(x, typeof(ICommand<>)))
                 .ToArray();
         }
 
