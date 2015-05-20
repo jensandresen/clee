@@ -61,8 +61,10 @@
     <Compile Include="TestArgumentsMapper.cs" />
     <Compile Include="TestCommandLineParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestCommandRegistry.cs" />
     <Compile Include="TestCommandScanner.cs" />
     <Compile Include="TestDefaultCommandExecutor.cs" />
+    <Compile Include="TestDoubles\DummyArgument.cs" />
     <Compile Include="TestTypeUtils.cs" />
   </ItemGroup>
   <ItemGroup>

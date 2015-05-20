@@ -1,4 +1,5 @@
 ﻿using System;
+using Clee.Tests.TestDoubles;
 using Moq;
 using Xunit;
 
@@ -50,9 +51,6 @@ namespace Clee.Tests
 
             Assert.True(spy.wasExpectedInvoked);
         }
-
-
-        public class DummyArgument : ICommandArguments { }
 
         private class SpyOverloadExecuteMethodCommand : ICommand<DummyArgument>
         {
