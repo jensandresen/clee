@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Clee.Tests.TestDoubles;
-using Clee.Types;
 using Xunit;
 
 namespace Clee.Tests
@@ -94,6 +90,18 @@ namespace Clee.Tests
         }
 
         [Fact]
+        public void Find_is_case_insensitive()
+        {
+            var expected = typeof(FooCommand);
+            var sut = new CommandRegistry();
+            sut.Register(expected);
+            
+            var result = sut.Find("foo");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
         public void does_not_throw_exception_when_same_command_is_added_multiple_times()
         {
             var sut = new CommandRegistry();
@@ -114,11 +122,11 @@ namespace Clee.Tests
         }
 
         [Theory]
-        [InlineData("Foo", "Foo")]
-        [InlineData("FooCommand", "Foo")]
-        [InlineData("FooCmd", "Foo")]
-        [InlineData("FooCOMMAND", "Foo")]
-        [InlineData("FooCMD", "Foo")]
+        [InlineData("Foo", "foo")]
+        [InlineData("FooCommand", "foo")]
+        [InlineData("FooCmd", "foo")]
+        [InlineData("FooCOMMAND", "foo")]
+        [InlineData("FooCMD", "foo")]
         public void clean_command_names(string typeName, string expected)
         {
             var result = CommandRegistry.ExtractCommandNameFrom(typeName);
@@ -166,69 +174,5 @@ namespace Clee.Tests
         }
 
         #endregion
-    }
-
-    public class CommandRegistry
-    {
-        private readonly List<Type> _commandTypes = new List<Type>(); 
-
-        public Type Find(string commandName)
-        {
-            return _commandTypes
-                .Where(x => x.Name.StartsWith(commandName))
-                .SingleOrDefault();
-        }
-
-        public IEnumerable<Type> GetAll()
-        {
-            return _commandTypes;
-        }
-
-        public void Register(Type commandType)
-        {
-            var alreadyContains = Contains(commandType);
-            if (alreadyContains)
-            {
-                return;
-            }
-
-            var isRealCommand = TypeUtils.IsAssignableToGenericType(commandType, typeof(ICommand<>));
-            if (!isRealCommand)
-            {
-                throw new NotSupportedException(string.Format("Only types that implement {0} are allowed.", typeof(ICommand<>).FullName));
-            }
-
-            var commandName = ExtractCommandNameFrom(commandType);
-            var commandNameExists = Find(commandName) != null;
-            if (commandNameExists)
-            {
-                throw new Exception();
-            }
-
-            _commandTypes.Add(commandType);
-        }
-
-        private string ExtractCommandNameFrom(Type commandType)
-        {
-            return ExtractCommandNameFrom(commandType.Name);
-        }
-
-        public static string ExtractCommandNameFrom(string typeName)
-        {
-            return Regex.Replace(typeName, @"^(?<name>.*?)(Command|Cmd)$", "${name}", RegexOptions.IgnoreCase);
-        }
-
-        private bool Contains(Type commandType)
-        {
-            return _commandTypes.Contains(commandType);
-        }
-
-        public void Register(IEnumerable<Type> commandTypes)
-        {
-            foreach (var commandType in commandTypes)
-            {
-                Register(commandType);
-            }
-        }
     }
 }
