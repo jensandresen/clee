@@ -5,10 +5,9 @@ namespace Clee.Types
 {
     public static class TypeUtils
     {
-        public static Type[] ExtractArgumentTypesFromCommand(object command)
+        public static Type[] ExtractArgumentTypesFromCommand(Type commandType)
         {
-            var temp = command
-                .GetType()
+            var temp = commandType
                 .GetInterfaces()
                 .Where(x => x.IsGenericType)
                 .Where(x => x.GetGenericTypeDefinition() == typeof(ICommand<>))
@@ -18,6 +17,11 @@ namespace Clee.Types
                 .SelectMany(x => x.GenericTypeArguments)
                 .Where(x => typeof(ICommandArguments).IsAssignableFrom(x))
                 .ToArray();
+        }
+
+        public static Type[] ExtractArgumentTypesFromCommand(object command)
+        {
+            return ExtractArgumentTypesFromCommand(command.GetType());
         }
 
         public static bool IsAssignableToGenericType(Type givenType, Type genericType)
