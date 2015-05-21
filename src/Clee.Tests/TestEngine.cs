@@ -15,7 +15,8 @@ namespace Clee.Tests
                 cfg.WithRegistry(registry);
             });
 
-            engine.Execute("foo -name bar");
+//            engine.Execute("foo -name bar");
+            engine.Execute("--list");
         }
 
         private class FooData : ICommandArguments

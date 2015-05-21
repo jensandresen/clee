@@ -8,5 +8,6 @@ namespace Clee
         Type Find(string commandName);
         void Register(Type commandType);
         void Register(IEnumerable<Type> commandTypes);
+        IEnumerable<CommandRegistration> GetAll();
     }
 }

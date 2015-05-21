@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Clee.Tests.TestDoubles;
 using Xunit;
 
@@ -29,7 +30,11 @@ namespace Clee.Tests
         {
             var sut = new DefaultCommandRegistry();
             sut.Register(typeof (FooCommand));
-            var result = sut.GetAll();
+
+            var result = sut
+                .GetAll()
+                .Select(x => x.ImplementationType)
+                .ToArray();
 
             Assert.Equal(new[]{typeof(FooCommand)}, result);
         }
@@ -40,7 +45,11 @@ namespace Clee.Tests
             var sut = new DefaultCommandRegistry();
             sut.Register(typeof (FooCommand));
             sut.Register(typeof (BarCommand));
-            var result = sut.GetAll();
+            
+            var result = sut
+                .GetAll()
+                .Select(x => x.ImplementationType)
+                .ToArray();
 
             Assert.Equal(new[]
             {
@@ -59,7 +68,10 @@ namespace Clee.Tests
                 typeof(BarCommand),
             });
             
-            var result = sut.GetAll();
+            var result = sut
+                .GetAll()
+                .Select(x => x.ImplementationType)
+                .ToArray();
 
             Assert.Equal(new[]
             {

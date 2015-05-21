@@ -1,4 +1,5 @@
-﻿using Clee.Types;
+﻿using System;
+using Clee.Types;
 using Xunit;
 
 namespace Clee.Tests
@@ -27,6 +28,21 @@ namespace Clee.Tests
 
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void can_extract_command_implementations_of_a_type()
+        {
+            var result = TypeUtils.ExtractCommandImplementationsFromType(typeof (MultiArgumentCommand));
+
+            var expected = new[]
+            {
+                typeof (ICommand<FooArgument>),
+                typeof (ICommand<BarArgument>),
+            };
+
+            Assert.Equal(expected, result);
+        }
+
 
         private class FooArgument : ICommandArguments { }
         private class BarArgument : ICommandArguments { }

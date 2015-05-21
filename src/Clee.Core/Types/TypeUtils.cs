@@ -50,5 +50,14 @@ namespace Clee.Types
 
             return IsAssignableToGenericType(baseType, genericType);
         }
+
+        public static Type[] ExtractCommandImplementationsFromType(Type commandCandidate)
+        {
+            return commandCandidate
+                .GetInterfaces()
+                .Where(x => x.IsGenericType)
+                .Where(x => x.GetGenericTypeDefinition() == typeof(ICommand<>))
+                .ToArray();
+        }
     }
 }

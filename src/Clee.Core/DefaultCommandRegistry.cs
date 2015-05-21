@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Clee.Types;
 
@@ -7,19 +8,23 @@ namespace Clee
 {
     public class DefaultCommandRegistry : ICommandRegistry
     {
-        private readonly Dictionary<string, Type> _commandTypes = new Dictionary<string, Type>();
+        private readonly Dictionary<string, CommandRegistration> _commandTypes = new Dictionary<string, CommandRegistration>();
 
         public Type Find(string commandName)
         {
             var name = ExtractCommandNameFrom(commandName);
 
-            Type result;
-            _commandTypes.TryGetValue(name, out result);
+            CommandRegistration result;
 
-            return result;
+            if (_commandTypes.TryGetValue(name, out result))
+            {
+                return result.ImplementationType;
+            }
+
+            return null;
         }
 
-        public IEnumerable<Type> GetAll()
+        public IEnumerable<CommandRegistration> GetAll()
         {
             return _commandTypes.Values;
         }
@@ -46,7 +51,14 @@ namespace Clee
                 throw new Exception(string.Format("The command name \"{1}\" is already registered with command type {0}", existingCommand.FullName, commandName));
             }
 
-            _commandTypes.Add(commandName, commandType);
+            var registration = new CommandRegistration(
+                commandName: commandName,
+                commandType: TypeUtils.ExtractCommandImplementationsFromType(commandType).First(),
+                argumentType: TypeUtils.ExtractArgumentTypesFromCommand(commandType).First(),
+                implementationType: commandType
+                );
+
+            _commandTypes.Add(commandName, registration);
         }
 
         public void Register(IEnumerable<Type> commandTypes)
@@ -71,7 +83,7 @@ namespace Clee
 
         private bool Contains(Type commandType)
         {
-            return _commandTypes.ContainsValue(commandType);
+            return GetAll().Any(x => x.ImplementationType == commandType);
         }
     }
 }
