@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Clee.Types
 {
-    public class ManualTypeFactory : ITypeFactory
+    public class ManualCommandFactory : ICommandFactory
     {
         private readonly Dictionary<Type, Func<object>> _creators = new Dictionary<Type, Func<object>>();
 

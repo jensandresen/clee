@@ -5,7 +5,7 @@ namespace Clee
     public interface IEngineConfiguration
     {
         EngineBuilder WithRegistry(ICommandRegistry registry);
-        EngineBuilder WithFactory(ITypeFactory factory);
+        EngineBuilder WithFactory(ICommandFactory factory);
         EngineBuilder WithMapper(IArgumentMapper mapper);
         EngineBuilder WithExecutor(ICommandExecutor executor);
     }
@@ -13,14 +13,14 @@ namespace Clee
     public class EngineBuilder : IEngineConfiguration
     {
         private ICommandRegistry _registry;
-        private ITypeFactory _typeFactory;
+        private ICommandFactory _commandFactory;
         private IArgumentMapper _mapper;
         private ICommandExecutor _commandExecutor;
 
         public EngineBuilder()
         {
             _registry = new DefaultCommandRegistry();
-            _typeFactory = new DefaultTypeFactory();
+            _commandFactory = new DefaultCommandFactory();
             _mapper = new DefaultArgumentMapper();
             _commandExecutor = new DefaultCommandExecutor();
         }
@@ -31,9 +31,9 @@ namespace Clee
             return this;
         }
 
-        public EngineBuilder WithFactory(ITypeFactory factory)
+        public EngineBuilder WithFactory(ICommandFactory factory)
         {
-            _typeFactory = factory;
+            _commandFactory = factory;
             return this;
         }
 
@@ -53,7 +53,7 @@ namespace Clee
         {
             return new Engine(
                 commandRegistry: _registry,
-                typeFactory: _typeFactory,
+                commandFactory: _commandFactory,
                 argumentMapper: _mapper,
                 commandExecutor: _commandExecutor
                 );

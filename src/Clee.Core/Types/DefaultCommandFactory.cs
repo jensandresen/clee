@@ -2,7 +2,7 @@ using System;
 
 namespace Clee.Types
 {
-    public class DefaultTypeFactory : ITypeFactory
+    public class DefaultCommandFactory : ICommandFactory
     {
         public object Resolve(Type commandType)
         {

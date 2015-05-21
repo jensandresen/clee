@@ -59,9 +59,9 @@
     <Compile Include="Parsing\IValueParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Types\CommandScanner.cs" />
-    <Compile Include="Types\DefaultTypeFactory.cs" />
-    <Compile Include="Types\ITypeFactory.cs" />
-    <Compile Include="Types\ManualTypeFactory.cs" />
+    <Compile Include="Types\DefaultCommandFactory.cs" />
+    <Compile Include="Types\ICommandFactory.cs" />
+    <Compile Include="Types\ManualCommandFactory.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

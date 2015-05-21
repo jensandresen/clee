@@ -30,14 +30,14 @@ namespace Clee
     public class Engine
     {
         private readonly ICommandRegistry _registry;
-        private readonly ITypeFactory _typeFactory;
+        private readonly ICommandFactory _commandFactory;
         private readonly IArgumentMapper _mapper;
         private readonly ICommandExecutor _commandExecutor;
 
-        public Engine(ICommandRegistry commandRegistry, ITypeFactory typeFactory, IArgumentMapper argumentMapper, ICommandExecutor commandExecutor)
+        public Engine(ICommandRegistry commandRegistry, ICommandFactory commandFactory, IArgumentMapper argumentMapper, ICommandExecutor commandExecutor)
         {
             _registry = commandRegistry;
-            _typeFactory = typeFactory;
+            _commandFactory = commandFactory;
             _mapper = argumentMapper;
             _commandExecutor = commandExecutor;
         }
@@ -66,7 +66,7 @@ namespace Clee
             var argumentType = TypeUtils.ExtractArgumentTypesFromCommand(commandType).First();
             var argumentInstance = _mapper.Map(argumentType, argumentValues);
 
-            var commandInstance = _typeFactory.Resolve(commandType);
+            var commandInstance = _commandFactory.Resolve(commandType);
 
             try
             {
@@ -74,7 +74,7 @@ namespace Clee
             }
             finally
             {
-                _typeFactory.Release(commandInstance);
+                _commandFactory.Release(commandInstance);
             }
         }
 
