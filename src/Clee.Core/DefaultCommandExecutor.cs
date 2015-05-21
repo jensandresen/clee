@@ -6,7 +6,7 @@ using Clee.Types;
 
 namespace Clee
 {
-    public class DefaultCommandExecutor
+    public class DefaultCommandExecutor : ICommandExecutor
     {
         private readonly Dictionary<Type, MethodInfo> _executeSignatures = new Dictionary<Type, MethodInfo>();
 

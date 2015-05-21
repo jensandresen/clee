@@ -5,7 +5,7 @@ using Clee.Types;
 
 namespace Clee
 {
-    public class CommandRegistry
+    public class DefaultCommandRegistry : ICommandRegistry
     {
         private readonly Dictionary<string, Type> _commandTypes = new Dictionary<string, Type>();
 

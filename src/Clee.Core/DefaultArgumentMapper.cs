@@ -7,12 +7,12 @@ using Clee.Parsing;
 
 namespace Clee
 {
-    public class ArgumentMapper
+    public class DefaultArgumentMapper : IArgumentMapper
     {
         private static readonly Argument EmptyArgument = new Argument();
         private readonly Dictionary<Type, IValueParser> _valueParsers = new Dictionary<Type, IValueParser>();
 
-        public ArgumentMapper()
+        public DefaultArgumentMapper()
         {
             AddParser<Guid>(new GuidParser());
             AddParser<bool>(new BooleanParser());

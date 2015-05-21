@@ -9,7 +9,7 @@ namespace Clee.Tests
         [Fact]
         public void Find_returns_expected_when_no_commands_are_registered()
         {
-            var sut = new CommandRegistry();
+            var sut = new DefaultCommandRegistry();
             var result = sut.Find("foo");
 
             Assert.Null(result);
@@ -18,7 +18,7 @@ namespace Clee.Tests
         [Fact]
         public void GetAll_returns_expected_when_empty()
         {
-            var sut = new CommandRegistry();
+            var sut = new DefaultCommandRegistry();
             var result = sut.GetAll();
 
             Assert.Empty(result);
@@ -27,7 +27,7 @@ namespace Clee.Tests
         [Fact]
         public void GetAll_returns_expected_when_single_command_is_added()
         {
-            var sut = new CommandRegistry();
+            var sut = new DefaultCommandRegistry();
             sut.Register(typeof (FooCommand));
             var result = sut.GetAll();
 
@@ -37,7 +37,7 @@ namespace Clee.Tests
         [Fact]
         public void GetAll_returns_expected_when_multiple_commands_are_added()
         {
-            var sut = new CommandRegistry();
+            var sut = new DefaultCommandRegistry();
             sut.Register(typeof (FooCommand));
             sut.Register(typeof (BarCommand));
             var result = sut.GetAll();
@@ -52,7 +52,7 @@ namespace Clee.Tests
         [Fact]
         public void can_add_multiple_commands_at_once()
         {
-            var sut = new CommandRegistry();
+            var sut = new DefaultCommandRegistry();
             sut.Register(new[]
             {
                 typeof(FooCommand),
@@ -72,7 +72,7 @@ namespace Clee.Tests
         public void throws_exception_if_command_is_not_a_real_command()
         {
             var invalidCommandType = typeof (string);
-            var sut = new CommandRegistry();
+            var sut = new DefaultCommandRegistry();
 
             Assert.Throws<NotSupportedException>(() => sut.Register(invalidCommandType));
         }
@@ -81,7 +81,7 @@ namespace Clee.Tests
         public void Find_returns_expected_command_when_direct_match()
         {
             var expected = typeof(FooCommand);
-            var sut = new CommandRegistry();
+            var sut = new DefaultCommandRegistry();
             sut.Register(expected);
             
             var result = sut.Find("Foo");
@@ -93,7 +93,7 @@ namespace Clee.Tests
         public void Find_is_case_insensitive()
         {
             var expected = typeof(FooCommand);
-            var sut = new CommandRegistry();
+            var sut = new DefaultCommandRegistry();
             sut.Register(expected);
             
             var result = sut.Find("foo");
@@ -104,7 +104,7 @@ namespace Clee.Tests
         [Fact]
         public void does_not_throw_exception_when_same_command_is_added_multiple_times()
         {
-            var sut = new CommandRegistry();
+            var sut = new DefaultCommandRegistry();
             sut.Register(typeof(FooCommand));
             sut.Register(typeof(FooCommand));
         }
@@ -115,7 +115,7 @@ namespace Clee.Tests
             var firstCommand = typeof(FakeNamespace1.DummyCommand);
             var secondCommandWithSameName = typeof(FakeNamespace2.DummyCommand);
 
-            var sut = new CommandRegistry();
+            var sut = new DefaultCommandRegistry();
             sut.Register(firstCommand);
 
             Assert.Throws<Exception>(() => sut.Register(secondCommandWithSameName));
@@ -129,7 +129,7 @@ namespace Clee.Tests
         [InlineData("FooCMD", "foo")]
         public void clean_command_names(string typeName, string expected)
         {
-            var result = CommandRegistry.ExtractCommandNameFrom(typeName);
+            var result = DefaultCommandRegistry.ExtractCommandNameFrom(typeName);
             Assert.Equal(expected, result);
         }
 

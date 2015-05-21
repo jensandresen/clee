@@ -65,6 +65,7 @@
     <Compile Include="TestCommandScanner.cs" />
     <Compile Include="TestDefaultCommandExecutor.cs" />
     <Compile Include="TestDoubles\DummyArgument.cs" />
+    <Compile Include="TestEngine.cs" />
     <Compile Include="TestTypeUtils.cs" />
   </ItemGroup>
   <ItemGroup>

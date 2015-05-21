@@ -40,12 +40,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Argument.cs" />
-    <Compile Include="ArgumentMapper.cs" />
-    <Compile Include="CommandRegistry.cs" />
+    <Compile Include="DefaultArgumentMapper.cs" />
+    <Compile Include="DefaultCommandRegistry.cs" />
     <Compile Include="DefaultCommandExecutor.cs" />
     <Compile Include="Engine.cs" />
+    <Compile Include="EngineBuilder.cs" />
+    <Compile Include="IArgumentMapper.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandArguments.cs" />
+    <Compile Include="ICommandExecutor.cs" />
+    <Compile Include="ICommandRegistry.cs" />
     <Compile Include="Types\TypeUtils.cs" />
     <Compile Include="ValueAttribute.cs" />
     <Compile Include="Parsing\BooleanParser.cs" />
