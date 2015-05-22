@@ -16,9 +16,9 @@ namespace Clee.Parsing
         {
             var args = ExtractArgumentsStringFrom(input);
 
-            if (String.IsNullOrWhiteSpace(args))
+            if (string.IsNullOrWhiteSpace(args))
             {
-                return null;
+                return Enumerable.Empty<Argument>();
             }
 
             return ParseArguments(args);

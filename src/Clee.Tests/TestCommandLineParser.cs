@@ -22,7 +22,7 @@ namespace Clee.Tests
         public void returns_expected_when_command_arguments_are_not_available_in_the_input(string input)
         {
             var result = CommandLineParser.ExtractArgumentsFrom(input);
-            Assert.Null(result);
+            Assert.Empty(result);
         }
 
         [Fact]

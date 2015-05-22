@@ -15,12 +15,13 @@ namespace Clee.Tests
                 cfg.WithRegistry(registry);
             });
 
-//            engine.Execute("foo -name bar");
-            engine.Execute("--list");
+            engine.Execute("foo");
+//            engine.Execute("--list");
         }
 
         private class FooData : ICommandArguments
         {
+            [Value(IsOptional = true)]
             public string Name { get; set; }
         }
 
