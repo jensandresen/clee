@@ -45,6 +45,7 @@
     <Compile Include="DefaultArgumentMapper.cs" />
     <Compile Include="DefaultCommandRegistry.cs" />
     <Compile Include="DefaultCommandExecutor.cs" />
+    <Compile Include="EmptyArgument.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="EngineBuilder.cs" />
     <Compile Include="IArgumentMapper.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="ICommandArguments.cs" />
     <Compile Include="ICommandExecutor.cs" />
     <Compile Include="ICommandRegistry.cs" />
+    <Compile Include="SystemCommands\ListCommand.cs" />
     <Compile Include="Types\TypeUtils.cs" />
     <Compile Include="ValueAttribute.cs" />
     <Compile Include="Parsing\BooleanParser.cs" />
