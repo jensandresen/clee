@@ -29,12 +29,12 @@ namespace Clee
             return _commandTypes.Values;
         }
 
-        public void Register(Type commandType)
+        public CommandRegistration Register(string commandName, Type commandType)
         {
             var alreadyContains = Contains(commandType);
             if (alreadyContains)
             {
-                return;
+                return null;
             }
 
             var isRealCommand = TypeUtils.IsAssignableToGenericType(commandType, typeof(ICommand<>));
@@ -42,8 +42,6 @@ namespace Clee
             {
                 throw new NotSupportedException(string.Format("Only types that implement {0} are allowed.", typeof(ICommand<>).FullName));
             }
-
-            var commandName = ExtractCommandNameFrom(commandType);
 
             var existingCommand = Find(commandName);
             if (existingCommand != null)
@@ -59,6 +57,14 @@ namespace Clee
                 );
 
             _commandTypes.Add(commandName, registration);
+
+            return registration;
+        }
+
+        public CommandRegistration Register(Type commandType)
+        {
+            var commandName = ExtractCommandNameFrom(commandType);
+            return Register(commandName, commandType);
         }
 
         public void Register(IEnumerable<Type> commandTypes)

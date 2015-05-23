@@ -133,6 +133,40 @@ namespace Clee.Tests
             Assert.Throws<Exception>(() => sut.Register(secondCommandWithSameName));
         }
 
+        [Fact]
+        public void Register_returns_expected_command_registration()
+        {
+            var dummyCommand = typeof(FooCommand);
+
+            var sut = new DefaultCommandRegistry();
+            var result = sut.Register(dummyCommand);
+
+            var expected = new CommandRegistration(
+                commandName: "foo",
+                commandType: typeof (ICommand<DummyArgument>),
+                argumentType: typeof (DummyArgument),
+                implementationType: typeof (FooCommand)
+                );
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void can_use_specific_command_name()
+        {
+            var expected = new CommandRegistration(
+                commandName: "anoterCommandName",
+                commandType: typeof(ICommand<DummyArgument>),
+                argumentType: typeof(DummyArgument),
+                implementationType: typeof(FooCommand)
+                );
+
+            var sut = new DefaultCommandRegistry();
+            var result = sut.Register(expected.CommandName, expected.ImplementationType);
+
+            Assert.Equal(expected, result);
+        }
+
         [Theory]
         [InlineData("Foo", "foo")]
         [InlineData("FooCommand", "foo")]
@@ -144,6 +178,8 @@ namespace Clee.Tests
             var result = DefaultCommandRegistry.ExtractCommandNameFrom(typeName);
             Assert.Equal(expected, result);
         }
+
+
 
         #region command test doubles
 

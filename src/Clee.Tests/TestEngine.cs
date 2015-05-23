@@ -16,7 +16,6 @@ namespace Clee.Tests
             });
 
             engine.Execute("foo");
-//            engine.Execute("--list");
         }
 
         private class FooData : ICommandArguments
