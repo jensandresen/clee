@@ -15,12 +15,30 @@ namespace Clee.Tests
                 cfg.WithRegistry(registry);
             });
 
-            engine.Execute("foo");
+            engine.Execute("foo -name bar");
+        }
+
+        [Fact]
+        public void testname2()
+        {
+            var registry = new DefaultCommandRegistry();
+            registry.Register(typeof(FooCommand));
+
+            var engine = Engine.Create(cfg =>
+            {
+                cfg.WithRegistry(registry);
+            });
+
+            engine.Execute(new[]
+            {
+                "foo",
+                "-name",
+                "bar",
+            });
         }
 
         private class FooData : ICommandArguments
         {
-            [Value(IsOptional = true)]
             public string Name { get; set; }
         }
 

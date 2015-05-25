@@ -27,11 +27,38 @@ namespace Clee
             var commandName = CommandLineParser.ExtractCommandNameFrom(input);
             var argumentValues = CommandLineParser.ExtractArgumentsFrom(input).ToArray();
 
+            Execute(commandName, argumentValues);
+        }
+
+        public void Execute(string[] input)
+        {
+            var commandName = input[0];
+            var temp = input
+                .Skip(1)
+                .Select(x =>
+                {
+                    if (x.StartsWith("-"))
+                    {
+                        return x;
+                    }
+
+                    return string.Format("\"{0}\"", x);
+                });
+
+            var args = string.Join(" ", temp);
+
+            var argumentValues = CommandLineParser.ParseArguments(args).ToArray();
+
+            Execute(commandName, argumentValues);
+        }
+
+        public void Execute(string commandName, Argument[] args)
+        {
             var systemCommandInstance = CreateSystemCommandFrom(commandName);
             if (systemCommandInstance != null)
             {
                 var argumentType2 = TypeUtils.ExtractArgumentTypesFromCommand(systemCommandInstance).First();
-                var argumentInstance2 = _mapper.Map(argumentType2, argumentValues);
+                var argumentInstance2 = _mapper.Map(argumentType2, args);
                 _commandExecutor.Execute(systemCommandInstance, argumentInstance2);
 
                 return;
@@ -44,7 +71,7 @@ namespace Clee
             }
 
             var argumentType = TypeUtils.ExtractArgumentTypesFromCommand(commandType).First();
-            var argumentInstance = _mapper.Map(argumentType, argumentValues);
+            var argumentInstance = _mapper.Map(argumentType, args);
 
             var commandInstance = _commandFactory.Resolve(commandType);
 
