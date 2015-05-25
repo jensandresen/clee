@@ -81,19 +81,90 @@ namespace Clee
 
         private object ConvertInputValueToTargetType(string inputValue, Type targetType, IFormatProvider format)
         {
+            object result;
             IValueParser valueParser;
-            
+
             if (_valueParsers.TryGetValue(targetType, out valueParser))
             {
-                object value;
-
-                if (valueParser.TryParse(inputValue, format, out value))
+                if (valueParser.TryParse(inputValue, format, out result))
                 {
-                    return value;
+                    return result;
                 }
             }
 
-            return Convert.ChangeType(inputValue, targetType, format);
+            valueParser = new DefaultChangeTypeParser(targetType);
+            if (valueParser.TryParse(inputValue, format, out result))
+            {
+                return result;
+            }
+
+            valueParser = new TryParseConventionParser(targetType);
+            if (valueParser.TryParse(inputValue, format, out result))
+            {
+                return result;
+            }
+
+            throw new NotSupportedException(string.Format("The value \"{0}\" could not be converted to the target type of {1}. Consider adding a specific value parser or a TryParse method on the target type.", inputValue, targetType.FullName));
+        }
+    }
+
+    public class TryParseConventionParser : IValueParser
+    {
+        private readonly Type _targetType;
+
+        public TryParseConventionParser(Type targetType)
+        {
+            _targetType = targetType;
+        }
+
+        public bool TryParse(string input, IFormatProvider format, out object result)
+        {
+            var tryParseMethod = _targetType
+                .GetMethods()
+                .Where(x => x.IsStatic)
+                .Where(x => x.IsPublic)
+                .Where(x => x.Name.Equals("TryParse"))
+                .FirstOrDefault();
+
+            if (tryParseMethod != null)
+            {
+                var parameters = new object[] { input, null };
+                var success = (bool)tryParseMethod.Invoke(null, parameters);
+
+                if (success)
+                {
+                    result = parameters[1];
+                    return true;
+                }
+            }
+
+            result = null;
+            return false;
+        }
+    }
+
+    public class DefaultChangeTypeParser : IValueParser
+    {
+        private readonly Type _targetType;
+
+        public DefaultChangeTypeParser(Type targetType)
+        {
+            _targetType = targetType;
+        }
+
+        public bool TryParse(string input, IFormatProvider format, out object result)
+        {
+            try
+            {
+                result = Convert.ChangeType(input, _targetType, format);
+                return true;
+            }
+            catch
+            {
+            }
+
+            result = null;
+            return false;
         }
     }
 }

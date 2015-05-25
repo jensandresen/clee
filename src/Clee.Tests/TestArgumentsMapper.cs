@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Security.Claims;
 using Xunit;
 
 namespace Clee.Tests
@@ -286,6 +287,49 @@ namespace Clee.Tests
         {
             public string Text { get; set; }
             public bool Bool { get; set; }
+        }
+
+        private class CustomValueType
+        {
+            private readonly int _value;
+
+            public CustomValueType(int value)
+            {
+                _value = value;
+            }
+
+            public override string ToString()
+            {
+                return _value.ToString("D5");
+            }
+
+            public static bool TryParse(string input, out CustomValueType instance)
+            {
+                int value;
+
+                if (int.TryParse(input, out value))
+                {
+                    instance = new CustomValueType(value);
+                    return true;
+                }
+
+                instance = null;
+                return false;
+            }
+        }
+
+        private class CustomValueTypeArgument : ICommandArguments
+        {
+            public CustomValueType Id { get; set; } 
+        }
+
+        [Fact]
+        public void can_use_a_try_parse_method_by_convention()
+        {
+            var sut = new DefaultArgumentMapper();
+            var result = (CustomValueTypeArgument)sut.Map(typeof(CustomValueTypeArgument), new[] { new Argument("id", "1"), });
+
+            Assert.Equal("00001", result.Id.ToString());
         }
     }
 }
