@@ -298,9 +298,9 @@ namespace Clee.Tests
                 _value = value;
             }
 
-            public override string ToString()
+            public int Value
             {
-                return _value.ToString("D5");
+                get { return _value; }
             }
 
             public static bool TryParse(string input, out CustomValueType instance)
@@ -329,7 +329,36 @@ namespace Clee.Tests
             var sut = new DefaultArgumentMapper();
             var result = (CustomValueTypeArgument)sut.Map(typeof(CustomValueTypeArgument), new[] { new Argument("id", "1"), });
 
-            Assert.Equal("00001", result.Id.ToString());
+            Assert.Equal(1, result.Id.Value);
+        }
+
+        private class SimpleConstructor
+        {
+            private readonly int _value;
+
+            public SimpleConstructor(int value)
+            {
+                _value = value;
+            }
+
+            public int Value
+            {
+                get { return _value; }
+            }
+        }
+
+        private class SimpleConstructorArgument : ICommandArguments
+        {
+            public SimpleConstructor Id { get; set; } 
+        }
+
+        [Fact]
+        public void can_use_simple_constructor_with_a_simple_primitive()
+        {
+            var sut = new DefaultArgumentMapper();
+            var result = (SimpleConstructorArgument)sut.Map(typeof(SimpleConstructorArgument), new[] { new Argument("id", "1"), });
+
+            Assert.Equal(1, result.Id.Value);
         }
     }
 }
