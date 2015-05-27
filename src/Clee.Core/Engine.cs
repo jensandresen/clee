@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Clee.Configurations;
 using Clee.Parsing;
 using Clee.SystemCommands;
 using Clee.Types;
@@ -14,12 +15,23 @@ namespace Clee
         private readonly IArgumentMapper _mapper;
         private readonly ICommandExecutor _commandExecutor;
 
-        public Engine(ICommandRegistry commandRegistry, ICommandFactory commandFactory, IArgumentMapper argumentMapper, ICommandExecutor commandExecutor)
+        public Engine(ICommandRegistry commandRegistry, ICommandFactory commandFactory, IArgumentMapper argumentMapper,
+                      ICommandExecutor commandExecutor)
         {
             _registry = commandRegistry;
             _commandFactory = commandFactory;
             _mapper = argumentMapper;
             _commandExecutor = commandExecutor;
+        }
+
+        public IArgumentMapper Mapper
+        {
+            get { return _mapper; }
+        }
+
+        public ICommandRegistry Registry
+        {
+            get { return _registry; }
         }
 
         public void Execute(string input)
@@ -67,7 +79,8 @@ namespace Clee
             var commandType = _registry.Find(commandName);
             if (commandType == null)
             {
-                throw new NotSupportedException(string.Format("The command \"{0}\" is not currently supported.", commandName));
+                throw new NotSupportedException(string.Format("The command \"{0}\" is not currently supported.",
+                    commandName));
             }
 
             var argumentType = TypeUtils.ExtractArgumentTypesFromCommand(commandType).First();
@@ -100,12 +113,8 @@ namespace Clee
         {
             return Create(cfg =>
             {
-                var registry = new DefaultCommandRegistry();
                 var assembly = Assembly.GetEntryAssembly();
-                var commandTypes = new CommandScanner().Scan(assembly);
-                registry.Register(commandTypes);
-
-                cfg.WithRegistry(registry);
+                cfg.Registry(r => r.RegisterFromAssembly(assembly));
             });
         }
 

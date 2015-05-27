@@ -42,12 +42,19 @@
   <ItemGroup>
     <Compile Include="Argument.cs" />
     <Compile Include="CommandRegistration.cs" />
+    <Compile Include="Configurations\EngineBuilder.cs" />
+    <Compile Include="Configurations\FactoryConfiguration.cs" />
+    <Compile Include="Configurations\IEngineConfiguration.cs" />
+    <Compile Include="Configurations\IFactoryConfiguration.cs" />
+    <Compile Include="Configurations\IMapperConfiguration.cs" />
+    <Compile Include="Configurations\IRegistryConfiguration.cs" />
+    <Compile Include="Configurations\MapperConfiguration.cs" />
+    <Compile Include="Configurations\RegistryConfiguration.cs" />
     <Compile Include="DefaultArgumentMapper.cs" />
     <Compile Include="DefaultCommandRegistry.cs" />
     <Compile Include="DefaultCommandExecutor.cs" />
     <Compile Include="EmptyArgument.cs" />
     <Compile Include="Engine.cs" />
-    <Compile Include="EngineBuilder.cs" />
     <Compile Include="IArgumentMapper.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandArguments.cs" />

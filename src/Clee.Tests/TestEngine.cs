@@ -7,12 +7,12 @@ namespace Clee.Tests
         [Fact]
         public void testname()
         {
-            var registry = new DefaultCommandRegistry();
-            registry.Register(typeof(FooCommand));
-
             var engine = Engine.Create(cfg =>
             {
-                cfg.WithRegistry(registry);
+                cfg.Registry(r =>
+                {
+                    r.Register(typeof (FooCommand));
+                });
             });
 
             engine.Execute("foo -name bar");
@@ -21,12 +21,12 @@ namespace Clee.Tests
         [Fact]
         public void testname2()
         {
-            var registry = new DefaultCommandRegistry();
-            registry.Register(typeof(FooCommand));
-
             var engine = Engine.Create(cfg =>
             {
-                cfg.WithRegistry(registry);
+                cfg.Registry(r =>
+                {
+                    r.Register(typeof(FooCommand));
+                });
             });
 
             engine.Execute(new[]
