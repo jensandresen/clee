@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="Argument.cs" />
     <Compile Include="CommandRegistration.cs" />
+    <Compile Include="CommandScanner.cs" />
     <Compile Include="Configurations\EngineBuilder.cs" />
     <Compile Include="Configurations\FactoryConfiguration.cs" />
     <Compile Include="Configurations\IEngineConfiguration.cs" />
@@ -51,6 +52,7 @@
     <Compile Include="Configurations\MapperConfiguration.cs" />
     <Compile Include="Configurations\RegistryConfiguration.cs" />
     <Compile Include="DefaultArgumentMapper.cs" />
+    <Compile Include="DefaultCommandFactory.cs" />
     <Compile Include="DefaultCommandRegistry.cs" />
     <Compile Include="DefaultCommandExecutor.cs" />
     <Compile Include="EmptyArgument.cs" />
@@ -59,20 +61,19 @@
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandArguments.cs" />
     <Compile Include="ICommandExecutor.cs" />
+    <Compile Include="ICommandFactory.cs" />
     <Compile Include="ICommandRegistry.cs" />
+    <Compile Include="ManualCommandFactory.cs" />
     <Compile Include="SystemCommands\ListCommand.cs" />
-    <Compile Include="Types\TypeUtils.cs" />
+    <Compile Include="TypeUtils.cs" />
     <Compile Include="ValueAttribute.cs" />
     <Compile Include="Parsing\BooleanParser.cs" />
     <Compile Include="Parsing\CommandLineParser.cs" />
     <Compile Include="Parsing\GuidParser.cs" />
     <Compile Include="Parsing\IValueParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Types\CommandScanner.cs" />
-    <Compile Include="Types\DefaultCommandFactory.cs" />
-    <Compile Include="Types\ICommandFactory.cs" />
-    <Compile Include="Types\ManualCommandFactory.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

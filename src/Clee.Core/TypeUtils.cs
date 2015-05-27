@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Clee.Types
+namespace Clee
 {
     public static class TypeUtils
     {

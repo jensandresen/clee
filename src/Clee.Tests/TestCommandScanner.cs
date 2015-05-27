@@ -1,5 +1,4 @@
-﻿using Clee.Types;
-using Xunit;
+﻿using Xunit;
 using AssemblyBuilder = Clee.Tests.Builders.AssemblyBuilder;
 
 namespace Clee.Tests

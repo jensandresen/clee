@@ -1,6 +1,6 @@
 using System;
 
-namespace Clee.Types
+namespace Clee
 {
     public class DefaultCommandFactory : ICommandFactory
     {

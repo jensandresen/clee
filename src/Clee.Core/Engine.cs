@@ -4,7 +4,6 @@ using System.Reflection;
 using Clee.Configurations;
 using Clee.Parsing;
 using Clee.SystemCommands;
-using Clee.Types;
 
 namespace Clee
 {

@@ -1,5 +1,4 @@
 ﻿using System;
-using Clee.Types;
 using Xunit;
 
 namespace Clee.Tests

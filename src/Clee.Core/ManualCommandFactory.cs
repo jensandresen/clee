@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Clee.Types
+namespace Clee
 {
     public class ManualCommandFactory : ICommandFactory
     {

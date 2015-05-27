@@ -1,5 +1,3 @@
-using Clee.Types;
-
 namespace Clee.Configurations
 {
     internal class FactoryConfiguration : IFactoryConfiguration
