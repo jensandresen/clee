@@ -1,4 +1,4 @@
-clee
+Clee
 ====
 
-Command Line Execution Engine
+Light weight framework for orchestrating command execution from the command line.

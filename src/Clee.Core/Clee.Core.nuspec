@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Clee</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Jens Andresen</authors>
+    <owners>Jens Andresen</owners>
+    <licenseUrl>http://raw.githubusercontent.com/jensandresen/clee/master/LICENSE</licenseUrl>
+    <projectUrl>http://github.com/jensandresen/clee</projectUrl>
+    <iconUrl>http://raw.githubusercontent.com/jensandresen/clee/master/icon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>Copyright 2015</copyright>
+    <tags>Command Line Commandline CMD Execute Execution Commands Orchestration</tags>
+  </metadata>
+</package>
