@@ -7,14 +7,14 @@ using Clee.SystemCommands;
 
 namespace Clee
 {
-    public class Engine
+    public class CleeEngine
     {
         private readonly ICommandRegistry _registry;
         private readonly ICommandFactory _commandFactory;
         private readonly IArgumentMapper _mapper;
         private readonly ICommandExecutor _commandExecutor;
 
-        public Engine(ICommandRegistry commandRegistry, ICommandFactory commandFactory, IArgumentMapper argumentMapper,
+        public CleeEngine(ICommandRegistry commandRegistry, ICommandFactory commandFactory, IArgumentMapper argumentMapper,
                       ICommandExecutor commandExecutor)
         {
             _registry = commandRegistry;
@@ -31,6 +31,11 @@ namespace Clee
         public ICommandRegistry Registry
         {
             get { return _registry; }
+        }
+
+        public ICommandFactory Factory
+        {
+            get { return _commandFactory; }
         }
 
         public void Execute(string input)
@@ -86,6 +91,10 @@ namespace Clee
             var argumentInstance = _mapper.Map(argumentType, args);
 
             var commandInstance = _commandFactory.Resolve(commandType);
+            if (commandInstance == null)
+            {
+                throw new Exception(string.Format("Command factory \"{1}\" was unable to resolve an instance for command type \"{0}\", it returned null instead.", commandType, _commandFactory.GetType().FullName));
+            }
 
             try
             {
@@ -108,16 +117,17 @@ namespace Clee
             return null;
         }
 
-        public static Engine CreateDefault()
+        public static CleeEngine CreateDefault()
         {
+            var assembly = Assembly.GetCallingAssembly();
+
             return Create(cfg =>
             {
-                var assembly = Assembly.GetEntryAssembly();
                 cfg.Registry(r => r.RegisterFromAssembly(assembly));
             });
         }
 
-        public static Engine Create(Action<IEngineConfiguration> configure)
+        public static CleeEngine Create(Action<IEngineConfiguration> configure)
         {
             var builder = new EngineBuilder();
             configure(builder);

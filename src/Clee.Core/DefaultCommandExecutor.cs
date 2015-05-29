@@ -11,6 +11,16 @@ namespace Clee
 
         public void Execute(object command, object arguments)
         {
+            if (command == null)
+            {
+                throw new ArgumentNullException("command", "The command object is null and cannot be executed by the executor.");
+            }
+            
+            if (arguments == null)
+            {
+                throw new ArgumentNullException("arguments", "The arguments object is null.");
+            }
+
             var commandType = command.GetType();
 
             var isRealCommand = TypeUtils.IsAssignableToGenericType(commandType, typeof(ICommand<>));

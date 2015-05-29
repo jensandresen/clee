@@ -1,5 +1,4 @@
 ﻿using System;
-using Clee.Tests.TestDoubles;
 using Moq;
 using Xunit;
 
@@ -10,8 +9,8 @@ namespace Clee.Tests
         [Fact]
         public void invokes_execute_method()
         {
-            var mock = new Mock<ICommand<DummyArgument>>();
-            var dummyArgument = new DummyArgument();
+            var mock = new Mock<ICommand<EmptyArgument>>();
+            var dummyArgument = new EmptyArgument();
             var sut = new DefaultCommandExecutor();
 
             sut.Execute(mock.Object, dummyArgument);
@@ -23,7 +22,7 @@ namespace Clee.Tests
         public void throws_exception_if_command_is_invalid_type()
         {
             var invalidCommand = "string is not a valid command type";
-            var dummyArgument = new DummyArgument();
+            var dummyArgument = new EmptyArgument();
 
             var sut = new DefaultCommandExecutor();
 
@@ -33,7 +32,7 @@ namespace Clee.Tests
         [Fact]
         public void throws_exception_if_argument_is_invalid_type()
         {
-            var dummyCommand = new Mock<ICommand<DummyArgument>>().Object;
+            var dummyCommand = new Mock<ICommand<EmptyArgument>>().Object;
             var invalidArgument = "string is not a valid command type";
 
             var sut = new DefaultCommandExecutor();
@@ -47,12 +46,12 @@ namespace Clee.Tests
             var spy = new SpyOverloadExecuteMethodCommand();
 
             var sut = new DefaultCommandExecutor();
-            sut.Execute(spy, new DummyArgument());
+            sut.Execute(spy, new EmptyArgument());
 
             Assert.True(spy.wasExpectedInvoked);
         }
 
-        private class SpyOverloadExecuteMethodCommand : ICommand<DummyArgument>
+        private class SpyOverloadExecuteMethodCommand : ICommand<EmptyArgument>
         {
             public bool wasExpectedInvoked = false;
 
@@ -61,7 +60,7 @@ namespace Clee.Tests
 
             }
 
-            public void Execute(DummyArgument args)
+            public void Execute(EmptyArgument args)
             {
                 wasExpectedInvoked = true;
             }
@@ -71,7 +70,7 @@ namespace Clee.Tests
                 
             }
 
-            public void Execute(DummyArgument args, DummyArgument moreArgs)
+            public void Execute(EmptyArgument args, EmptyArgument moreArgs)
             {
                 
             }

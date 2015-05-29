@@ -33,13 +33,13 @@ namespace Clee.Configurations
             return this;
         }
 
-        public Engine Build()
+        public CleeEngine Build()
         {
             var registry = _registryConfiguration.Build();
             var factory = _factoryConfiguration.Build();
             var mapper = _mapperConfiguration.Build();
 
-            return new Engine(
+            return new CleeEngine(
                 commandRegistry: registry,
                 commandFactory: factory,
                 argumentMapper: mapper,

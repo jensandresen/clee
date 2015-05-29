@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Clee.Tests.TestDoubles;
 using Xunit;
 
 namespace Clee.Tests
 {
-    public class TestCommandRegistry
+    public class TestDefaultCommandRegistry
     {
         [Fact]
         public void Find_returns_expected_when_no_commands_are_registered()
@@ -124,13 +123,13 @@ namespace Clee.Tests
         [Fact]
         public void throws_exception_if_commands_with_same_name_are_added()
         {
-            var firstCommand = typeof(FakeNamespace1.DummyCommand);
-            var secondCommandWithSameName = typeof(FakeNamespace2.DummyCommand);
+            var firstCommand = typeof(FooCommand);
+            var secondCommand = typeof(BarCommand);
 
             var sut = new DefaultCommandRegistry();
-            sut.Register(firstCommand);
+            sut.Register("foo", firstCommand);
 
-            Assert.Throws<Exception>(() => sut.Register(secondCommandWithSameName));
+            Assert.Throws<Exception>(() => sut.Register("foo", secondCommand));
         }
 
         [Fact]
@@ -143,8 +142,8 @@ namespace Clee.Tests
 
             var expected = new CommandRegistration(
                 commandName: "foo",
-                commandType: typeof (ICommand<DummyArgument>),
-                argumentType: typeof (DummyArgument),
+                commandType: typeof (ICommand<EmptyArgument>),
+                argumentType: typeof (EmptyArgument),
                 implementationType: typeof (FooCommand)
                 );
 
@@ -156,8 +155,8 @@ namespace Clee.Tests
         {
             var expected = new CommandRegistration(
                 commandName: "anoterCommandName",
-                commandType: typeof(ICommand<DummyArgument>),
-                argumentType: typeof(DummyArgument),
+                commandType: typeof(ICommand<EmptyArgument>),
+                argumentType: typeof(EmptyArgument),
                 implementationType: typeof(FooCommand)
                 );
 
@@ -179,45 +178,21 @@ namespace Clee.Tests
             Assert.Equal(expected, result);
         }
 
-
-
         #region command test doubles
 
-        private class FooCommand : ICommand<DummyArgument>
+        private class FooCommand : ICommand<EmptyArgument>
         {
-            public void Execute(DummyArgument args)
+            public void Execute(EmptyArgument args)
             {
                 
             }
         }
 
-        private class BarCommand : ICommand<DummyArgument>
+        private class BarCommand : ICommand<EmptyArgument>
         {
-            public void Execute(DummyArgument args)
+            public void Execute(EmptyArgument args)
             {
                 
-            }
-        }
-
-        private static class FakeNamespace1
-        {
-            public class DummyCommand : ICommand<DummyArgument>
-            {
-                public void Execute(DummyArgument args)
-                {
-
-                }
-            }
-        }
-
-        private static class FakeNamespace2
-        {
-            public class DummyCommand : ICommand<DummyArgument>
-            {
-                public void Execute(DummyArgument args)
-                {
-
-                }
             }
         }
 

@@ -8,6 +8,11 @@ namespace Clee
     {
         public Type[] Scan(Assembly assembly)
         {
+            if (assembly == null)
+            {
+                throw new ArgumentNullException("assembly");
+            }
+            
             return assembly
                 .GetTypes()
                 .Where(x => x.IsClass)
