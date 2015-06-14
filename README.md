@@ -95,3 +95,9 @@ This is a list of ideas that could be a nice addition to the framework. They may
 
 ## Contributions
 I'll be glad to recieve pull request for bugfixes or new features, but please adopt the current style and preferably tdd your implementations.
+
+## Versioning
+Clee uses SemVer 2.0.0
+
+## Read more
+You can read more at my blog: [http://jensandresen.com/tag/clee](http://jensandresen.com/tag/clee)
