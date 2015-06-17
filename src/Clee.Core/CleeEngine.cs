@@ -14,8 +14,7 @@ namespace Clee
         private readonly IArgumentMapper _mapper;
         private readonly ICommandExecutor _commandExecutor;
 
-        public CleeEngine(ICommandRegistry commandRegistry, ICommandFactory commandFactory, IArgumentMapper argumentMapper,
-                      ICommandExecutor commandExecutor)
+        public CleeEngine(ICommandRegistry commandRegistry, ICommandFactory commandFactory, IArgumentMapper argumentMapper, ICommandExecutor commandExecutor)
         {
             _registry = commandRegistry;
             _commandFactory = commandFactory;
@@ -112,6 +111,8 @@ namespace Clee
             {
                 case "--list":
                     return new ListCommand(_registry);
+                case "--help":
+                    return new HelpCommand(_registry);
             }
 
             return null;

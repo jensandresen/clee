@@ -67,6 +67,8 @@
     <Compile Include="Parsing\DefaultChangeTypeParser.cs" />
     <Compile Include="Parsing\SimpleConstructorParser.cs" />
     <Compile Include="Parsing\TryParseConventionParser.cs" />
+    <Compile Include="SystemCommands\CommandInformation.cs" />
+    <Compile Include="SystemCommands\HelpCommand.cs" />
     <Compile Include="SystemCommands\ListCommand.cs" />
     <Compile Include="TypeUtils.cs" />
     <Compile Include="ValueAttribute.cs" />
