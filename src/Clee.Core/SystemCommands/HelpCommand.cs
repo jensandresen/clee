@@ -6,29 +6,33 @@ using System.Reflection;
 
 namespace Clee.SystemCommands
 {
-    internal class HelpCommand : ICommand<EmptyArgument>
+    public class HelpCommand : ICommand<EmptyArgument>
     {
         private readonly ICommandRegistry _registry;
+        private readonly SystemCommandRegistry _systemRegistry;
+        private readonly IOutputWriter _outputWriter;
 
-        public HelpCommand(ICommandRegistry registry)
+        public HelpCommand(ICommandRegistry registry, SystemCommandRegistry systemRegistry, IOutputWriter outputWriter)
         {
             _registry = registry;
+            _systemRegistry = systemRegistry;
+            _outputWriter = outputWriter;
         }
 
         public void Execute(EmptyArgument args)
         {
             PrintUsageInformation();
-            Console.WriteLine();
+            _outputWriter.WriteLine();
 
             var systemCommands = GetSystemCommands();
             var customCommands = GetCustomCommands();
             PadCommandNames(systemCommands, customCommands);
 
             PrintCommands("System commands:", systemCommands);
-            Console.WriteLine();
+            _outputWriter.WriteLine();
 
             PrintCommands("Available commands:", customCommands);
-            Console.WriteLine("");
+            _outputWriter.WriteLine("");
         }
 
         private static void PadCommandNames(CommandInformation[] systemCommands, CommandInformation[] customCommands)
@@ -38,6 +42,11 @@ namespace Clee.SystemCommands
                 .ToArray();
 
             var longestName = allCommands.Max(x => x.Name.Length);
+
+            if (longestName < 10)
+            {
+                longestName = 10;
+            }
 
             foreach (var command in allCommands)
             {
@@ -50,7 +59,17 @@ namespace Clee.SystemCommands
 
         private CommandInformation[] GetCustomCommands()
         {
-            var customCommands = _registry
+            return ExtractCommandInformationFrom(_registry);
+        }
+
+        private CommandInformation[] GetSystemCommands()
+        {
+            return ExtractCommandInformationFrom(_systemRegistry);
+        }
+
+        private static CommandInformation[] ExtractCommandInformationFrom(ICommandRegistry registry)
+        {
+            var commands = registry
                 .GetAll()
                 .Select(x => new CommandInformation
                 {
@@ -59,25 +78,7 @@ namespace Clee.SystemCommands
                 })
                 .ToArray();
 
-            return customCommands;
-        }
-
-        private static CommandInformation[] GetSystemCommands()
-        {
-            var systemCommands = new[]
-            {
-                new CommandInformation
-                {
-                    Name = "--help",
-                    Description = "Displays this help information"
-                },
-                new CommandInformation
-                {
-                    Name = "--list",
-                    Description = "Shows a list of all the registered commands"
-                },
-            };
-            return systemCommands;
+            return commands;
         }
 
         private void PrintVersion()
@@ -87,14 +88,14 @@ namespace Clee.SystemCommands
                 .GetName()
                 .Version;
 
-            Console.WriteLine("Provided by Clee v{0}.{1}.{2}",
+            _outputWriter.WriteLine("Provided by Clee v{0}.{1}.{2}",
                 version.Major,
                 version.Minor,
                 version.Revision
                 );
         }
 
-        private static void PrintUsageInformation()
+        private void PrintUsageInformation()
         {
             var applicationName = Environment
                 .GetCommandLineArgs()
@@ -102,16 +103,16 @@ namespace Clee.SystemCommands
 
             applicationName = Path.GetFileNameWithoutExtension(applicationName);
 
-            Console.WriteLine("Usage: {0} <command> [<args>]", applicationName);
+            _outputWriter.WriteLine("Usage: {0} <command> [<args>]", applicationName);
         }
 
         private void PrintCommands(string headline, IEnumerable<CommandInformation> commands)
         {
-            Console.WriteLine(headline);
+            _outputWriter.WriteLine(headline);
 
             foreach (var r in commands)
             {
-                Console.WriteLine("  {0}\t{1}", r.Name, r.Description);
+                _outputWriter.WriteLine("  {0}\t{1}", r.Name, r.Description);
             }
         }
     }

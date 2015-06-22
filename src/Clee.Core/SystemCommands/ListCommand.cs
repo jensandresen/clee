@@ -3,13 +3,16 @@ using System.Linq;
 
 namespace Clee.SystemCommands
 {
-    internal class ListCommand : ICommand<EmptyArgument>
+    [Obsolete]
+    public class ListCommand : ICommand<EmptyArgument>
     {
         private readonly ICommandRegistry _registry;
+        private readonly SystemCommandRegistry _systemRegistry;
 
-        public ListCommand(ICommandRegistry registry)
+        public ListCommand(ICommandRegistry registry, SystemCommandRegistry systemRegistry)
         {
             _registry = registry;
+            _systemRegistry = systemRegistry;
         }
 
         public void Execute(EmptyArgument args)
@@ -28,7 +31,17 @@ namespace Clee.SystemCommands
 
         private CommandInformation[] GetCustomCommands()
         {
-            var customCommands = _registry
+            return ExtractCommandInformationFrom(_registry);
+        }
+
+        private CommandInformation[] GetSystemCommands()
+        {
+            return ExtractCommandInformationFrom(_systemRegistry);
+        }
+
+        private static CommandInformation[] ExtractCommandInformationFrom(ICommandRegistry registry)
+        {
+            var commands = registry
                 .GetAll()
                 .Select(x => new CommandInformation
                 {
@@ -37,25 +50,7 @@ namespace Clee.SystemCommands
                 })
                 .ToArray();
 
-            return customCommands;
-        }
-
-        private static CommandInformation[] GetSystemCommands()
-        {
-            var systemCommands = new[]
-            {
-                new CommandInformation
-                {
-                    Name = "--help",
-                    Description = "Displays this help information"
-                },
-                new CommandInformation
-                {
-                    Name = "--list",
-                    Description = "Shows a list of all the registered commands"
-                },
-            };
-            return systemCommands;
+            return commands;
         }
 
         private static void PadCommandNames(CommandInformation[] systemCommands, CommandInformation[] customCommands)
@@ -65,6 +60,11 @@ namespace Clee.SystemCommands
                 .ToArray();
 
             var longestName = allCommands.Max(x => x.Name.Length);
+
+            if (longestName < 10)
+            {
+                longestName = 10;
+            }
 
             foreach (var command in allCommands)
             {

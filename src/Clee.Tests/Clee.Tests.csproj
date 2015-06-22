@@ -64,8 +64,11 @@
     <Compile Include="TestDefaultCommandRegistry.cs" />
     <Compile Include="TestCommandScanner.cs" />
     <Compile Include="TestDefaultCommandExecutor.cs" />
+    <Compile Include="TestDoubles\SpyOutputWriter.cs" />
     <Compile Include="TestDoubles\StubCommandFactory.cs" />
     <Compile Include="TestCleeEngine.cs" />
+    <Compile Include="TestHelpCommand.cs" />
+    <Compile Include="TestSystemCommandRegistry.cs" />
     <Compile Include="TestTypeUtils.cs" />
   </ItemGroup>
   <ItemGroup>

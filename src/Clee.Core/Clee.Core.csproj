@@ -55,6 +55,7 @@
     <Compile Include="DefaultCommandFactory.cs" />
     <Compile Include="DefaultCommandRegistry.cs" />
     <Compile Include="DefaultCommandExecutor.cs" />
+    <Compile Include="DefaultOutputWriter.cs" />
     <Compile Include="EmptyArgument.cs" />
     <Compile Include="CleeEngine.cs" />
     <Compile Include="IArgumentMapper.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="ICommandExecutor.cs" />
     <Compile Include="ICommandFactory.cs" />
     <Compile Include="ICommandRegistry.cs" />
+    <Compile Include="IOutputWriter.cs" />
     <Compile Include="ManualCommandFactory.cs" />
     <Compile Include="Parsing\DefaultChangeTypeParser.cs" />
     <Compile Include="Parsing\SimpleConstructorParser.cs" />
@@ -70,6 +72,7 @@
     <Compile Include="SystemCommands\CommandInformation.cs" />
     <Compile Include="SystemCommands\HelpCommand.cs" />
     <Compile Include="SystemCommands\ListCommand.cs" />
+    <Compile Include="SystemCommands\SystemCommandRegistry.cs" />
     <Compile Include="TypeUtils.cs" />
     <Compile Include="ValueAttribute.cs" />
     <Compile Include="Parsing\BooleanParser.cs" />
