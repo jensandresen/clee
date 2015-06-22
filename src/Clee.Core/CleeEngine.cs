@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Clee.Configurations;
@@ -14,9 +15,12 @@ namespace Clee
         private readonly IArgumentMapper _mapper;
         private readonly ICommandExecutor _commandExecutor;
         private readonly SystemCommandRegistry _systemRegistry;
+        private readonly LinkedList<HistoryEntry> _history;
+        private readonly SystemCommandFactory _systemCommandFactory;
         private IOutputWriter _outputWriter;
 
-        public CleeEngine(ICommandRegistry commandRegistry, ICommandFactory commandFactory, IArgumentMapper argumentMapper, ICommandExecutor commandExecutor)
+        public CleeEngine(ICommandRegistry commandRegistry, ICommandFactory commandFactory, 
+            IArgumentMapper argumentMapper, ICommandExecutor commandExecutor)
         {
             _registry = commandRegistry;
             _commandFactory = commandFactory;
@@ -24,6 +28,16 @@ namespace Clee
             _commandExecutor = commandExecutor;
             
             _systemRegistry = SystemCommandRegistry.CreateAndInitialize();
+
+            _systemCommandFactory = new SystemCommandFactory();
+            _systemCommandFactory.RegisterInstance<ICommandRegistry>(_registry);
+            _systemCommandFactory.RegisterInstance<ICommandFactory>(_commandFactory);
+            _systemCommandFactory.RegisterInstance<IArgumentMapper>(_mapper);
+            _systemCommandFactory.RegisterInstance<ICommandExecutor>(_commandExecutor);
+            _systemCommandFactory.RegisterInstance<SystemCommandRegistry>(_systemRegistry);
+            _systemCommandFactory.RegisterFactoryMethod<IOutputWriter>(() => _outputWriter);
+
+            _history = new LinkedList<HistoryEntry>();
             _outputWriter = new DefaultOutputWriter();
         }
 
@@ -40,6 +54,11 @@ namespace Clee
         public ICommandFactory Factory
         {
             get { return _commandFactory; }
+        }
+
+        public IEnumerable<HistoryEntry> History
+        {
+            get { return _history; }
         }
 
         public void Execute(string input)
@@ -79,7 +98,13 @@ namespace Clee
             {
                 var argumentType2 = TypeUtils.ExtractArgumentTypesFromCommand(systemCommandInstance).First();
                 var argumentInstance2 = _mapper.Map(argumentType2, args);
+                
                 _commandExecutor.Execute(systemCommandInstance, argumentInstance2);
+
+                _history.AddLast(new HistoryEntry(
+                    commandName: commandName,
+                    implementationType: systemCommandInstance.GetType()
+                    ));
 
                 return;
             }
@@ -102,6 +127,11 @@ namespace Clee
             try
             {
                 _commandExecutor.Execute(commandInstance, argumentInstance);
+
+                _history.AddLast(new HistoryEntry(
+                    commandName: commandName,
+                    implementationType: commandInstance.GetType()
+                    ));
             }
             finally
             {
@@ -118,15 +148,12 @@ namespace Clee
                 return null;
             }
 
-            var factory = new SystemCommandFactory();
-            factory.RegisterInstance<ICommandRegistry>(_registry);
-            factory.RegisterInstance<ICommandFactory>(_commandFactory);
-            factory.RegisterInstance<IArgumentMapper>(_mapper);
-            factory.RegisterInstance<ICommandExecutor>(_commandExecutor);
-            factory.RegisterInstance<SystemCommandRegistry>(_systemRegistry);
-            factory.RegisterInstance<IOutputWriter>(_outputWriter);
+            return _systemCommandFactory.Resolve(commandType);
+        }
 
-            return factory.Resolve(commandType);
+        public void SetOutputWriter(IOutputWriter outputWriter)
+        {
+            _outputWriter = outputWriter;
         }
 
         public static CleeEngine CreateDefault()
@@ -145,11 +172,6 @@ namespace Clee
             configure(builder);
 
             return builder.Build();
-        }
-
-        public void SetOutputWriter(IOutputWriter outputWriter)
-        {
-            _outputWriter = outputWriter;
         }
     }
 }

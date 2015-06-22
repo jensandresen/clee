@@ -7,7 +7,7 @@ namespace Clee.SystemCommands
     internal class SystemCommandFactory : ICommandFactory
     {
         private readonly Dictionary<Type, object> _knownDependencies = new Dictionary<Type, object>();
-
+        private readonly Dictionary<Type, Func<object>> _factoryMethods = new Dictionary<Type, Func<object>>(); 
         public void RegisterInstance<T>(T instance)
         {
             RegisterInstance(typeof(T), instance);
@@ -34,9 +34,9 @@ namespace Clee.SystemCommands
 
             foreach (var p in constructor.GetParameters())
             {
-                object result;
+                var result = GetInstance(p.ParameterType);
 
-                if (_knownDependencies.TryGetValue(p.ParameterType, out result))
+                if (result != null)
                 {
                     parameters.AddLast(result);
                 }
@@ -49,9 +49,31 @@ namespace Clee.SystemCommands
             return constructor.Invoke(parameters.ToArray());
         }
 
+        private object GetInstance(Type type)
+        {
+            object result1;
+            if (_knownDependencies.TryGetValue(type, out result1))
+            {
+                return result1;
+            }
+
+            Func<object> result2;
+            if (_factoryMethods.TryGetValue(type, out result2))
+            {
+                return result2();
+            }
+
+            return null;
+        }
+
         public void Release(object obj)
         {
             throw new NotImplementedException();
+        }
+
+        public void RegisterFactoryMethod<T>(Func<T> creator)
+        {
+            _factoryMethods.Add(typeof(T), creator as Func<object>);
         }
     }
 }

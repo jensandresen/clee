@@ -58,6 +58,7 @@
     <Compile Include="DefaultOutputWriter.cs" />
     <Compile Include="EmptyArgument.cs" />
     <Compile Include="CleeEngine.cs" />
+    <Compile Include="HistoryEntry.cs" />
     <Compile Include="IArgumentMapper.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandArguments.cs" />

@@ -1,4 +1,5 @@
-﻿using Clee.Tests.TestDoubles;
+﻿using System.Linq;
+using Clee.Tests.TestDoubles;
 using Xunit;
 
 namespace Clee.Tests
@@ -16,6 +17,16 @@ namespace Clee.Tests
             sut.Execute("help");
 
             Assert.StartsWith("Usage", spyOutputWriter.Output.ToString());
+        }
+
+        [Fact]
+        public void executes_expected_help_command()
+        {
+            var sut = CleeEngine.CreateDefault();
+            sut.Execute("help");
+
+            Assert.Equal("help", sut.History.Single().CommandName);
+            Assert.Equal("Clee.SystemCommands.HelpCommand", sut.History.Single().ImplementationType.FullName);
         }
     }
 }
