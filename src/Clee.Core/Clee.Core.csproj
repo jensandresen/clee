@@ -72,6 +72,7 @@
     <Compile Include="SystemCommands\CommandInformation.cs" />
     <Compile Include="SystemCommands\HelpCommand.cs" />
     <Compile Include="SystemCommands\ListCommand.cs" />
+    <Compile Include="SystemCommands\SystemCommandFactory.cs" />
     <Compile Include="SystemCommands\SystemCommandRegistry.cs" />
     <Compile Include="TypeUtils.cs" />
     <Compile Include="ValueAttribute.cs" />

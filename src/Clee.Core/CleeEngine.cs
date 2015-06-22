@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Clee.Configurations;
@@ -88,8 +87,7 @@ namespace Clee
             var commandType = _registry.Find(commandName);
             if (commandType == null)
             {
-                throw new NotSupportedException(string.Format("The command \"{0}\" is not currently supported.",
-                    commandName));
+                throw new NotSupportedException(string.Format("The command \"{0}\" is not currently supported.", commandName));
             }
 
             var argumentType = TypeUtils.ExtractArgumentTypesFromCommand(commandType).First();
@@ -120,38 +118,15 @@ namespace Clee
                 return null;
             }
 
-            var knownDependencies = new Dictionary<Type, object>
-            {
-                {typeof (ICommandRegistry), _registry},
-                {typeof (ICommandFactory), _commandFactory},
-                {typeof (IArgumentMapper), _mapper},
-                {typeof (ICommandExecutor), _commandExecutor},
-                {typeof (SystemCommandRegistry), _systemRegistry},
-                {typeof (IOutputWriter), _outputWriter},
-            };
+            var factory = new SystemCommandFactory();
+            factory.RegisterInstance<ICommandRegistry>(_registry);
+            factory.RegisterInstance<ICommandFactory>(_commandFactory);
+            factory.RegisterInstance<IArgumentMapper>(_mapper);
+            factory.RegisterInstance<ICommandExecutor>(_commandExecutor);
+            factory.RegisterInstance<SystemCommandRegistry>(_systemRegistry);
+            factory.RegisterInstance<IOutputWriter>(_outputWriter);
 
-            var constructor = commandType
-                .GetConstructors()
-                .OrderBy(x => x.GetParameters().Length)
-                .First();
-
-            var parameters = new LinkedList<object>();
-
-            foreach (var p in constructor.GetParameters())
-            {
-                object result;
-                
-                if (knownDependencies.TryGetValue(p.ParameterType, out result))
-                {
-                    parameters.AddLast(result);
-                }
-                else
-                {
-                    throw new Exception(string.Format("Unable to resolve dependency {0} of system command {1}.", p.ParameterType.FullName, commandType.FullName));
-                }
-            }
-
-            return constructor.Invoke(parameters.ToArray());
+            return factory.Resolve(commandType);
         }
 
         public static CleeEngine CreateDefault()
@@ -175,57 +150,6 @@ namespace Clee
         public void SetOutputWriter(IOutputWriter outputWriter)
         {
             _outputWriter = outputWriter;
-        }
-    }
-
-    internal class SystemCommandFactory : ICommandFactory
-    {
-        private readonly Dictionary<Type, object> _knownDependencies = new Dictionary<Type, object>();
-
-        public void RegisterInstance<T>(T instance)
-        {
-            RegisterInstance(typeof(T), instance);
-        }
-
-        public void RegisterInstance(Type serviceType, object instance)
-        {
-            _knownDependencies.Add(serviceType, instance);
-        }
-
-        public object Resolve(Type commandType)
-        {
-            if (commandType == null)
-            {
-                return null;
-            }
-
-            var constructor = commandType
-                .GetConstructors()
-                .OrderBy(x => x.GetParameters().Length)
-                .First();
-
-            var parameters = new LinkedList<object>();
-
-            foreach (var p in constructor.GetParameters())
-            {
-                object result;
-
-                if (_knownDependencies.TryGetValue(p.ParameterType, out result))
-                {
-                    parameters.AddLast(result);
-                }
-                else
-                {
-                    throw new Exception(string.Format("Unable to resolve dependency {0} of system command {1}.", p.ParameterType.FullName, commandType.FullName));
-                }
-            }
-
-            return constructor.Invoke(parameters.ToArray());
-        }
-
-        public void Release(object obj)
-        {
-            throw new NotImplementedException();
         }
     }
 }
