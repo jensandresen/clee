@@ -1,3 +1,6 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/7jr4rlw130txdvnx?svg=true)](https://ci.appveyor.com/project/jensandresen/clee)
+[![Nuget version](https://img.shields.io/nuget/v/Clee.svg?label=latest release)](https://www.nuget.org/packages/clee)
+
 # Clee :: Command line execution engine
 Clee is a light weight framework for orchestrating command execution from the command line.
 
