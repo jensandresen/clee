@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Clee.SystemCommands
 {
-    internal class SystemCommandFactory : ICommandFactory
+    public class SystemCommandFactory : ICommandFactory
     {
         private readonly Dictionary<Type, object> _knownDependencies = new Dictionary<Type, object>();
         private readonly Dictionary<Type, Func<object>> _factoryMethods = new Dictionary<Type, Func<object>>(); 

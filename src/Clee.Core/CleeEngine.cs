@@ -93,36 +93,9 @@ namespace Clee
 
         public void Execute(string commandName, Argument[] args)
         {
-            var systemCommandInstance = CreateSystemCommandFrom(commandName);
-            if (systemCommandInstance != null)
-            {
-                var argumentType2 = TypeUtils.ExtractArgumentTypesFromCommand(systemCommandInstance).First();
-                var argumentInstance2 = _mapper.Map(argumentType2, args);
-                
-                _commandExecutor.Execute(systemCommandInstance, argumentInstance2);
-
-                _history.AddLast(new HistoryEntry(
-                    commandName: commandName,
-                    implementationType: systemCommandInstance.GetType()
-                    ));
-
-                return;
-            }
-
-            var commandType = _registry.Find(commandName);
-            if (commandType == null)
-            {
-                throw new NotSupportedException(string.Format("The command \"{0}\" is not currently supported.", commandName));
-            }
-
-            var argumentType = TypeUtils.ExtractArgumentTypesFromCommand(commandType).First();
+            var commandInstance = CreateCommandFrom(commandName);
+            var argumentType = TypeUtils.ExtractArgumentTypesFromCommand(commandInstance).First();
             var argumentInstance = _mapper.Map(argumentType, args);
-
-            var commandInstance = _commandFactory.Resolve(commandType);
-            if (commandInstance == null)
-            {
-                throw new Exception(string.Format("Command factory \"{1}\" was unable to resolve an instance for command type \"{0}\", it returned null instead.", commandType, _commandFactory.GetType().FullName));
-            }
 
             try
             {
@@ -137,6 +110,29 @@ namespace Clee
             {
                 _commandFactory.Release(commandInstance);
             }
+        }
+
+        private object CreateCommandFrom(string commandName)
+        {
+            var systemCommandInstance = CreateSystemCommandFrom(commandName);
+            if (systemCommandInstance != null)
+            {
+                return systemCommandInstance;
+            }
+
+            var commandType = _registry.Find(commandName);
+            if (commandType == null)
+            {
+                throw new NotSupportedException(string.Format("The command \"{0}\" is not currently supported.", commandName));
+            }
+
+            var commandInstance = _commandFactory.Resolve(commandType);
+            if (commandInstance == null)
+            {
+                throw new Exception(string.Format("Command factory \"{1}\" was unable to resolve an instance for command type \"{0}\", it returned null instead.", commandType, _commandFactory.GetType().FullName));
+            }
+
+            return commandInstance;
         }
 
         private object CreateSystemCommandFrom(string commandName)
