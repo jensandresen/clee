@@ -68,7 +68,7 @@ namespace Clee.SystemCommands
 
         public void Release(object obj)
         {
-            throw new NotImplementedException();
+            // currently all system commands have singleton dependencies
         }
 
         public void RegisterFactoryMethod<T>(Func<T> creator)

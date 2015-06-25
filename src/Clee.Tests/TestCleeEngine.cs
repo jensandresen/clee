@@ -1,4 +1,5 @@
 ﻿using System;
+using Clee.SystemCommands;
 using Clee.Tests.TestDoubles;
 using Moq;
 using Xunit;
@@ -146,6 +147,21 @@ namespace Clee.Tests
             Assert.Throws<NotSupportedException>(() => engine.Execute("foo"));
         }
 
+        [Fact]
+        public void system_commands_are_not_released_using_custom_factory()
+        {
+            var mock = new Mock<ICommandFactory>();
+
+            var engine = CleeEngine.Create(cfg =>
+            {
+                cfg.Factory(f => f.Use(mock.Object));
+            });
+
+            engine.Execute("help");
+
+            mock.Verify(x => x.Release(It.IsAny<HelpCommand>()), Times.Never());
+        }
+    
         #region test data
 
         public struct IdArgument : ICommandArguments

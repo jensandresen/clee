@@ -93,31 +93,36 @@ namespace Clee
 
         public void Execute(string commandName, Argument[] args)
         {
-            var commandInstance = CreateCommandFrom(commandName);
-            var argumentType = TypeUtils.ExtractArgumentTypesFromCommand(commandInstance).First();
-            var argumentInstance = _mapper.Map(argumentType, args);
-
-            try
+            CreateCommandFrom(commandName, commandInstance =>
             {
+                var argumentType = TypeUtils.ExtractArgumentTypesFromCommand(commandInstance).First();
+                var argumentInstance = _mapper.Map(argumentType, args);
+
                 _commandExecutor.Execute(commandInstance, argumentInstance);
 
                 _history.AddLast(new HistoryEntry(
                     commandName: commandName,
                     implementationType: commandInstance.GetType()
                     ));
-            }
-            finally
-            {
-                _commandFactory.Release(commandInstance);
-            }
+            });
         }
 
-        private object CreateCommandFrom(string commandName)
+        private void CreateCommandFrom(string commandName, Action<object> commandHandler)
         {
-            var systemCommandInstance = CreateSystemCommandFrom(commandName);
+            var systemCommandType = _systemRegistry.Find(commandName);
+            var systemCommandInstance = _systemCommandFactory.Resolve(systemCommandType);
             if (systemCommandInstance != null)
             {
-                return systemCommandInstance;
+                try
+                {
+                    commandHandler(systemCommandInstance);
+                }
+                finally
+                {
+                    _systemCommandFactory.Release(systemCommandInstance);
+                }
+
+                return;
             }
 
             var commandType = _registry.Find(commandName);
@@ -132,19 +137,14 @@ namespace Clee
                 throw new Exception(string.Format("Command factory \"{1}\" was unable to resolve an instance for command type \"{0}\", it returned null instead.", commandType, _commandFactory.GetType().FullName));
             }
 
-            return commandInstance;
-        }
-
-        private object CreateSystemCommandFrom(string commandName)
-        {
-            var commandType = _systemRegistry.Find(commandName);
-
-            if (commandType == null)
+            try
             {
-                return null;
+                commandHandler(commandInstance);
             }
-
-            return _systemCommandFactory.Resolve(commandType);
+            finally
+            {
+                _commandFactory.Release(commandInstance);
+            }
         }
 
         public void SetOutputWriter(IOutputWriter outputWriter)
