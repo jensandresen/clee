@@ -8,6 +8,11 @@ namespace Clee.Parsing
     {
         public static string ExtractCommandNameFrom(string input)
         {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return "";
+            }
+
             return Regex.Replace(input, @"^(?<cmd>\w+)(\s+(?<args>.*))?$", "${cmd}");
         }
 
@@ -25,6 +30,11 @@ namespace Clee.Parsing
 
         public static string ExtractArgumentsStringFrom(string input)
         {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return "";
+            }
+
             return Regex.Replace(input, @"^(?<cmd>\w+)(\s+(?<args>.*))?$", "${args}");
         }
 

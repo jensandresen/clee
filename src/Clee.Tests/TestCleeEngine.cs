@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Clee.SystemCommands;
 using Clee.Tests.TestDoubles;
 using Moq;
@@ -161,7 +162,91 @@ namespace Clee.Tests
 
             mock.Verify(x => x.Release(It.IsAny<HelpCommand>()), Times.Never());
         }
-    
+
+        [Fact]
+        public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_1()
+        {
+            var sut = CleeEngine.CreateDefault();
+            sut.Execute("");
+
+            Assert.Equal("help", sut.History.Single().CommandName);
+        }
+
+        [Fact]
+        public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_1_1()
+        {
+            var sut = CleeEngine.CreateDefault();
+            sut.Execute((string) null);
+
+            Assert.Equal("help", sut.History.Single().CommandName);
+        }
+
+        [Fact]
+        public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_2()
+        {
+            var sut = CleeEngine.CreateDefault();
+            sut.Execute(new string[0]);
+
+            Assert.Equal("help", sut.History.Single().CommandName);
+        }
+
+        [Fact]
+        public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_2_1()
+        {
+            var sut = CleeEngine.CreateDefault();
+            sut.Execute((string[]) null);
+
+            Assert.Equal("help", sut.History.Single().CommandName);
+        }
+
+        [Fact]
+        public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_3()
+        {
+            var sut = CleeEngine.CreateDefault();
+            sut.Execute(
+                    commandName: "",
+                    args: new Argument[0]
+                );
+
+            Assert.Equal("help", sut.History.Single().CommandName);
+        }
+
+        [Fact]
+        public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_3_1()
+        {
+            var sut = CleeEngine.CreateDefault();
+            sut.Execute(
+                    commandName: null,
+                    args: new Argument[0]
+                );
+
+            Assert.Equal("help", sut.History.Single().CommandName);
+        }
+
+        [Fact]
+        public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_3_2()
+        {
+            var sut = CleeEngine.CreateDefault();
+            sut.Execute(
+                    commandName: "",
+                    args: null
+                );
+
+            Assert.Equal("help", sut.History.Single().CommandName);
+        }
+
+        [Fact]
+        public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_3_3()
+        {
+            var sut = CleeEngine.CreateDefault();
+            sut.Execute(
+                    commandName: null,
+                    args: null
+                );
+
+            Assert.Equal("help", sut.History.Single().CommandName);
+        }
+
         #region test data
 
         public struct IdArgument : ICommandArguments

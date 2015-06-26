@@ -64,36 +64,48 @@ namespace Clee
         public void Execute(string input)
         {
             var commandName = CommandLineParser.ExtractCommandNameFrom(input);
-            var argumentValues = CommandLineParser.ExtractArgumentsFrom(input).ToArray();
+            var argumentValues = CommandLineParser
+                .ExtractArgumentsFrom(input)
+                .ToArray();
 
             Execute(commandName, argumentValues);
         }
 
         public void Execute(string[] input)
         {
-            var commandName = input[0];
-            var temp = input
-                .Skip(1)
-                .Select(x =>
-                {
-                    if (x.StartsWith("-"))
-                    {
-                        return x;
-                    }
+            var commandName = "";
+            var argumentValues = new Argument[0];
 
-                    return string.Format("\"{0}\"", x);
-                });
+            if (input != null)
+            {
+                commandName = input.FirstOrDefault();
 
-            var args = string.Join(" ", temp);
+                var args = string.Join(
+                    separator: " ",
+                    values: input
+                        .Skip(1)
+                        .Select(x =>
+                        {
+                            if (x.StartsWith("-"))
+                            {
+                                return x;
+                            }
 
-            var argumentValues = CommandLineParser.ParseArguments(args).ToArray();
+                            return string.Format("\"{0}\"", x);
+                        })
+                    );
+
+                argumentValues = CommandLineParser
+                    .ParseArguments(args)
+                    .ToArray();
+            }
 
             Execute(commandName, argumentValues);
         }
 
         public void Execute(string commandName, Argument[] args)
         {
-            CreateCommandFrom(commandName, commandInstance =>
+            ExecuteCommandHandler(commandName, commandInstance =>
             {
                 var argumentType = TypeUtils.ExtractArgumentTypesFromCommand(commandInstance).First();
                 var argumentInstance = _mapper.Map(argumentType, args);
@@ -101,15 +113,18 @@ namespace Clee
                 _commandExecutor.Execute(commandInstance, argumentInstance);
 
                 _history.AddLast(new HistoryEntry(
-                    commandName: commandName,
+                    commandName: string.IsNullOrWhiteSpace(commandName) ? "help" : commandName,
                     implementationType: commandInstance.GetType()
                     ));
             });
         }
 
-        private void CreateCommandFrom(string commandName, Action<object> commandHandler)
+        private void ExecuteCommandHandler(string commandName, Action<object> commandHandler)
         {
-            var systemCommandType = _systemRegistry.Find(commandName);
+            var systemCommandType = string.IsNullOrWhiteSpace(commandName) 
+                ? typeof(HelpCommand)
+                : _systemRegistry.Find(commandName);
+
             var systemCommandInstance = _systemCommandFactory.Resolve(systemCommandType);
             if (systemCommandInstance != null)
             {
@@ -149,6 +164,11 @@ namespace Clee
 
         public void SetOutputWriter(IOutputWriter outputWriter)
         {
+            if (outputWriter == null)
+            {
+                throw new ArgumentNullException("outputWriter");
+            }
+
             _outputWriter = outputWriter;
         }
 
