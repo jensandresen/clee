@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Builders\AssemblyBuilder.cs" />
     <Compile Include="TestArgumentsMapper.cs" />
+    <Compile Include="TestAttributeHelper.cs" />
     <Compile Include="TestCommandLineParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestDefaultCommandRegistry.cs" />

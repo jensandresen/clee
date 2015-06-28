@@ -41,6 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Argument.cs" />
+    <Compile Include="AttributeHelper.cs" />
+    <Compile Include="CommandAttribute.cs" />
     <Compile Include="CommandRegistration.cs" />
     <Compile Include="CommandScanner.cs" />
     <Compile Include="Configurations\EngineBuilder.cs" />
