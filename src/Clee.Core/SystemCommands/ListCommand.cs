@@ -3,7 +3,8 @@ using System.Linq;
 
 namespace Clee.SystemCommands
 {
-    [Obsolete]
+    [Obsolete("Will be removed in version 2.0.0")]
+    [Command(Description = "Displays a list of all the commands that are available")]
     public class ListCommand : ICommand<EmptyArgument>
     {
         private readonly ICommandRegistry _registry;
