@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace Clee.SystemCommands
 {
+    [Command(Description = "Displays this help message about usage and which commands are available")]
     public class HelpCommand : ICommand<EmptyArgument>
     {
         private readonly ICommandRegistry _registry;
@@ -40,7 +40,7 @@ namespace Clee.SystemCommands
             var allCommands = Enumerable
                 .Concat(systemCommands, customCommands)
                 .ToArray();
-
+            
             var longestName = allCommands.Max(x => x.Name.Length);
 
             if (longestName < 10)
@@ -71,28 +71,15 @@ namespace Clee.SystemCommands
         {
             var commands = registry
                 .GetAll()
+                .OrderBy(x => x.CommandName)
                 .Select(x => new CommandInformation
                 {
                     Name = x.CommandName,
-                    Description = x.ImplementationType.FullName
+                    Description = AttributeHelper.GetDescription(x.ImplementationType, x.CommandType)
                 })
                 .ToArray();
 
             return commands;
-        }
-
-        private void PrintVersion()
-        {
-            var version = Assembly
-                .GetExecutingAssembly()
-                .GetName()
-                .Version;
-
-            _outputWriter.WriteLine("Provided by Clee v{0}.{1}.{2}",
-                version.Major,
-                version.Minor,
-                version.Revision
-                );
         }
 
         private void PrintUsageInformation()
