@@ -44,10 +44,11 @@ namespace Clee.SystemCommands
         {
             var commands = registry
                 .GetAll()
+                .OrderBy(x => x.CommandName)
                 .Select(x => new CommandInformation
                 {
                     Name = x.CommandName,
-                    Description = x.ImplementationType.FullName
+                    Description = AttributeHelper.GetDescription(x.ImplementationType, x.CommandType)
                 })
                 .ToArray();
 
