@@ -89,7 +89,6 @@ The configuration api is fluent and discoverably - so just _dot your way through
 ## The future
 This is a list of ideas that could be a nice addition to the framework. They may or may not be implemented, only time will tell.
 
-* help command (executed when no command argument is specified)
 * custom format string on all arguments (specified with the value attribute)
 * custom parser (specified with the value attribute)
 * custom validation (specified with the value attribute)
