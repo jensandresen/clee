@@ -1,5 +1,9 @@
 # Changelog #
 
+__v1.1.1__
+
+Fixed issue with list command not outputting command descriptions.
+
 __v1.1.0__
 
 Added help command (executed by invoking _help_ from the command line).
