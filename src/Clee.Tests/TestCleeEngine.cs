@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Clee.SystemCommands;
+using Clee.Tests.Builders;
 using Clee.Tests.TestDoubles;
 using Moq;
 using Xunit;
@@ -53,21 +54,21 @@ namespace Clee.Tests
         [Fact]
         public void default_engine_returns_expected_registry()
         {
-            var engine = CleeEngine.CreateDefault();
+            var engine = new CleeEngineBuilder().Build();
             Assert.IsType<DefaultCommandRegistry>(engine.Registry);
         }
 
         [Fact]
         public void default_engine_returns_expected_mapper()
         {
-            var engine = CleeEngine.CreateDefault();
+            var engine = new CleeEngineBuilder().Build();
             Assert.IsType<DefaultArgumentMapper>(engine.Mapper);
         }
 
         [Fact]
         public void default_engine_returns_expected_factort()
         {
-            var engine = CleeEngine.CreateDefault();
+            var engine = new CleeEngineBuilder().Build();
             Assert.IsType<DefaultCommandFactory>(engine.Factory);
         }
 
@@ -166,7 +167,7 @@ namespace Clee.Tests
         [Fact]
         public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_1()
         {
-            var sut = CleeEngine.CreateDefault();
+            var sut = new CleeEngineBuilder().Build();
             sut.Execute("");
 
             Assert.Equal("help", sut.History.Single().CommandName);
@@ -175,8 +176,8 @@ namespace Clee.Tests
         [Fact]
         public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_1_1()
         {
-            var sut = CleeEngine.CreateDefault();
-            sut.Execute((string) null);
+            var sut = new CleeEngineBuilder().Build();
+            sut.Execute((string)null);
 
             Assert.Equal("help", sut.History.Single().CommandName);
         }
@@ -184,7 +185,7 @@ namespace Clee.Tests
         [Fact]
         public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_2()
         {
-            var sut = CleeEngine.CreateDefault();
+            var sut = new CleeEngineBuilder().Build();
             sut.Execute(new string[0]);
 
             Assert.Equal("help", sut.History.Single().CommandName);
@@ -193,8 +194,8 @@ namespace Clee.Tests
         [Fact]
         public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_2_1()
         {
-            var sut = CleeEngine.CreateDefault();
-            sut.Execute((string[]) null);
+            var sut = new CleeEngineBuilder().Build();
+            sut.Execute((string[])null);
 
             Assert.Equal("help", sut.History.Single().CommandName);
         }
@@ -202,7 +203,7 @@ namespace Clee.Tests
         [Fact]
         public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_3()
         {
-            var sut = CleeEngine.CreateDefault();
+            var sut = new CleeEngineBuilder().Build();
             sut.Execute(
                     commandName: "",
                     args: new Argument[0]
@@ -214,7 +215,7 @@ namespace Clee.Tests
         [Fact]
         public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_3_1()
         {
-            var sut = CleeEngine.CreateDefault();
+            var sut = new CleeEngineBuilder().Build();
             sut.Execute(
                     commandName: null,
                     args: new Argument[0]
@@ -226,7 +227,7 @@ namespace Clee.Tests
         [Fact]
         public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_3_2()
         {
-            var sut = CleeEngine.CreateDefault();
+            var sut = new CleeEngineBuilder().Build();
             sut.Execute(
                     commandName: "",
                     args: null
@@ -238,7 +239,7 @@ namespace Clee.Tests
         [Fact]
         public void help_command_is_executed_if_no_command_is_specified_from_the_commandline_3_3()
         {
-            var sut = CleeEngine.CreateDefault();
+            var sut = new CleeEngineBuilder().Build();
             sut.Execute(
                     commandName: null,
                     args: null

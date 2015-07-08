@@ -62,6 +62,14 @@ namespace Clee
 
         public CommandRegistration Register(Type commandType)
         {
+            var implementedCommands = TypeUtils.ExtractCommandImplementationsFromType(commandType);
+
+            if (implementedCommands.Length > 1)
+            {
+                var commandNames = string.Join(", ", implementedCommands.Select(x => x.FullName).ToArray());
+                throw new NotSupportedException(string.Format("Type {0} implements more than one command which is not currently supported. It implements: {1}", commandType.FullName, commandNames));
+            }
+
             var commandName = ExtractCommandNameFrom(commandType);
             return Register(commandName, commandType);
         }

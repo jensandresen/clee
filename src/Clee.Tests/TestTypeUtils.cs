@@ -1,4 +1,5 @@
 ﻿using System;
+using Clee.Tests.TestDoubles.Dummies;
 using Xunit;
 
 namespace Clee.Tests
@@ -40,21 +41,6 @@ namespace Clee.Tests
             };
 
             Assert.Equal(expected, result);
-        }
-
-
-        private class FooArgument : ICommandArguments { }
-        private class BarArgument : ICommandArguments { }
-
-        private class SingleArgumentCommand : ICommand<FooArgument>
-        {
-            public void Execute(FooArgument args) { }
-        }
-
-        private class MultiArgumentCommand : ICommand<FooArgument>, ICommand<BarArgument>
-        {
-            public void Execute(FooArgument args) { }
-            public void Execute(BarArgument args) { }
         }
     }
 }

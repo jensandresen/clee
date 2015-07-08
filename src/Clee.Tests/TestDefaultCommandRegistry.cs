@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Clee.Tests.TestDoubles.Dummies;
 using Xunit;
 
 namespace Clee.Tests
@@ -178,18 +179,36 @@ namespace Clee.Tests
             Assert.Equal(expected, result);
         }
 
-        #region command test doubles
-
-        private class FooCommand : ICommand<EmptyArgument>
+        [Fact]
+        public void throws_exception_if_registering_a_type_with_multiple_command_implementations()
         {
-            public void Execute(EmptyArgument args)
-            {
-                
-            }
+            var sut = new DefaultCommandRegistry();
+            Assert.Throws<NotSupportedException>(() => sut.Register(typeof (MultiArgumentCommand)));
         }
 
-        private class BarCommand : ICommand<EmptyArgument>
+        [Fact(Skip = "lala")]
+        public void testname()
         {
+            var sut = new DefaultCommandRegistry();
+            sut.Register(typeof (NamedByMethodAttributeCommand));
+
+            var result = sut.GetAll().Single();
+
+//            Assert.Equal(new CommandRegistration(
+//                commandName: "foo",
+//                commandType: typeof (ICommand<EmptyArgument>),
+//                argumentType: typeof (EmptyArgument),
+//                implementationType: typeof (NamedByMethodAttributeCommand)
+//                ), result);
+
+            Assert.Equal("foo", result.CommandName);
+        }
+
+        #region command test doubles
+
+        private class NamedByMethodAttributeCommand : ICommand<EmptyArgument>
+        {
+            [Command(Name = "foo")]
             public void Execute(EmptyArgument args)
             {
                 

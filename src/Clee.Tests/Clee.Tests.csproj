@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\AssemblyBuilder.cs" />
+    <Compile Include="Builders\CleeEngineBuilder.cs" />
     <Compile Include="TestArgumentsMapper.cs" />
     <Compile Include="TestAttributeHelper.cs" />
     <Compile Include="TestCommandLineParser.cs" />
@@ -65,6 +66,12 @@
     <Compile Include="TestDefaultCommandRegistry.cs" />
     <Compile Include="TestCommandScanner.cs" />
     <Compile Include="TestDefaultCommandExecutor.cs" />
+    <Compile Include="TestDoubles\Dummies\BarArgument.cs" />
+    <Compile Include="TestDoubles\Dummies\BarCommand.cs" />
+    <Compile Include="TestDoubles\Dummies\FooArgument.cs" />
+    <Compile Include="TestDoubles\Dummies\FooCommand.cs" />
+    <Compile Include="TestDoubles\Dummies\MultiArgumentCommand.cs" />
+    <Compile Include="TestDoubles\Dummies\SingleArgumentCommand.cs" />
     <Compile Include="TestDoubles\SpyOutputWriter.cs" />
     <Compile Include="TestDoubles\StubCommandFactory.cs" />
     <Compile Include="TestCleeEngine.cs" />

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Clee.SystemCommands;
+using Clee.Tests.Builders;
 using Clee.Tests.TestDoubles;
 using Xunit;
 
@@ -10,7 +11,7 @@ namespace Clee.Tests
         [Fact]
         public void executes_expected_help_command()
         {
-            var sut = CleeEngine.CreateDefault();
+            var sut = new CleeEngineBuilder().Build();
             sut.Execute("help");
 
             Assert.Equal("help", sut.History.Single().CommandName);
@@ -22,7 +23,7 @@ namespace Clee.Tests
         {
             var spyOutputWriter = new SpyOutputWriter();
 
-            var sut = CleeEngine.CreateDefault();
+            var sut = new CleeEngineBuilder().Build();
             sut.SetOutputWriter(spyOutputWriter);
 
             sut.Execute("help");
