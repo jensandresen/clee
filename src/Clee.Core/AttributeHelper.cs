@@ -8,18 +8,8 @@ namespace Clee
     {
         public static string GetDescription(Type implementationType, Type commandType)
         {
-            if (!commandType.IsAssignableFrom(implementationType))
-            {
-                throw new ArgumentException(String.Format("The type {0} does not implement the expecte command interface {1}.", implementationType.FullName, commandType.FullName));
-            }
+            var info = GetAttribute(implementationType, commandType);
 
-            var info = GetMethodInformation(implementationType, commandType);
-            if (info != null)
-            {
-                return info.Description;
-            }
-
-            info = implementationType.GetCustomAttribute<CommandAttribute>();
             if (info != null)
             {
                 return info.Description;
@@ -28,7 +18,29 @@ namespace Clee
             return implementationType.FullName;
         }
 
-        private static CommandAttribute GetMethodInformation(Type implementationType, Type commandType)
+        private static CommandAttribute GetAttribute(Type implementationType, Type commandType)
+        {
+            if (!commandType.IsAssignableFrom(implementationType))
+            {
+                throw new ArgumentException(String.Format("The type {0} does not implement the expecte command interface {1}.", implementationType.FullName, commandType.FullName));
+            }
+
+            var info = GetMethodAttribute(implementationType, commandType);
+            
+            if (info != null)
+            {
+                return info;
+            }
+
+            return GetClassAttribute(implementationType);
+        }
+
+        private static CommandAttribute GetClassAttribute(Type implementationType)
+        {
+            return implementationType.GetCustomAttribute<CommandAttribute>();
+        }
+
+        private static CommandAttribute GetMethodAttribute(Type implementationType, Type commandType)
         {
             var method = implementationType
                 .GetInterfaceMap(commandType)
