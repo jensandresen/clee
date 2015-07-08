@@ -42,6 +42,13 @@ namespace Clee
                 throw new NotSupportedException(string.Format("Only types that implement {0} are allowed.", typeof(ICommand<>).FullName));
             }
 
+            var implementedCommands = TypeUtils.ExtractCommandImplementationsFromType(commandType);
+            if (implementedCommands.Length > 1)
+            {
+                var commandNames = string.Join(", ", implementedCommands.Select(x => x.FullName).ToArray());
+                throw new NotSupportedException(string.Format("Type {0} implements more than one command which is not currently supported. It implements: {1}", commandType.FullName, commandNames));
+            }
+
             var existingCommand = Find(commandName);
             if (existingCommand != null)
             {
@@ -62,15 +69,22 @@ namespace Clee
 
         public CommandRegistration Register(Type commandType)
         {
-            var implementedCommands = TypeUtils.ExtractCommandImplementationsFromType(commandType);
+            string commandName = null;
 
-            if (implementedCommands.Length > 1)
+            var implementedCommands = TypeUtils
+                .ExtractCommandImplementationsFromType(commandType)
+                .FirstOrDefault();
+
+            if (implementedCommands != null)
             {
-                var commandNames = string.Join(", ", implementedCommands.Select(x => x.FullName).ToArray());
-                throw new NotSupportedException(string.Format("Type {0} implements more than one command which is not currently supported. It implements: {1}", commandType.FullName, commandNames));
+                commandName = AttributeHelper.GetName(commandType, implementedCommands);
             }
 
-            var commandName = ExtractCommandNameFrom(commandType);
+            if (string.IsNullOrWhiteSpace(commandName))
+            {
+                commandName = ExtractCommandNameFrom(commandType);
+            }
+            
             return Register(commandName, commandType);
         }
 

@@ -186,29 +186,56 @@ namespace Clee.Tests
             Assert.Throws<NotSupportedException>(() => sut.Register(typeof (MultiArgumentCommand)));
         }
 
-        [Fact(Skip = "lala")]
-        public void testname()
+        [Fact]
+        public void throws_exception_if_registering_a_type_with_multiple_command_implementations_2()
         {
             var sut = new DefaultCommandRegistry();
-            sut.Register(typeof (NamedByMethodAttributeCommand));
+            Assert.Throws<NotSupportedException>(() => sut.Register(new[] {typeof (MultiArgumentCommand)}));
+        }
+
+        [Fact]
+        public void throws_exception_if_registering_a_type_with_multiple_command_implementations_3()
+        {
+            var sut = new DefaultCommandRegistry();
+            Assert.Throws<NotSupportedException>(() => sut.Register("dummyName", typeof(MultiArgumentCommand)));
+        }
+
+        [Fact]
+        public void favor_command_name_from_method_annotation()
+        {
+            var sut = new DefaultCommandRegistry();
+            sut.Register(typeof (NamedByMethodAnnotationCommand));
 
             var result = sut.GetAll().Single();
 
-//            Assert.Equal(new CommandRegistration(
-//                commandName: "foo",
-//                commandType: typeof (ICommand<EmptyArgument>),
-//                argumentType: typeof (EmptyArgument),
-//                implementationType: typeof (NamedByMethodAttributeCommand)
-//                ), result);
+            Assert.Equal("foo", result.CommandName);
+        }
+
+        [Fact]
+        public void favor_command_name_from_class_annotation()
+        {
+            var sut = new DefaultCommandRegistry();
+            sut.Register(typeof (NamedByClassAnnotationCommand));
+
+            var result = sut.GetAll().Single();
 
             Assert.Equal("foo", result.CommandName);
         }
 
         #region command test doubles
 
-        private class NamedByMethodAttributeCommand : ICommand<EmptyArgument>
+        private class NamedByMethodAnnotationCommand : ICommand<EmptyArgument>
         {
             [Command(Name = "foo")]
+            public void Execute(EmptyArgument args)
+            {
+                
+            }
+        }
+
+        [Command(Name = "foo")]
+        private class NamedByClassAnnotationCommand : ICommand<EmptyArgument>
+        {
             public void Execute(EmptyArgument args)
             {
                 

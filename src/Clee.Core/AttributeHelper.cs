@@ -18,6 +18,18 @@ namespace Clee
             return implementationType.FullName;
         }
 
+        public static string GetName(Type implementationType, Type commandType)
+        {
+            var info = GetAttribute(implementationType, commandType);
+
+            if (info != null)
+            {
+                return info.Name;
+            }
+
+            return null;
+        }
+
         private static CommandAttribute GetAttribute(Type implementationType, Type commandType)
         {
             if (!commandType.IsAssignableFrom(implementationType))
