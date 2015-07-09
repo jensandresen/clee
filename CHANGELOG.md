@@ -1,5 +1,11 @@
 # Changelog #
 
+__v1.2.0__
+
+Command names can now be specified with the CommandAttribute annotation on the execute method or the entire command implementation class.
+Added extension point for overriding default command naming convention used when registering command implementation types.
+Added setting for combining system commands list and custom commands list when displayed from the help command.
+
 __v1.1.1__
 
 Fixed issue with list command not outputting command descriptions.
