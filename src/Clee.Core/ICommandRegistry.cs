@@ -10,5 +10,6 @@ namespace Clee
         CommandRegistration Register(string commandName, Type commandType);
         void Register(IEnumerable<Type> commandTypes);
         IEnumerable<CommandRegistration> GetAll();
+        void ChangeCommandNameConvention(CommandNameConvention convention);
     }
 }

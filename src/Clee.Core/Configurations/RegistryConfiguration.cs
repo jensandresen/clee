@@ -49,6 +49,16 @@ namespace Clee.Configurations
             return this;
         }
 
+        public IRegistryConfiguration NameConvention(CommandNameConvention convention)
+        {
+            _modifiers.Add(r =>
+            {
+                r.ChangeCommandNameConvention(convention);
+            });
+
+            return this;
+        }
+
         public ICommandRegistry Build()
         {
             foreach (var modify in _modifiers)

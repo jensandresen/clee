@@ -11,5 +11,6 @@ namespace Clee.Configurations
         IRegistryConfiguration Register(string commandName, Type commandType);
         IRegistryConfiguration Register(IEnumerable<Type> commandTypes);
         IRegistryConfiguration RegisterFromAssembly(Assembly assembly);
+        IRegistryConfiguration NameConvention(CommandNameConvention convention);
     }
 }
