@@ -86,15 +86,6 @@ var engine = CleeEngine.Create(cfg =>
 
 The configuration api is fluent and discoverably - so just _dot your way through it_ and you will quickly get the hang of it.
 
-## The future
-This is a list of ideas that could be a nice addition to the framework. They may or may not be implemented, only time will tell.
-
-* custom format string on all arguments (specified with the value attribute)
-* custom parser (specified with the value attribute)
-* custom validation (specified with the value attribute)
-* getopt-style short hand (-l) and verbose (--list) arguments
-* combine multiple short hand boolean arguments into one (-abc instead of -a -b -c)
-
 ## Contributions
 I'll be glad to recieve pull request for bugfixes or new features, but please adopt the current style and preferably tdd your implementations.
 
