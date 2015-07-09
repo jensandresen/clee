@@ -1,17 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace Clee
 {
     public class DefaultCommandRegistry : ICommandRegistry
     {
         private readonly Dictionary<string, CommandRegistration> _commandTypes = new Dictionary<string, CommandRegistration>();
+        private CommandNameConvention _nameConvention = new DefaultCommandNameConvention();
 
         public Type Find(string commandName)
         {
-            var name = ExtractCommandNameFrom(commandName);
+            var name = _nameConvention.ExtractCommandNameFrom(commandName);
 
             CommandRegistration result;
 
@@ -82,7 +82,7 @@ namespace Clee
 
             if (string.IsNullOrWhiteSpace(commandName))
             {
-                commandName = ExtractCommandNameFrom(commandType);
+                commandName = _nameConvention.ExtractCommandNameFrom(commandType);
             }
             
             return Register(commandName, commandType);
@@ -96,21 +96,26 @@ namespace Clee
             }
         }
 
+        [Obsolete("Will be removed in v2.0.0")]
         public static string ExtractCommandNameFrom(Type commandType)
         {
             return ExtractCommandNameFrom(commandType.Name);
         }
 
+        [Obsolete("Will be removed in v2.0.0")]
         public static string ExtractCommandNameFrom(string typeName)
         {
-            return Regex
-                .Replace(typeName, @"^(?<name>.*?)(Command|Cmd)$", "${name}", RegexOptions.IgnoreCase)
-                .ToLowerInvariant();
+            return new DefaultCommandNameConvention().ExtractCommandNameFrom(typeName);
         }
 
         private bool Contains(Type commandType)
         {
             return GetAll().Any(x => x.ImplementationType == commandType);
+        }
+
+        public void ChangeCommandNameConvention(CommandNameConvention convention)
+        {
+            _nameConvention = convention;
         }
     }
 }

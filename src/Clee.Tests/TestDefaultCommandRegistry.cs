@@ -222,6 +222,36 @@ namespace Clee.Tests
             Assert.Equal("foo", result.CommandName);
         }
 
+        [Theory]
+        [InlineData(typeof(FooCommand), "foo")]
+        [InlineData(typeof(BarCommand), "bar")]
+        [InlineData(typeof(SingleArgumentCommand), "singleargument")]
+        public void registers_with_expected_command_name(Type commandType, string expectedCommandName)
+        {
+            var sut = new DefaultCommandRegistry();
+            sut.Register(commandType);
+
+            var result = sut.GetAll().Single();
+
+            Assert.Equal(expectedCommandName, result.CommandName);
+        }
+
+        [Fact]
+        public void can_use_custom_command_name_convention()
+        {
+            // arrange
+            var expectedCommandName = "another command name";
+
+            var sut = new DefaultCommandRegistry();
+            sut.ChangeCommandNameConvention(new StubCommandNameConvention(expectedCommandName));
+            
+            // act
+            var result = sut.Register(typeof (FooCommand));
+
+            // assert
+            Assert.Equal(expectedCommandName, result.CommandName);
+        }
+
         #region command test doubles
 
         private class NamedByMethodAnnotationCommand : ICommand<EmptyArgument>
@@ -243,5 +273,20 @@ namespace Clee.Tests
         }
 
         #endregion
+    }
+
+    internal class StubCommandNameConvention : CommandNameConvention
+    {
+        private readonly string _result;
+
+        public StubCommandNameConvention(string result)
+        {
+            _result = result;
+        }
+
+        public override string ExtractCommandNameFrom(string typeName)
+        {
+            return _result;
+        }
     }
 }

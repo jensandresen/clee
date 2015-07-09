@@ -43,6 +43,7 @@
     <Compile Include="Argument.cs" />
     <Compile Include="AttributeHelper.cs" />
     <Compile Include="CommandAttribute.cs" />
+    <Compile Include="CommandNameConvention.cs" />
     <Compile Include="CommandRegistration.cs" />
     <Compile Include="CommandScanner.cs" />
     <Compile Include="Configurations\EngineBuilder.cs" />
@@ -55,6 +56,7 @@
     <Compile Include="Configurations\RegistryConfiguration.cs" />
     <Compile Include="DefaultArgumentMapper.cs" />
     <Compile Include="DefaultCommandFactory.cs" />
+    <Compile Include="DefaultCommandNameConvention.cs" />
     <Compile Include="DefaultCommandRegistry.cs" />
     <Compile Include="DefaultCommandExecutor.cs" />
     <Compile Include="DefaultOutputWriter.cs" />
