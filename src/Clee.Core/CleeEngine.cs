@@ -18,6 +18,7 @@ namespace Clee
         private readonly LinkedList<HistoryEntry> _history;
         private readonly SystemCommandFactory _systemCommandFactory;
         private IOutputWriter _outputWriter;
+        private GeneralSettings _settings = new GeneralSettings();
 
         public CleeEngine(ICommandRegistry commandRegistry, ICommandFactory commandFactory, 
             IArgumentMapper argumentMapper, ICommandExecutor commandExecutor)
@@ -36,9 +37,15 @@ namespace Clee
             _systemCommandFactory.RegisterInstance<ICommandExecutor>(_commandExecutor);
             _systemCommandFactory.RegisterInstance<SystemCommandRegistry>(_systemRegistry);
             _systemCommandFactory.RegisterFactoryMethod<IOutputWriter>(() => _outputWriter);
+            _systemCommandFactory.RegisterInstance(_settings);
 
             _history = new LinkedList<HistoryEntry>();
             _outputWriter = new DefaultOutputWriter();
+        }
+
+        public GeneralSettings Settings
+        {
+            get { return _settings; }
         }
 
         public IArgumentMapper Mapper

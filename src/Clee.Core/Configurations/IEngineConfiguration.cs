@@ -7,5 +7,6 @@ namespace Clee.Configurations
         IEngineConfiguration Registry(Action<IRegistryConfiguration> configuration);
         IEngineConfiguration Factory(Action<IFactoryConfiguration> configuration);
         IEngineConfiguration Mapper(Action<IMapperConfiguration> configuration);
+        IEngineConfiguration Settings(Action<GeneralSettings> configuration);
     }
 }

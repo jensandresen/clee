@@ -7,6 +7,7 @@ namespace Clee.Configurations
         private readonly RegistryConfiguration _registryConfiguration;
         private readonly FactoryConfiguration _factoryConfiguration;
         private readonly MapperConfiguration _mapperConfiguration;
+        private Action<GeneralSettings> _settingsModifier = settings => { /* no modifications - use default settings */ };
 
         public EngineBuilder()
         {
@@ -33,18 +34,28 @@ namespace Clee.Configurations
             return this;
         }
 
+        public IEngineConfiguration Settings(Action<GeneralSettings> configuration)
+        {
+            _settingsModifier = configuration;
+            return this;
+        }
+
         public CleeEngine Build()
         {
             var registry = _registryConfiguration.Build();
             var factory = _factoryConfiguration.Build();
             var mapper = _mapperConfiguration.Build();
 
-            return new CleeEngine(
+            var engine = new CleeEngine(
                 commandRegistry: registry,
                 commandFactory: factory,
                 argumentMapper: mapper,
                 commandExecutor: new DefaultCommandExecutor()
                 );
+
+            _settingsModifier(engine.Settings);
+
+            return engine;
         }
     }
 }

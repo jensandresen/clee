@@ -11,12 +11,14 @@ namespace Clee.SystemCommands
         private readonly ICommandRegistry _registry;
         private readonly SystemCommandRegistry _systemRegistry;
         private readonly IOutputWriter _outputWriter;
+        private readonly GeneralSettings _settings;
 
-        public HelpCommand(ICommandRegistry registry, SystemCommandRegistry systemRegistry, IOutputWriter outputWriter)
+        public HelpCommand(ICommandRegistry registry, SystemCommandRegistry systemRegistry, IOutputWriter outputWriter, GeneralSettings settings)
         {
             _registry = registry;
             _systemRegistry = systemRegistry;
             _outputWriter = outputWriter;
+            _settings = settings;
         }
 
         public void Execute(EmptyArgument args)
@@ -28,11 +30,24 @@ namespace Clee.SystemCommands
             var customCommands = GetCustomCommands();
             PadCommandNames(systemCommands, customCommands);
 
-            PrintCommands("System commands:", systemCommands);
-            _outputWriter.WriteLine();
+            if (_settings.MergeHelpCommandList)
+            {
+                var allCommands = Enumerable
+                    .Concat(systemCommands, customCommands)
+                    .OrderBy(x => x.Name.Trim())
+                    .ToArray();
 
-            PrintCommands("Available commands:", customCommands);
-            _outputWriter.WriteLine("");
+                PrintCommands("Available commands:", allCommands);
+                _outputWriter.WriteLine("");
+            }
+            else
+            {
+                PrintCommands("System commands:", systemCommands);
+                _outputWriter.WriteLine();
+
+                PrintCommands("Available commands:", customCommands);
+                _outputWriter.WriteLine("");
+            }
         }
 
         private static void PadCommandNames(CommandInformation[] systemCommands, CommandInformation[] customCommands)
