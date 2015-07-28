@@ -73,6 +73,8 @@
     <Compile Include="IOutputWriter.cs" />
     <Compile Include="ManualCommandFactory.cs" />
     <Compile Include="Parsing\DefaultChangeTypeParser.cs" />
+    <Compile Include="Parsing\DefaultCommandLineParser.cs" />
+    <Compile Include="Parsing\ICommandLineParser.cs" />
     <Compile Include="Parsing\SimpleConstructorParser.cs" />
     <Compile Include="Parsing\TryParseConventionParser.cs" />
     <Compile Include="SystemCommands\CommandInformation.cs" />

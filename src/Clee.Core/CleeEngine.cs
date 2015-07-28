@@ -18,7 +18,9 @@ namespace Clee
         private readonly LinkedList<HistoryEntry> _history;
         private readonly SystemCommandFactory _systemCommandFactory;
         private IOutputWriter _outputWriter;
+
         private GeneralSettings _settings = new GeneralSettings();
+        private ICommandLineParser _commandLineParser = new DefaultCommandLineParser();
 
         public CleeEngine(ICommandRegistry commandRegistry, ICommandFactory commandFactory, 
             IArgumentMapper argumentMapper, ICommandExecutor commandExecutor)
@@ -68,10 +70,24 @@ namespace Clee
             get { return _history; }
         }
 
+        public ICommandLineParser CommandLineParser
+        {
+            get { return _commandLineParser; }
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException("value");
+                }
+
+                _commandLineParser = value;
+            }
+        }
+
         public void Execute(string input)
         {
-            var commandName = CommandLineParser.ExtractCommandNameFrom(input);
-            var argumentValues = CommandLineParser
+            var commandName = _commandLineParser.ExtractCommandNameFrom(input);
+            var argumentValues = _commandLineParser
                 .ExtractArgumentsFrom(input)
                 .ToArray();
 
@@ -102,7 +118,7 @@ namespace Clee
                         })
                     );
 
-                argumentValues = CommandLineParser
+                argumentValues = _commandLineParser
                     .ParseArguments(args)
                     .ToArray();
             }
