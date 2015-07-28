@@ -28,7 +28,7 @@ namespace Clee
             _mapper = argumentMapper;
             _commandExecutor = commandExecutor;
             
-            _systemRegistry = SystemCommandRegistry.CreateAndInitialize();
+            _systemRegistry = SystemCommandRegistry.CreateAndInitialize(); // this should be removed from the constructor!
 
             _systemCommandFactory = new SystemCommandFactory();
             _systemCommandFactory.RegisterInstance<ICommandRegistry>(_registry);
