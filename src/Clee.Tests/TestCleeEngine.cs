@@ -21,7 +21,9 @@ namespace Clee.Tests
         public void throws_exception_if_command_is_null()
         {
             var sut = new CleeEngineBuilder().Build();
-            Assert.Throws<Exception>(() => sut.Execute(null));
+            var result = sut.Execute(null);
+
+            Assert.Equal((int) CommandExecutionResultsType.Error, result);
         }
 
         [Fact]
@@ -115,7 +117,7 @@ namespace Clee.Tests
         {
             if (command == null)
             {
-                throw new Exception();
+                return (int) CommandExecutionResultsType.Error;
             }
 
             command.Execute();
@@ -199,6 +201,7 @@ namespace Clee.Tests
 
     public enum CommandExecutionResultsType
     {
-        Ok = 0 
+        Error = -1,
+        Ok = 0
     }
 }
