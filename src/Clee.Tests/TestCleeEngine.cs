@@ -56,6 +56,25 @@ namespace Clee.Tests
 
             mock.Verify(x => x.Execute(), Times.Once);
         }
+
+        [Fact]
+        public void releases_the_resolved_command_after_execution()
+        {
+            var dummyCommand = new Mock<Command>().Object;
+
+            var mock = new Mock<ICommandResolver>();
+            mock
+                .Setup(x => x.Resolve<Command>())
+                .Returns(dummyCommand);
+
+            var sut = new CleeEngineBuilder()
+                .WithCommandResolver(mock.Object)
+                .Build();
+
+            sut.Execute<Command>();
+
+            mock.Verify(x => x.Release(It.IsAny<Command>()), Times.Once);
+        }
     }
 
     public class CleeEngine
@@ -76,17 +95,21 @@ namespace Clee.Tests
 
             command.Execute();
         }
-
+        
         public void Execute<T>() where T : Command
         {
             var command = _commandResolver.Resolve<T>();
+            
             Execute(command);
+
+            _commandResolver.Release(command);
         }
     }
 
     public interface ICommandResolver
     {
         T Resolve<T>() where T : Command;
+        void Release(Command command);
     }
 
     public class StubCommandResolver : ICommandResolver
@@ -101,6 +124,11 @@ namespace Clee.Tests
         public T Resolve<T>() where T : Command
         {
             return (T) _result;
+        }
+
+        public void Release(Command command)
+        {
+            
         }
     }
 
