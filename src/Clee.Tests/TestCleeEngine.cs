@@ -27,7 +27,7 @@ namespace Clee.Tests
         [Fact]
         public void uses_command_resolver_to_resolve_command_by_type_definition()
         {
-            var dummyCommand = new Mock<Command>().Object;
+            var dummyCommand = new CommandBuilder().Build();
             
             var resolverMock = new Mock<ICommandResolver>();
             resolverMock
@@ -60,7 +60,7 @@ namespace Clee.Tests
         [Fact]
         public void releases_the_resolved_command_after_execution()
         {
-            var dummyCommand = new Mock<Command>().Object;
+            var dummyCommand = new CommandBuilder().Build();
 
             var mock = new Mock<ICommandResolver>();
             mock
@@ -79,7 +79,7 @@ namespace Clee.Tests
         [Fact]
         public void returns_expected_if_command_is_sucessfully_executed()
         {
-            var dummy = new Mock<Command>().Object;
+            var dummy = new CommandBuilder().Build();
 
             var sut = new CleeEngineBuilder().Build();
             var result = sut.Execute(dummy);
@@ -90,7 +90,7 @@ namespace Clee.Tests
         [Fact]
         public void returns_expected_if_command_is_sucessfully_executed_2()
         {
-            var dummy = new Mock<Command>().Object;
+            var dummy = new CommandBuilder().Build();
 
             var sut = new CleeEngineBuilder()
                 .WithCommandResolver(new StubCommandResolver(dummy))
@@ -163,6 +163,15 @@ namespace Clee.Tests
     public abstract class Command
     {
         public abstract void Execute();
+    }
+
+    internal class CommandBuilder
+    {
+        public Command Build()
+        {
+            var dummy = new Mock<Command>().Object;
+            return dummy;
+        }
     }
 
     internal class CleeEngineBuilder
