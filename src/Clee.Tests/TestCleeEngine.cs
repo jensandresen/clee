@@ -75,6 +75,31 @@ namespace Clee.Tests
 
             mock.Verify(x => x.Release(It.IsAny<Command>()), Times.Once);
         }
+
+        [Fact]
+        public void returns_expected_if_command_is_sucessfully_executed()
+        {
+            var dummy = new Mock<Command>().Object;
+
+            var sut = new CleeEngineBuilder().Build();
+            var result = sut.Execute(dummy);
+
+            Assert.Equal(0, result);
+        }
+
+        [Fact]
+        public void returns_expected_if_command_is_sucessfully_executed_2()
+        {
+            var dummy = new Mock<Command>().Object;
+
+            var sut = new CleeEngineBuilder()
+                .WithCommandResolver(new StubCommandResolver(dummy))
+                .Build();
+
+            var result = sut.Execute<Command>();
+
+            Assert.Equal(0, result);
+        }
     }
 
     public class CleeEngine
@@ -86,7 +111,7 @@ namespace Clee.Tests
             _commandResolver = commandResolver;
         }
 
-        public void Execute(Command command)
+        public int Execute(Command command)
         {
             if (command == null)
             {
@@ -94,15 +119,18 @@ namespace Clee.Tests
             }
 
             command.Execute();
+            return 0;
         }
         
-        public void Execute<T>() where T : Command
+        public int Execute<T>() where T : Command
         {
             var command = _commandResolver.Resolve<T>();
             
             Execute(command);
 
             _commandResolver.Release(command);
+
+            return 0;
         }
     }
 
