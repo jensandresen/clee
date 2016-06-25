@@ -121,7 +121,8 @@ namespace Clee.Tests
             }
 
             command.Execute();
-            return 0;
+
+            return (int) CommandExecutionResultsType.Ok;
         }
         
         public int Execute<T>() where T : Command
@@ -132,7 +133,7 @@ namespace Clee.Tests
 
             _commandResolver.Release(command);
 
-            return 0;
+            return (int) CommandExecutionResultsType.Ok;
         }
     }
 
