@@ -128,12 +128,15 @@ namespace Clee.Tests
         public int Execute<T>() where T : Command
         {
             var command = _commandResolver.Resolve<T>();
-            
-            Execute(command);
 
-            _commandResolver.Release(command);
-
-            return (int) CommandExecutionResultsType.Ok;
+            try
+            {
+                return Execute(command);
+            }
+            finally
+            {
+                _commandResolver.Release(command);
+            }
         }
     }
 
