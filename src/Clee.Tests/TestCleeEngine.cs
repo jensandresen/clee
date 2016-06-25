@@ -84,7 +84,7 @@ namespace Clee.Tests
             var sut = new CleeEngineBuilder().Build();
             var result = sut.Execute(dummy);
 
-            Assert.Equal(0, result);
+            Assert.Equal((int) CommandExecutionResultsType.Ok, result);
         }
 
         [Fact]
@@ -98,7 +98,7 @@ namespace Clee.Tests
 
             var result = sut.Execute<Command>();
 
-            Assert.Equal(0, result);
+            Assert.Equal((int) CommandExecutionResultsType.Ok, result);
         }
     }
 
@@ -195,5 +195,10 @@ namespace Clee.Tests
                     commandResolver: _commandResolver
                 );
         }
+    }
+
+    public enum CommandExecutionResultsType
+    {
+        Ok = 0 
     }
 }
