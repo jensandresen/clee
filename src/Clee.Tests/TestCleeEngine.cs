@@ -88,7 +88,7 @@ namespace Clee.Tests
         }
 
         [Fact]
-        public void returns_expected_if_command_is_sucessfully_executed_2()
+        public void returns_expected_if_command_is_resolved_by_generic_argument_and_sucessfully_executed()
         {
             var dummy = new CommandBuilder().Build();
 
