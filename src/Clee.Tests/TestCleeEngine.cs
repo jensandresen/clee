@@ -113,16 +113,35 @@ namespace Clee.Tests
             _commandResolver = commandResolver;
         }
 
-        public int Execute(Command command)
+        private bool TryExecute(Command command, out Exception error)
         {
-            if (command == null)
+            var success = false;
+
+            try
             {
-                return (int) CommandExecutionResultsType.Error;
+                command.Execute();
+                
+                error = null;
+                success = true;
+            }
+            catch (Exception err)
+            {
+                error = err;
             }
 
-            command.Execute();
+            return success;
+        }
 
-            return (int) CommandExecutionResultsType.Ok;
+        public int Execute(Command command)
+        {
+            Exception exceptionThrown;
+            
+            if (TryExecute(command, out exceptionThrown))
+            {
+                return (int)CommandExecutionResultsType.Ok;
+            }
+
+            return (int)CommandExecutionResultsType.Error;
         }
         
         public int Execute<T>() where T : Command
