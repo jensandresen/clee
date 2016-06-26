@@ -113,15 +113,15 @@ namespace Clee.Tests
             _result = result;
         }
 
-        public CommandExecutionResultsType Handle(Exception error)
+        public ReturnCode Handle(Exception error)
         {
-            return _result;
+            return new ReturnCode(_result);
         }
     }
 
     public class CleeEngine
     {
-        private readonly IErrorHandlerEngine _errorHandlerEngine = new DefaultErrorHandlerEngine();
+        private readonly IErrorHandlerEngine _errorHandlerEngine = new ErrorHandlerEngine();
         private readonly ICommandResolver _commandResolver;
 
         public CleeEngine(ICommandResolver commandResolver)
@@ -160,16 +160,14 @@ namespace Clee.Tests
 
         public int Execute(Command command)
         {
-            var returnCode = CommandExecutionResultsType.Ok;
-
             Exception exceptionThrown;
 
-            if (!TryExecute(command, out exceptionThrown))
+            if (TryExecute(command, out exceptionThrown))
             {
-                returnCode = _errorHandlerEngine.Handle(exceptionThrown);
+                return (int) CommandExecutionResultsType.Ok;
             }
 
-            return (int)returnCode;
+            return _errorHandlerEngine.Handle(exceptionThrown);
         }
         
         public int Execute<T>() where T : Command
@@ -187,17 +185,9 @@ namespace Clee.Tests
         }
     }
 
-    public class DefaultErrorHandlerEngine : IErrorHandlerEngine
-    {
-        public CommandExecutionResultsType Handle(Exception error)
-        {
-            return CommandExecutionResultsType.Error;
-        }
-    }
-
     public interface IErrorHandlerEngine
     {
-        CommandExecutionResultsType Handle(Exception error);
+        ReturnCode Handle(Exception error);
     }
 
     public interface ICommandResolver
