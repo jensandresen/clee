@@ -18,7 +18,7 @@ namespace Clee.Tests
         }
 
         [Fact]
-        public void throws_exception_if_command_is_null()
+        public void returns_expected_error_code_if_command_is_null()
         {
             var sut = new CleeEngineBuilder().Build();
             var result = sut.Execute(null);
