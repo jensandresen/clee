@@ -20,10 +20,13 @@ namespace Clee.Tests
         [Fact]
         public void returns_expected_error_code_if_command_is_null()
         {
-            var sut = new CleeEngineBuilder().Build();
+            var sut = new CleeEngineBuilder()
+                .WithErrorHandlerEngine(new StubErrorHandlerEngine(CommandExecutionResultsType.CommandIsNull))
+                .Build();
+
             var result = sut.Execute(null);
 
-            Assert.Equal((int) CommandExecutionResultsType.Error, result);
+            Assert.Equal((int) CommandExecutionResultsType.CommandIsNull, result);
         }
 
         [Fact]
@@ -104,13 +107,40 @@ namespace Clee.Tests
         }
     }
 
+    public class StubErrorHandlerEngine : IErrorHandlerEngine
+    {
+        private readonly CommandExecutionResultsType _result;
+
+        public StubErrorHandlerEngine(CommandExecutionResultsType result)
+        {
+            _result = result;
+        }
+
+        public CommandExecutionResultsType Handle(Exception error)
+        {
+            return _result;
+        }
+    }
+
     public class CleeEngine
     {
         private readonly ICommandResolver _commandResolver;
+        private readonly IErrorHandlerEngine _errorHandlerEngine;
 
-        public CleeEngine(ICommandResolver commandResolver)
+        public CleeEngine(ICommandResolver commandResolver, IErrorHandlerEngine errorHandlerEngine)
         {
             _commandResolver = commandResolver;
+            _errorHandlerEngine = errorHandlerEngine;
+        }
+
+        private void InternalExecute(Command command)
+        {
+            if (command == null)
+            {
+                throw new ArgumentNullException("command");
+            }
+
+            command.Execute();
         }
 
         private bool TryExecute(Command command, out Exception error)
@@ -119,7 +149,7 @@ namespace Clee.Tests
 
             try
             {
-                command.Execute();
+                InternalExecute(command);
                 
                 error = null;
                 success = true;
@@ -134,14 +164,16 @@ namespace Clee.Tests
 
         public int Execute(Command command)
         {
+            var returnCode = CommandExecutionResultsType.Ok;
+
             Exception exceptionThrown;
-            
-            if (TryExecute(command, out exceptionThrown))
+
+            if (!TryExecute(command, out exceptionThrown))
             {
-                return (int)CommandExecutionResultsType.Ok;
+                returnCode = _errorHandlerEngine.Handle(exceptionThrown);
             }
 
-            return (int)CommandExecutionResultsType.Error;
+            return (int)returnCode;
         }
         
         public int Execute<T>() where T : Command
@@ -157,6 +189,11 @@ namespace Clee.Tests
                 _commandResolver.Release(command);
             }
         }
+    }
+
+    public interface IErrorHandlerEngine
+    {
+        CommandExecutionResultsType Handle(Exception error);
     }
 
     public interface ICommandResolver
@@ -202,10 +239,12 @@ namespace Clee.Tests
     internal class CleeEngineBuilder
     {
         private ICommandResolver _commandResolver;
+        private IErrorHandlerEngine _errorHandlerEngine;
 
         public CleeEngineBuilder()
         {
             _commandResolver = new Mock<ICommandResolver>().Object;
+            _errorHandlerEngine = new Mock<IErrorHandlerEngine>().Object;
         }
 
         public CleeEngineBuilder WithCommandResolver(ICommandResolver commandResolver)
@@ -214,10 +253,17 @@ namespace Clee.Tests
             return this;
         }
 
+        public CleeEngineBuilder WithErrorHandlerEngine(IErrorHandlerEngine errorHandlerEngine)
+        {
+            _errorHandlerEngine = errorHandlerEngine;
+            return this;
+        }
+
         public CleeEngine Build()
         {
             return new CleeEngine(
-                    commandResolver: _commandResolver
+                    commandResolver: _commandResolver,
+                    errorHandlerEngine: _errorHandlerEngine
                 );
         }
     }
@@ -225,6 +271,7 @@ namespace Clee.Tests
     public enum CommandExecutionResultsType
     {
         Error = -1,
-        Ok = 0
+        Ok = 0,
+        CommandIsNull
     }
 }
