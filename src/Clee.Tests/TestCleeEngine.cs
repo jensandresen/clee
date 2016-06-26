@@ -20,13 +20,10 @@ namespace Clee.Tests
         [Fact]
         public void returns_expected_error_code_if_command_is_null()
         {
-            var sut = new CleeEngineBuilder()
-                .WithErrorHandlerEngine(new StubErrorHandlerEngine(CommandExecutionResultsType.CommandIsNull))
-                .Build();
-
+            var sut = new CleeEngineBuilder().Build();
             var result = sut.Execute(null);
 
-            Assert.Equal((int) CommandExecutionResultsType.CommandIsNull, result);
+            Assert.Equal((int) CommandExecutionResultsType.Error, result);
         }
 
         [Fact]
@@ -124,13 +121,12 @@ namespace Clee.Tests
 
     public class CleeEngine
     {
+        private readonly IErrorHandlerEngine _errorHandlerEngine = new DefaultErrorHandlerEngine();
         private readonly ICommandResolver _commandResolver;
-        private readonly IErrorHandlerEngine _errorHandlerEngine;
 
-        public CleeEngine(ICommandResolver commandResolver, IErrorHandlerEngine errorHandlerEngine)
+        public CleeEngine(ICommandResolver commandResolver)
         {
             _commandResolver = commandResolver;
-            _errorHandlerEngine = errorHandlerEngine;
         }
 
         private void InternalExecute(Command command)
@@ -191,6 +187,14 @@ namespace Clee.Tests
         }
     }
 
+    public class DefaultErrorHandlerEngine : IErrorHandlerEngine
+    {
+        public CommandExecutionResultsType Handle(Exception error)
+        {
+            return CommandExecutionResultsType.Error;
+        }
+    }
+
     public interface IErrorHandlerEngine
     {
         CommandExecutionResultsType Handle(Exception error);
@@ -239,12 +243,10 @@ namespace Clee.Tests
     internal class CleeEngineBuilder
     {
         private ICommandResolver _commandResolver;
-        private IErrorHandlerEngine _errorHandlerEngine;
 
         public CleeEngineBuilder()
         {
             _commandResolver = new Mock<ICommandResolver>().Object;
-            _errorHandlerEngine = new Mock<IErrorHandlerEngine>().Object;
         }
 
         public CleeEngineBuilder WithCommandResolver(ICommandResolver commandResolver)
@@ -253,17 +255,10 @@ namespace Clee.Tests
             return this;
         }
 
-        public CleeEngineBuilder WithErrorHandlerEngine(IErrorHandlerEngine errorHandlerEngine)
-        {
-            _errorHandlerEngine = errorHandlerEngine;
-            return this;
-        }
-
         public CleeEngine Build()
         {
             return new CleeEngine(
-                    commandResolver: _commandResolver,
-                    errorHandlerEngine: _errorHandlerEngine
+                    commandResolver: _commandResolver
                 );
         }
     }
