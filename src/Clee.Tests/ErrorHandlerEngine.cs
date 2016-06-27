@@ -9,7 +9,7 @@ namespace Clee.Tests
         [Fact]
         public void returns_expected_error_result_if_no_handlers_has_been_added()
         {
-            var sut = new ErrorHandlerEngine();
+            var sut = new ErrorHandlerEngineBuilder().Build();
             var result = sut.Handle(new Exception());
 
             Assert.Equal(new ReturnCode(CommandExecutionResultsType.Error), result);
@@ -20,7 +20,7 @@ namespace Clee.Tests
         {
             var expected = new ReturnCode(1);
             
-            var sut = new ErrorHandlerEngine();
+            var sut = new ErrorHandlerEngineBuilder().Build();
             sut.AddHandler<ArgumentNullException>((error) =>
             {
                 return expected;
@@ -36,12 +36,20 @@ namespace Clee.Tests
         {
             var expected = new ReturnCode(1);
 
-            var sut = new ErrorHandlerEngine();
+            var sut = new ErrorHandlerEngineBuilder().Build();
             sut.AddHandler(new StubErrorHandler<ArgumentNullException>(expected));
             
             var result = sut.Handle(new ArgumentNullException());
 
             Assert.Equal(expected, result);
+        }
+    }
+
+    internal class ErrorHandlerEngineBuilder
+    {
+        public ErrorHandlerEngine Build()
+        {
+            return new ErrorHandlerEngine();
         }
     }
 
