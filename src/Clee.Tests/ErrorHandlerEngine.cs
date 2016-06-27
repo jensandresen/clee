@@ -18,17 +18,17 @@ namespace Clee.Tests
         [Fact]
         public void returns_expected_error_code_from_custom_inline_error_handler()
         {
-            var expectedResult = 1;
-
+            var expected = new ReturnCode(1);
+            
             var sut = new ErrorHandlerEngine();
-            sut.AddHandler<ArgumentNullException>((e) =>
+            sut.AddHandler<ArgumentNullException>((error) =>
             {
-                return new ReturnCode(expectedResult);
+                return expected;
             });
             
             var result = sut.Handle(new ArgumentNullException());
 
-            Assert.Equal(expectedResult, result.ToInt());
+            Assert.Equal(expected, result);
         }
 
         [Fact]
