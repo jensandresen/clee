@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Xunit;
 
 namespace Clee.Tests
@@ -13,14 +14,67 @@ namespace Clee.Tests
 
             Assert.Equal(new ReturnCode(CommandExecutionResultsType.Error), result);
         }
+
+        [Fact]
+        public void returns_expected_error_code_from_custom_error_handler()
+        {
+            var expectedResult = 1;
+
+            var sut = new ErrorHandlerEngine();
+            sut.AddHandler<ArgumentNullException>((e) =>
+            {
+                return new ReturnCode(expectedResult);
+            });
+            
+            var result = sut.Handle(new ArgumentNullException());
+
+            Assert.Equal(expectedResult, result.ToInt());
+        }
     }
 
     public class ErrorHandlerEngine : IErrorHandlerEngine
     {
+        private readonly Dictionary<Type, Func<Exception, ReturnCode>> _handlers = new Dictionary<Type, Func<Exception, ReturnCode>>(); 
+
         public ReturnCode Handle(Exception error)
         {
-            var handler = new DefaultErrorHandler();
-            return handler.Handle(error);
+            Func<Exception, ReturnCode> customHandler;
+
+            if (_handlers.TryGetValue(error.GetType(), out customHandler))
+            {
+                var result = customHandler(error);
+
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            var defaultErrorHandler = new DefaultErrorHandler();
+            return defaultErrorHandler.Handle(error);
+        }
+
+        public void AddHandler<TException>(Func<TException, ReturnCode> errorHandler) where TException : Exception
+        {
+            Func<Exception, ReturnCode> downgradedHandler = (error) =>
+            {
+                var temp = error as TException;
+                if (temp == null)
+                {
+                    return null;
+                }
+
+                return errorHandler(temp);
+            };
+
+            var errorType = typeof(TException);
+
+            if (_handlers.ContainsKey(errorType))
+            {
+                _handlers.Remove(errorType);
+            }
+
+            _handlers.Add(errorType, downgradedHandler);
         }
     }
 
