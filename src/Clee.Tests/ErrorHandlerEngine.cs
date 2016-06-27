@@ -16,7 +16,7 @@ namespace Clee.Tests
         }
 
         [Fact]
-        public void returns_expected_error_code_from_custom_error_handler()
+        public void returns_expected_error_code_from_custom_inline_error_handler()
         {
             var expectedResult = 1;
 
@@ -29,6 +29,34 @@ namespace Clee.Tests
             var result = sut.Handle(new ArgumentNullException());
 
             Assert.Equal(expectedResult, result.ToInt());
+        }
+
+        [Fact]
+        public void returns_expected_error_code_from_custom_error_handler()
+        {
+            var expected = new ReturnCode(1);
+
+            var sut = new ErrorHandlerEngine();
+            sut.AddHandler(new StubErrorHandler<ArgumentNullException>(expected));
+            
+            var result = sut.Handle(new ArgumentNullException());
+
+            Assert.Equal(expected, result);
+        }
+    }
+
+    public class StubErrorHandler<T> : IErrorHandler<T> where T : Exception
+    {
+        private readonly ReturnCode _result;
+
+        public StubErrorHandler(ReturnCode result)
+        {
+            _result = result;
+        }
+
+        public ReturnCode Handle(T error)
+        {
+            return _result;
         }
     }
 
@@ -54,9 +82,14 @@ namespace Clee.Tests
             return defaultErrorHandler.Handle(error);
         }
 
+        public void AddHandler<TException>(IErrorHandler<TException> errorHandler) where TException : Exception
+        {
+            AddHandler<TException>(error => errorHandler.Handle(error));
+        }
+
         public void AddHandler<TException>(Func<TException, ReturnCode> errorHandler) where TException : Exception
         {
-            Func<Exception, ReturnCode> downgradedHandler = (error) =>
+            Func<Exception, ReturnCode> nonGenericHandler = (error) =>
             {
                 var temp = error as TException;
                 if (temp == null)
@@ -74,7 +107,7 @@ namespace Clee.Tests
                 _handlers.Remove(errorType);
             }
 
-            _handlers.Add(errorType, downgradedHandler);
+            _handlers.Add(errorType, nonGenericHandler);
         }
     }
 
