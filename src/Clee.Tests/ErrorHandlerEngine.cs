@@ -62,15 +62,16 @@ namespace Clee.Tests
 
     public class ErrorHandlerEngine : IErrorHandlerEngine
     {
-        private readonly Dictionary<Type, Func<Exception, ReturnCode>> _handlers = new Dictionary<Type, Func<Exception, ReturnCode>>(); 
+        private static readonly DefaultErrorHandler DefaultErrorHandler = new DefaultErrorHandler();
+        private readonly Dictionary<Type, NonGenericErrorHandler> _handlers = new Dictionary<Type, NonGenericErrorHandler>();
 
         public ReturnCode Handle(Exception error)
         {
-            Func<Exception, ReturnCode> customHandler;
+            NonGenericErrorHandler customHandler;
 
             if (_handlers.TryGetValue(error.GetType(), out customHandler))
             {
-                var result = customHandler(error);
+                var result = customHandler.Handle(error);
 
                 if (result != null)
                 {
@@ -78,8 +79,7 @@ namespace Clee.Tests
                 }
             }
 
-            var defaultErrorHandler = new DefaultErrorHandler();
-            return defaultErrorHandler.Handle(error);
+            return DefaultErrorHandler.Handle(error);
         }
 
         public void AddHandler<TException>(IErrorHandler<TException> errorHandler) where TException : Exception
@@ -89,25 +89,46 @@ namespace Clee.Tests
 
         public void AddHandler<TException>(Func<TException, ReturnCode> errorHandler) where TException : Exception
         {
-            Func<Exception, ReturnCode> nonGenericHandler = (error) =>
+            var nonGenericErrorHandler = new NonGenericErrorHandler(error =>
             {
                 var temp = error as TException;
+
                 if (temp == null)
                 {
                     return null;
                 }
 
                 return errorHandler(temp);
-            };
+            });
 
-            var errorType = typeof(TException);
+            AddNonGenericHandlerFor<TException>(nonGenericErrorHandler);
+        }
+
+        private void AddNonGenericHandlerFor<TException>(NonGenericErrorHandler nonGenericErrorHandler) where TException : Exception
+        {
+            var errorType = typeof (TException);
 
             if (_handlers.ContainsKey(errorType))
             {
                 _handlers.Remove(errorType);
             }
 
-            _handlers.Add(errorType, nonGenericHandler);
+            _handlers.Add(errorType, nonGenericErrorHandler);
+        }
+
+        private class NonGenericErrorHandler
+        {
+            private readonly Func<Exception, ReturnCode> _handlerLogic;
+
+            public NonGenericErrorHandler(Func<Exception, ReturnCode> handlerLogic)
+            {
+                _handlerLogic = handlerLogic;
+            }
+
+            public ReturnCode Handle(Exception error)
+            {
+                return _handlerLogic(error);
+            }
         }
     }
 
