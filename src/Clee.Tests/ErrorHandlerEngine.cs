@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Moq;
 using Xunit;
 
 namespace Clee.Tests
@@ -43,13 +44,123 @@ namespace Clee.Tests
 
             Assert.Equal(expected, result);
         }
+
+        [Fact]
+        public void can_resolve_error_handler_by_type_generic_definition()
+        {
+            var dummyErrorHandler = new SpyErrorHandler<ArgumentNullException>();
+
+            var mock = new Mock<ITypeResolver>();
+            mock
+                .Setup(x => x.Resolve<SpyErrorHandler<ArgumentNullException>>())
+                .Returns(dummyErrorHandler);
+
+            var sut = new ErrorHandlerEngineBuilder()
+                .WithTypeResolver(mock.Object)    
+                .Build();
+
+            sut.AddHandlerType<ArgumentNullException, SpyErrorHandler<ArgumentNullException>>();
+
+            sut.Handle(new ArgumentNullException());
+
+            mock.Verify(x => x.Resolve<SpyErrorHandler<ArgumentNullException>>());
+        }
+
+        [Fact]
+        public void invokes_the_resolved_error_handler()
+        {
+            var spyErrorHandler = new SpyErrorHandler<ArgumentNullException>();
+
+            var sut = new ErrorHandlerEngineBuilder()
+                .WithTypeResolver(new StubTypeResolver(spyErrorHandler))
+                .Build();
+
+            sut.AddHandlerType<ArgumentNullException, SpyErrorHandler<ArgumentNullException>>();
+
+            sut.Handle(new ArgumentNullException());
+
+            Assert.True(spyErrorHandler.wasCalled);
+        }
+
+        [Fact]
+        public void releases_the_resolved_error_handler()
+        {
+            var dummyErrorHandler = new SpyErrorHandler<ArgumentNullException>();
+
+            var mock = new Mock<ITypeResolver>();
+            mock
+                .Setup(x => x.Resolve<SpyErrorHandler<ArgumentNullException>>())
+                .Returns(dummyErrorHandler);
+
+            var sut = new ErrorHandlerEngineBuilder()
+                .WithTypeResolver(mock.Object)
+                .Build();
+
+            sut.AddHandlerType<ArgumentNullException, SpyErrorHandler<ArgumentNullException>>();
+
+            sut.Handle(new ArgumentNullException());
+
+            mock.Verify(x => x.Release(dummyErrorHandler));
+        }
+    }
+
+    public class StubTypeResolver : ITypeResolver
+    {
+        private readonly object _instance;
+
+        public StubTypeResolver(object instance)
+        {
+            _instance = instance;
+        }
+
+        public T Resolve<T>()
+        {
+            return (T) _instance;
+        }
+
+        public void Release(object instance)
+        {
+            
+        }
+    }
+
+    public interface ITypeResolver
+    {
+        T Resolve<T>();
+        void Release(object instance);
+    }
+
+    public class SpyErrorHandler<T> : IErrorHandler<T> where T : Exception
+    {
+        private static readonly ReturnCode DefaultReturnCode = new ReturnCode(1);
+
+        public bool wasCalled = false;
+
+        public ReturnCode Handle(T error)
+        {
+            wasCalled = true;
+            return DefaultReturnCode;
+        }
     }
 
     internal class ErrorHandlerEngineBuilder
     {
+        private ITypeResolver _typeResolver;
+
+        public ErrorHandlerEngineBuilder()
+        {
+            _typeResolver = new Mock<ITypeResolver>().Object;
+        }
+
+        public ErrorHandlerEngineBuilder WithTypeResolver(ITypeResolver typeResolver)
+        {
+            _typeResolver = typeResolver;
+            return this;
+        }
+
         public ErrorHandlerEngine Build()
         {
-            return new ErrorHandlerEngine();
+            return new ErrorHandlerEngine(_typeResolver);
         }
     }
 
@@ -72,6 +183,12 @@ namespace Clee.Tests
     {
         private static readonly DefaultErrorHandler DefaultErrorHandler = new DefaultErrorHandler();
         private readonly Dictionary<Type, NonGenericErrorHandler> _handlers = new Dictionary<Type, NonGenericErrorHandler>();
+        private readonly ITypeResolver _typeResolver;
+
+        public ErrorHandlerEngine(ITypeResolver typeResolver)
+        {
+            _typeResolver = typeResolver;
+        }
 
         public ReturnCode Handle(Exception error)
         {
@@ -93,6 +210,25 @@ namespace Clee.Tests
         public void AddHandler<TException>(IErrorHandler<TException> errorHandler) where TException : Exception
         {
             AddHandler<TException>(error => errorHandler.Handle(error));
+        }
+
+        public void AddHandlerType<TError, THandler>()
+            where TError : Exception
+            where THandler : IErrorHandler<TError>
+        {
+            AddHandler<TError>(error =>
+            {
+                var handler = _typeResolver.Resolve<THandler>();
+
+                try
+                {
+                    return handler.Handle(error);
+                }
+                finally
+                {
+                    _typeResolver.Release(handler);
+                }
+            });
         }
 
         public void AddHandler<TException>(Func<TException, ReturnCode> errorHandler) where TException : Exception

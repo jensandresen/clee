@@ -121,12 +121,13 @@ namespace Clee.Tests
 
     public class CleeEngine
     {
-        private readonly IErrorHandlerEngine _errorHandlerEngine = new ErrorHandlerEngine();
+        private readonly IErrorHandlerEngine _errorHandlerEngine;
         private readonly ICommandResolver _commandResolver;
 
         public CleeEngine(ICommandResolver commandResolver)
         {
             _commandResolver = commandResolver;
+            _errorHandlerEngine = new ErrorHandlerEngine(null);
         }
 
         private void InternalExecute(Command command)
