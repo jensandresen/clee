@@ -62,15 +62,20 @@
     <Compile Include="Command.cs" />
     <Compile Include="CommandBuilder.cs" />
     <Compile Include="CommandExecutionResultsType.cs" />
+    <Compile Include="DefaultCreator.cs" />
     <Compile Include="DefaultErrorHandler.cs" />
     <Compile Include="ErrorHandlerEngine.cs" />
     <Compile Include="ErrorHandlerEngineBuilder.cs" />
+    <Compile Include="HumbleCreator.cs" />
     <Compile Include="ICommandResolver.cs" />
+    <Compile Include="IConstructorSelectionStrategy.cs" />
+    <Compile Include="ICreator.cs" />
     <Compile Include="IErrorHandler.cs" />
     <Compile Include="IErrorHandlerEngine.cs" />
     <Compile Include="ITypeResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReturnCode.cs" />
+    <Compile Include="SimplestConstructorSelectionStrategy.cs" />
     <Compile Include="SpyErrorHandler.cs" />
     <Compile Include="StubCommandResolver.cs" />
     <Compile Include="StubErrorHandler.cs" />
@@ -79,6 +84,8 @@
     <Compile Include="TestCleeEngine.cs" />
     <Compile Include="TestErrorHandlerEngine.cs" />
     <Compile Include="TestTypeContainer.cs" />
+    <Compile Include="TypeContainer.cs" />
+    <Compile Include="TypeContainerBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
