@@ -78,6 +78,7 @@
     <Compile Include="StubTypeResolver.cs" />
     <Compile Include="TestCleeEngine.cs" />
     <Compile Include="TestErrorHandlerEngine.cs" />
+    <Compile Include="TestTypeContainer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
