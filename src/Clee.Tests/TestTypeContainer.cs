@@ -105,6 +105,20 @@ namespace Clee.Tests
             Assert.Throws<CircularDependencyException>(() => sut.Resolve<CircularRoot>());
         }
 
+        [Fact]
+        public void supports_abstract_dependencies()
+        {
+            var sut = new TypeContainerBuilder().Build();
+            sut.Register<IAbstractDependency, AbstractDependencyImplementation>();
+            
+            var result = sut.Resolve<ConcreteRoot>();
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Dependency);
+            Assert.IsType<AbstractDependencyImplementation>(result.Dependency);
+        }
+
+
         #region dummy types
 
         private class DisposableType : IDisposable
@@ -188,6 +202,31 @@ namespace Clee.Tests
             {
 
             }
+        }
+
+        public class ConcreteRoot
+        {
+            private readonly IAbstractDependency _abstractDependency;
+
+            public ConcreteRoot(IAbstractDependency abstractDependency)
+            {
+                _abstractDependency = abstractDependency;
+            }
+
+            public IAbstractDependency Dependency
+            {
+                get { return _abstractDependency; }
+            }
+        }
+
+        public interface IAbstractDependency
+        {
+             
+        }
+
+        public class AbstractDependencyImplementation : IAbstractDependency
+        {
+             
         }
 
         #endregion
