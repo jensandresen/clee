@@ -98,6 +98,13 @@ namespace Clee.Tests
             Assert.True(dep2.wasDisposed);
         }
 
+        [Fact]
+        public void throws_exception_on_circular_references_in_object_graph()
+        {
+            var sut = new TypeContainerBuilder().Build();
+            Assert.Throws<CircularDependencyException>(() => sut.Resolve<CircularRoot>());
+        }
+
         #region dummy types
 
         private class DisposableType : IDisposable
@@ -151,6 +158,43 @@ namespace Clee.Tests
             }
         }
 
+        private class CircularRoot
+        {
+            public CircularRoot(CircularDependencyLevel1 dep1)
+            {
+
+            }
+        }
+
+        private class CircularDependencyLevel1
+        {
+            public CircularDependencyLevel1(CircularDependencyLevel2 dep1)
+            {
+
+            }
+        }
+
+        private class CircularDependencyLevel2
+        {
+            public CircularDependencyLevel2(CircularDependencyLevel3 dep)
+            {
+
+            }
+        }
+
+        private class CircularDependencyLevel3
+        {
+            public CircularDependencyLevel3(CircularRoot root)
+            {
+
+            }
+        }
+
         #endregion
+    }
+
+    public class CircularDependencyException : Exception
+    {
+
     }
 }

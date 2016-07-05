@@ -23,39 +23,92 @@ namespace Clee.Tests
 
         public object Resolve(Type type)
         {
-            var relationship = ResolveRelationshipFor(type);
+            var objectGraph = new ObjectGraph(_constructorSelectionStrategy, _creator);
+            var relationship = objectGraph.CreateFor(type);
+
             _relationships.Add(relationship.Instance, relationship);
 
             return relationship.Instance;
         }
 
-        private Relationship ResolveRelationshipFor(Type type)
+        private class ObjectGraph
         {
-            var constructor = _constructorSelectionStrategy.GetFrom(type);
-            var relationships = new LinkedList<Relationship>();
+            private readonly IConstructorSelectionStrategy _constructorSelectionStrategy;
+            private readonly ICreator _creator;
 
-            foreach (var parameter in constructor.GetParameters())
+            public ObjectGraph(IConstructorSelectionStrategy constructorSelectionStrategy, ICreator creator)
             {
-                var rel = ResolveRelationshipFor(parameter.ParameterType);
-                relationships.AddLast(rel);
+                _constructorSelectionStrategy = constructorSelectionStrategy;
+                _creator = creator;
             }
 
-            var dependencies = relationships
-                .Select(x => x.Instance)
-                .ToArray();
+            public Relationship CreateFor(Type type)
+            {
+                return ResolveRelationshipFor(type, new Type[0]);
+            }
 
-            var instance = CreateInstance(type, dependencies);
+            private Relationship ResolveRelationshipFor(Type type, IEnumerable<Type> parentDependencyGraph)
+            {
+                var constructor = _constructorSelectionStrategy.GetFrom(type);
+                var relationships = new LinkedList<Relationship>();
 
-            return new Relationship(
-                instance: instance,
-                instanceType: type,
-                dependencies: relationships
-                );
-        }
+                var newDependencyGraph = Enumerable
+                    .Concat(parentDependencyGraph, new[] {type})
+                    .ToArray();
 
-        private object CreateInstance(Type type, object[] dependencies)
-        {
-            return _creator.CreateInstance(type, dependencies);
+                var graph = new HashSet<Type>(newDependencyGraph);
+                
+                foreach (var parameter in constructor.GetParameters())
+                {
+                    if (graph.Contains(parameter.ParameterType))
+                    {
+                        throw new CircularDependencyException();
+                    }   
+
+                    var rel = ResolveRelationshipFor(
+                        type: parameter.ParameterType,
+                        parentDependencyGraph: newDependencyGraph
+                        );
+
+                    relationships.AddLast(rel);
+                }
+
+                return new Relationship(
+                    instanceFactory: () =>
+                    {
+                        var dependencies = relationships
+                            .Select(x => x.Instance)
+                            .ToArray();
+
+                        return CreateInstance(type, dependencies);
+                    },
+                    instanceType: type,
+                    dependencies: relationships
+                    );
+            }
+
+            private object CreateInstance(Type type, object[] dependencies)
+            {
+                return _creator.CreateInstance(type, dependencies);
+            }
+
+            public IEnumerable<Type> ConvertToTypeList(Relationship relationship)
+            {
+                var list = new LinkedList<Type>();
+                list.AddLast(relationship.InstanceType);
+
+                foreach (var dependency in relationship.Dependencies)
+                {
+                    var d = ConvertToTypeList(dependency);
+
+                    foreach (var dt in d)
+                    {
+                        list.AddLast(dt);
+                    }
+                }
+
+                return list;
+            }
         }
 
         public void Release(object instance)
@@ -95,14 +148,29 @@ namespace Clee.Tests
 
         private class Relationship
         {
-            public Relationship(object instance, Type instanceType, IEnumerable<Relationship> dependencies)
+            private readonly Func<object> _instanceFactory;
+            private object _instance;
+
+            public Relationship(Func<object> instanceFactory, Type instanceType, IEnumerable<Relationship> dependencies)
             {
-                Instance = instance;
+                _instanceFactory = instanceFactory;
                 InstanceType = instanceType;
                 Dependencies = dependencies;
             }
 
-            public object Instance { get; private set; }
+            public object Instance
+            {
+                get
+                {
+                    if (_instance == null)
+                    {
+                        _instance = _instanceFactory();
+                    }
+
+                    return _instance;
+                }
+            }
+
             public Type InstanceType { get; private set; }
             public IEnumerable<Relationship> Dependencies { get; private set; }
         }
