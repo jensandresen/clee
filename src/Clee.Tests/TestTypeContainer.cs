@@ -118,6 +118,13 @@ namespace Clee.Tests
             Assert.IsType<AbstractDependencyImplementation>(result.Dependency);
         }
 
+        [Fact]
+        public void throws_exception_if_no_concrete_type_has_been_registered_for_abstract_dependency()
+        {
+            var sut = new TypeContainerBuilder().Build();
+            Assert.Throws<UnresolveableDependencyException>(() => sut.Resolve<ConcreteRoot>());
+        }
+
 
         #region dummy types
 
@@ -230,6 +237,10 @@ namespace Clee.Tests
         }
 
         #endregion
+    }
+
+    public class UnresolveableDependencyException : Exception
+    {
     }
 
     public class CircularDependencyException : Exception

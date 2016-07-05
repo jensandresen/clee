@@ -25,13 +25,17 @@ namespace Clee.Tests
         {
             var objectGraph = new ObjectGraph(_constructorSelectionStrategy, _creator, aType =>
             {
-                Type concreteType;
-                
-                if (_typeMap.TryGetValue(aType, out concreteType))
+                if (aType.IsAbstract)
                 {
+                    Type concreteType;
+
+                    if (!_typeMap.TryGetValue(aType, out concreteType))
+                    {
+                        throw new UnresolveableDependencyException();
+                    }
+                    
                     return concreteType;
                 }
-
                 return aType;
             });
 
