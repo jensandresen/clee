@@ -95,7 +95,7 @@ namespace Clee.Tests
             return constructor.GetParameters();
         }
 
-        public void Register<TAbstraction, TImplementation>()
+        public void Register<TAbstraction, TImplementation>() where TImplementation : TAbstraction
         {
             _typeMap.Add(typeof(TAbstraction), typeof(TImplementation));
         }
