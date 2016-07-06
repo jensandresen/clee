@@ -89,11 +89,10 @@ namespace Clee.Tests
                 );
         }
 
-        private ParameterInfo[] GetConstructorParametersFor(Type concreteType)
+        private IEnumerable<ParameterInfo> GetConstructorParametersFor(Type concreteType)
         {
             var constructor = _constructorSelectionStrategy.GetFrom(concreteType);
-            var constructorParameters = constructor.GetParameters();
-            return constructorParameters;
+            return constructor.GetParameters();
         }
 
         public void Register<TAbstraction, TImplementation>()
