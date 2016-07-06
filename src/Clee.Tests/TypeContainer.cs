@@ -97,7 +97,17 @@ namespace Clee.Tests
 
         public void Register<TAbstraction, TImplementation>() where TImplementation : TAbstraction
         {
-            _typeMap.Add(typeof(TAbstraction), typeof(TImplementation));
+            Register(typeof(TAbstraction), typeof(TImplementation));
+        }
+
+        public void Register(Type abstraction, Type implementation)
+        {
+            if (!abstraction.IsAssignableFrom(implementation))
+            {
+                throw new NotSupportedTypeRegistrationException();
+            }
+
+            _typeMap.Add(abstraction, implementation);
         }
 
         public void Release(object instance)
@@ -163,5 +173,10 @@ namespace Clee.Tests
             public Type InstanceType { get; private set; }
             public IEnumerable<Relationship> Dependencies { get; private set; }
         }
+    }
+
+    public class NotSupportedTypeRegistrationException : Exception
+    {
+
     }
 }

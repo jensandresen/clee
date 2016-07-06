@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Runtime.Serialization;
 using Moq;
 using Xunit;
 
@@ -106,10 +107,23 @@ namespace Clee.Tests
         }
 
         [Fact]
-        public void supports_abstract_dependencies()
+        public void supports_generic_registration_of_an_interface_for_an_implementation()
         {
             var sut = new TypeContainerBuilder().Build();
             sut.Register<IAbstractDependency, AbstractDependencyImplementation>();
+            
+            var result = sut.Resolve<ConcreteRoot>();
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Dependency);
+            Assert.IsType<AbstractDependencyImplementation>(result.Dependency);
+        }
+
+        [Fact]
+        public void supports_non_generic_registration_of_an_interface_for_an_implementation()
+        {
+            var sut = new TypeContainerBuilder().Build();
+            sut.Register(typeof (IAbstractDependency), typeof (AbstractDependencyImplementation));
             
             var result = sut.Resolve<ConcreteRoot>();
 
@@ -125,6 +139,12 @@ namespace Clee.Tests
             Assert.Throws<UnresolveableDependencyException>(() => sut.Resolve<ConcreteRoot>());
         }
 
+        [Fact]
+        public void throws_exception_if_registering_type_for_abstraction_that_it_does_not_derive_from()
+        {
+            var sut = new TypeContainerBuilder().Build();
+            Assert.Throws<NotSupportedTypeRegistrationException>(() => sut.Register(typeof (IAbstractDependency), typeof (string)));
+        }
 
         #region dummy types
 
