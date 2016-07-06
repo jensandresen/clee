@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Clee.Tests
 {
@@ -8,6 +9,7 @@ namespace Clee.Tests
     {
         private readonly SimplestConstructorSelectionStrategy _constructorSelectionStrategy = new SimplestConstructorSelectionStrategy();
         private readonly Dictionary<object, Relationship> _relationships = new Dictionary<object, Relationship>();
+        private readonly Dictionary<Type, Type> _typeMap = new Dictionary<Type, Type>();
         private readonly ICreator _creator;
 
         public TypeContainer(ICreator creator)
@@ -23,30 +25,76 @@ namespace Clee.Tests
 
         public object Resolve(Type type)
         {
-            var objectGraph = new ObjectGraph(_constructorSelectionStrategy, _creator, aType =>
-            {
-                if (aType.IsAbstract)
-                {
-                    Type concreteType;
-
-                    if (!_typeMap.TryGetValue(aType, out concreteType))
-                    {
-                        throw new UnresolveableDependencyException();
-                    }
-                    
-                    return concreteType;
-                }
-                return aType;
-            });
-
-            var relationship = objectGraph.CreateFor(type);
-
+            var relationship = ResolveRelationshipFor(type, new Type[0]);
             _relationships.Add(relationship.Instance, relationship);
 
             return relationship.Instance;
         }
 
-        private readonly Dictionary<Type, Type> _typeMap = new Dictionary<Type, Type>();
+        private Type GetConcreteTypeFor(Type aType)
+        {
+            if (aType.IsAbstract)
+            {
+                Type concreteType;
+
+                if (!_typeMap.TryGetValue(aType, out concreteType))
+                {
+                    throw new UnresolveableDependencyException();
+                }
+
+                return concreteType;
+            }
+            return aType;
+        }
+
+        private Relationship ResolveRelationshipFor(Type type, IEnumerable<Type> parentDependencyGraph)
+        {
+            var relationships = new LinkedList<Relationship>();
+            
+            var concreteType = GetConcreteTypeFor(type);
+            
+            parentDependencyGraph = parentDependencyGraph
+                .Concat(new[] { concreteType })
+                .ToArray();
+
+            var existingDependencyTypes = new HashSet<Type>(parentDependencyGraph);
+            var constructorParameters = GetConstructorParametersFor(concreteType);
+
+            foreach (var parameter in constructorParameters)
+            {
+                if (existingDependencyTypes.Contains(parameter.ParameterType))
+                {
+                    throw new CircularDependencyException();
+                }
+
+                var relationship = ResolveRelationshipFor(
+                    type: parameter.ParameterType,
+                    parentDependencyGraph: parentDependencyGraph
+                    );
+
+                relationships.AddLast(relationship);
+            }
+
+            return new Relationship(
+                instanceFactory: () =>
+                {
+                    var dependencies = relationships
+                        .Select(x => x.Instance)
+                        .ToArray();
+
+                    return _creator.CreateInstance(concreteType, dependencies);
+                },
+                instanceType: concreteType,
+                dependencies: relationships
+                );
+        }
+
+        private ParameterInfo[] GetConstructorParametersFor(Type concreteType)
+        {
+            var constructor = _constructorSelectionStrategy.GetFrom(concreteType);
+            var constructorParameters = constructor.GetParameters();
+            return constructorParameters;
+        }
 
         public void Register<TAbstraction, TImplementation>()
         {
@@ -115,76 +163,6 @@ namespace Clee.Tests
 
             public Type InstanceType { get; private set; }
             public IEnumerable<Relationship> Dependencies { get; private set; }
-        }
-
-        private class ObjectGraph
-        {
-            private readonly IConstructorSelectionStrategy _constructorSelectionStrategy;
-            private readonly ICreator _creator;
-            private readonly Func<Type, Type> _typeTranslator;
-
-            public ObjectGraph(IConstructorSelectionStrategy constructorSelectionStrategy, ICreator creator, Func<Type, Type> typeTranslator)
-            {
-                _constructorSelectionStrategy = constructorSelectionStrategy;
-                _creator = creator;
-                _typeTranslator = typeTranslator;
-            }
-
-            public Relationship CreateFor(Type type)
-            {
-                return ResolveRelationshipFor(type, new Type[0]);
-            }
-
-            private Relationship ResolveRelationshipFor(Type type, IEnumerable<Type> parentDependencyGraph)
-            {
-                type = GetConcreteTypeFor(type);
-                var constructor = _constructorSelectionStrategy.GetFrom(type);
-                var relationships = new LinkedList<Relationship>();
-
-                var newDependencyGraph = Enumerable
-                    .Concat(parentDependencyGraph, new[] {type})
-                    .ToArray();
-
-                var graph = new HashSet<Type>(newDependencyGraph);
-                
-                foreach (var parameter in constructor.GetParameters())
-                {
-                    if (graph.Contains(parameter.ParameterType))
-                    {
-                        throw new CircularDependencyException();
-                    }   
-
-                    var rel = ResolveRelationshipFor(
-                        type: parameter.ParameterType,
-                        parentDependencyGraph: newDependencyGraph
-                        );
-
-                    relationships.AddLast(rel);
-                }
-
-                return new Relationship(
-                    instanceFactory: () =>
-                    {
-                        var dependencies = relationships
-                            .Select(x => x.Instance)
-                            .ToArray();
-
-                        return CreateInstance(type, dependencies);
-                    },
-                    instanceType: type,
-                    dependencies: relationships
-                    );
-            }
-
-            private Type GetConcreteTypeFor(Type type)
-            {
-                return _typeTranslator(type);
-            }
-
-            private object CreateInstance(Type type, object[] dependencies)
-            {
-                return _creator.CreateInstance(type, dependencies);
-            }
         }
     }
 }
