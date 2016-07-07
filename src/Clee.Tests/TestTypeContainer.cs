@@ -146,7 +146,50 @@ namespace Clee.Tests
             Assert.Throws<NotSupportedTypeRegistrationException>(() => sut.Register(typeof (IAbstractDependency), typeof (string)));
         }
 
+        [Fact]
+        public void supports_generic_inline_type_factory()
+        {
+            var dummy = new Mock<IAbstractDependency>().Object;
+            var wasCalled = false;
+
+            var sut = new TypeContainerBuilder().Build();
+            sut.Register<IAbstractDependency>(() =>
+            {
+                wasCalled = true;
+                return dummy;
+            });
+
+            var result = sut.Resolve<ConcreteRoot>();
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Dependency);
+            Assert.Same(dummy, result.Dependency);
+        }
+
+        [Fact]
+        public void types_resolved_by_generic_inline_type_factory_are_also_disposed_when_root_is_released()
+        {
+            var mock = new Mock<IDisposable>();
+            
+            var sut = new TypeContainerBuilder().Build();
+            sut.Register<IDisposable>(() => mock.Object);
+
+            var root = sut.Resolve<SomeRoot>();
+            sut.Release(root);
+
+            mock.Verify(x => x.Dispose(), Times.Once);
+        }
+
+
         #region dummy types
+
+        private class SomeRoot
+        {
+            public SomeRoot(IDisposable dependency)
+            {
+                
+            }
+        }
 
         private class DisposableType : IDisposable
         {

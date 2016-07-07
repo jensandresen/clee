@@ -9,7 +9,10 @@ namespace Clee.Tests
     {
         private readonly SimplestConstructorSelectionStrategy _constructorSelectionStrategy = new SimplestConstructorSelectionStrategy();
         private readonly Dictionary<object, Relationship> _relationships = new Dictionary<object, Relationship>();
+        
         private readonly Dictionary<Type, Type> _typeMap = new Dictionary<Type, Type>();
+        private readonly Dictionary<Type, Func<object>> _typeFactories = new Dictionary<Type, Func<object>>();
+        
         private readonly ICreator _creator;
 
         public TypeContainer(ICreator creator)
@@ -35,29 +38,30 @@ namespace Clee.Tests
         {
             if (aType.IsAbstract)
             {
-                Type concreteType;
+                Type concreteTypeFactory;
 
-                if (!_typeMap.TryGetValue(aType, out concreteType))
+                if (!_typeMap.TryGetValue(aType, out concreteTypeFactory))
                 {
                     throw new UnresolveableDependencyException();
                 }
 
-                return concreteType;
+                return concreteTypeFactory;
             }
+
             return aType;
         }
 
         private Relationship ResolveRelationshipFor(Type type, IEnumerable<Type> parentDependencyGraph)
         {
             var relationships = new LinkedList<Relationship>();
-            
-            var concreteType = GetConcreteTypeFor(type);
-            
+
             parentDependencyGraph = parentDependencyGraph
-                .Concat(new[] { concreteType })
+                .Concat(new[] { type })
                 .ToArray();
 
             var existingDependencyTypes = new HashSet<Type>(parentDependencyGraph);
+            
+            var concreteType = GetConcreteTypeFor(type);
             var constructorParameters = GetConstructorParametersFor(concreteType);
 
             foreach (var parameter in constructorParameters)
@@ -67,12 +71,25 @@ namespace Clee.Tests
                     throw new CircularDependencyException();
                 }
 
-                var relationship = ResolveRelationshipFor(
-                    type: parameter.ParameterType,
-                    parentDependencyGraph: parentDependencyGraph
-                    );
+                Func<object> typeFactory;
 
-                relationships.AddLast(relationship);
+                if (_typeFactories.TryGetValue(parameter.ParameterType, out typeFactory))
+                {
+                    relationships.AddLast(new Relationship(
+                        instanceFactory: typeFactory,
+                        instanceType: type,
+                        dependencies: Enumerable.Empty<Relationship>()
+                        ));
+                }
+                else
+                {
+                    var relationship = ResolveRelationshipFor(
+                        type: parameter.ParameterType,
+                        parentDependencyGraph: parentDependencyGraph
+                        );
+
+                    relationships.AddLast(relationship);
+                }
             }
 
             return new Relationship(
@@ -108,6 +125,11 @@ namespace Clee.Tests
             }
 
             _typeMap.Add(abstraction, implementation);
+        }
+
+        public void Register<TAbstraction>(Func<TAbstraction> typeFactory)
+        {
+            _typeFactories.Add(typeof(TAbstraction), () => typeFactory());
         }
 
         public void Release(object instance)
