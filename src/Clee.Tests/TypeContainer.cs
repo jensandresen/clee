@@ -72,33 +72,13 @@ namespace Clee.Tests
                     throw new CircularDependencyException();
                 }
 
-                Func<object> typeFactory;
-                object singletonDependency;
+                var dependencyRelationship = CreateDependencyRelationship(
+                    relationshipRootType: type,
+                    dependencyType: parameter.ParameterType,
+                    parentDependencyGraph: parentDependencyGraph
+                    );
 
-                if (_singletonDependencies.TryGetValue(parameter.ParameterType, out singletonDependency))
-                {
-                    relationships.AddLast(new Relationship(
-                        singletonInstance: singletonDependency,
-                        instanceType: type
-                        ));
-                }
-                else if (_typeFactories.TryGetValue(parameter.ParameterType, out typeFactory))
-                {
-                    relationships.AddLast(new Relationship(
-                        instanceFactory: typeFactory,
-                        instanceType: type,
-                        dependencies: Enumerable.Empty<Relationship>()
-                        ));
-                }
-                else
-                {
-                    var relationship = ResolveRelationshipFor(
-                        type: parameter.ParameterType,
-                        parentDependencyGraph: parentDependencyGraph
-                        );
-
-                    relationships.AddLast(relationship);
-                }
+                relationships.AddLast(dependencyRelationship);
             }
 
             return new Relationship(
@@ -112,6 +92,33 @@ namespace Clee.Tests
                 },
                 instanceType: concreteType,
                 dependencies: relationships
+                );
+        }
+
+        private Relationship CreateDependencyRelationship(Type relationshipRootType, Type dependencyType, IEnumerable<Type> parentDependencyGraph)
+        {
+            object singletonDependency;
+            if (_singletonDependencies.TryGetValue(dependencyType, out singletonDependency))
+            {
+                return new Relationship(
+                    singletonInstance: singletonDependency,
+                    instanceType: relationshipRootType
+                    );
+            }
+
+            Func<object> typeFactory;
+            if (_typeFactories.TryGetValue(dependencyType, out typeFactory))
+            {
+                return new Relationship(
+                    instanceFactory: typeFactory,
+                    instanceType: relationshipRootType,
+                    dependencies: Enumerable.Empty<Relationship>()
+                    );
+            }
+
+            return ResolveRelationshipFor(
+                type: dependencyType,
+                parentDependencyGraph: parentDependencyGraph
                 );
         }
 
