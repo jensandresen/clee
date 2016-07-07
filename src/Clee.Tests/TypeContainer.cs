@@ -12,6 +12,7 @@ namespace Clee.Tests
         
         private readonly Dictionary<Type, Type> _typeMap = new Dictionary<Type, Type>();
         private readonly Dictionary<Type, Func<object>> _typeFactories = new Dictionary<Type, Func<object>>();
+        private readonly Dictionary<Type, object> _singletonDependencies = new Dictionary<Type, object>();
         
         private readonly ICreator _creator;
 
@@ -72,8 +73,16 @@ namespace Clee.Tests
                 }
 
                 Func<object> typeFactory;
+                object singletonDependency;
 
-                if (_typeFactories.TryGetValue(parameter.ParameterType, out typeFactory))
+                if (_singletonDependencies.TryGetValue(parameter.ParameterType, out singletonDependency))
+                {
+                    relationships.AddLast(new Relationship(
+                        singletonInstance: singletonDependency,
+                        instanceType: type
+                        ));
+                }
+                else if (_typeFactories.TryGetValue(parameter.ParameterType, out typeFactory))
                 {
                     relationships.AddLast(new Relationship(
                         instanceFactory: typeFactory,
@@ -132,6 +141,11 @@ namespace Clee.Tests
             _typeFactories.Add(typeof(TAbstraction), () => typeFactory());
         }
 
+        public void Register<TSingleton>(TSingleton singletonInstance)
+        {
+            _singletonDependencies.Add(typeof(TSingleton), singletonInstance);
+        }
+
         public void Release(object instance)
         {
             Relationship relationship;
@@ -161,7 +175,7 @@ namespace Clee.Tests
 
             var disposable = relationship.Instance as IDisposable;
 
-            if (disposable != null)
+            if (disposable != null && !relationship.IsSingleton)
             {
                 disposable.Dispose();
             }
@@ -170,7 +184,16 @@ namespace Clee.Tests
         private class Relationship
         {
             private readonly Func<object> _instanceFactory;
+            private readonly bool _isSingleton = false;
             private object _instance;
+
+            public Relationship(object singletonInstance, Type instanceType)
+            {
+                _instance = singletonInstance;
+                InstanceType = instanceType;
+                Dependencies = Enumerable.Empty<Relationship>();
+                _isSingleton = true;
+            }
 
             public Relationship(Func<object> instanceFactory, Type instanceType, IEnumerable<Relationship> dependencies)
             {
@@ -190,6 +213,11 @@ namespace Clee.Tests
 
                     return _instance;
                 }
+            }
+
+            public bool IsSingleton
+            {
+                get { return _isSingleton; }
             }
 
             public Type InstanceType { get; private set; }

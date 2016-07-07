@@ -180,6 +180,34 @@ namespace Clee.Tests
             mock.Verify(x => x.Dispose(), Times.Once);
         }
 
+        [Fact]
+        public void supports_singleton_dependencies()
+        {
+            var dummy = new Mock<IAbstractDependency>().Object;
+
+            var sut = new TypeContainerBuilder().Build();
+            sut.Register<IAbstractDependency>(dummy);
+
+            var result = sut.Resolve<ConcreteRoot>();
+
+            Assert.NotNull(result);
+            Assert.NotNull(result.Dependency);
+            Assert.Same(dummy, result.Dependency);
+        }
+
+        [Fact]
+        public void singleton_registered_dependencies_are_not_disposed()
+        {
+            var mock = new Mock<IDisposable>();
+
+            var sut = new TypeContainerBuilder().Build();
+            sut.Register<IDisposable>(mock.Object);
+
+            var root = sut.Resolve<SomeRoot>();
+            sut.Release(root);
+
+            mock.Verify(x => x.Dispose(), Times.Never);
+        }
 
         #region dummy types
 
