@@ -64,6 +64,7 @@
     <Compile Include="CommandExecutionResultsType.cs" />
     <Compile Include="DefaultCreator.cs" />
     <Compile Include="DefaultErrorHandler.cs" />
+    <Compile Include="DummyCommand.cs" />
     <Compile Include="ErrorHandlerEngine.cs" />
     <Compile Include="ErrorHandlerEngineBuilder.cs" />
     <Compile Include="HumbleCreator.cs" />
@@ -84,6 +85,8 @@
     <Compile Include="StubTypeResolver.cs" />
     <Compile Include="TestCleeEngine.cs" />
     <Compile Include="TestErrorHandlerEngine.cs" />
+    <Compile Include="TestRoute.cs" />
+    <Compile Include="TestRouteEngine.cs" />
     <Compile Include="TestTypeContainer.cs" />
     <Compile Include="TypeContainer.cs" />
     <Compile Include="TypeContainerBuilder.cs" />
