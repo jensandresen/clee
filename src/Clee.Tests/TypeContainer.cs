@@ -159,36 +159,19 @@ namespace Clee.Tests
 
             if (_relationships.TryGetValue(instance, out relationship))
             {
-                ReleaseRelationship(relationship);
                 _relationships.Remove(instance);
+                instance = relationship;
             }
-            else
-            {
-                var disposable = instance as IDisposable;
+            
+            var disposable = instance as IDisposable;
 
-                if (disposable != null)
-                {
-                    disposable.Dispose();
-                }
-            }
-        }
-
-        private void ReleaseRelationship(Relationship relationship)
-        {
-            foreach (var rel in relationship.Dependencies)
-            {
-                ReleaseRelationship(rel);
-            }
-
-            var disposable = relationship.Instance as IDisposable;
-
-            if (disposable != null && !relationship.IsSingleton)
+            if (disposable != null)
             {
                 disposable.Dispose();
             }
         }
 
-        private class Relationship
+        private class Relationship : IDisposable
         {
             private readonly Func<object> _instanceFactory;
             private readonly bool _isSingleton = false;
@@ -222,18 +205,28 @@ namespace Clee.Tests
                 }
             }
 
-            public bool IsSingleton
+            private Type InstanceType { get; set; }
+            private IEnumerable<Relationship> Dependencies { get; set; }
+
+            public void Dispose()
             {
-                get { return _isSingleton; }
+                ReleaseRelationship(this);
             }
 
-            public Type InstanceType { get; private set; }
-            public IEnumerable<Relationship> Dependencies { get; private set; }
+            private void ReleaseRelationship(Relationship relationship)
+            {
+                foreach (var rel in relationship.Dependencies)
+                {
+                    ReleaseRelationship(rel);
+                }
+
+                var disposable = relationship.Instance as IDisposable;
+
+                if (disposable != null && !relationship._isSingleton)
+                {
+                    disposable.Dispose();
+                }
+            }
         }
-    }
-
-    public class NotSupportedTypeRegistrationException : Exception
-    {
-
     }
 }
