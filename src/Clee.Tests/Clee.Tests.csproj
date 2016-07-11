@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CircularDependencyException.cs" />
     <Compile Include="CleeEngine.cs" />
     <Compile Include="CleeEngineBuilder.cs" />
     <Compile Include="Command.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="CommandExecutionResultsType.cs" />
     <Compile Include="DefaultCreator.cs" />
     <Compile Include="DefaultErrorHandler.cs" />
+    <Compile Include="DefaultSegmentStrategy.cs" />
     <Compile Include="DummyCommand.cs" />
     <Compile Include="ErrorHandlerEngine.cs" />
     <Compile Include="ErrorHandlerEngineBuilder.cs" />
@@ -76,7 +78,15 @@
     <Compile Include="ITypeResolver.cs" />
     <Compile Include="NotSupportedTypeRegistrationException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QuotedSegmentStrategy.cs" />
     <Compile Include="ReturnCode.cs" />
+    <Compile Include="Route.cs" />
+    <Compile Include="RouteBuilder.cs" />
+    <Compile Include="RouteEngine.cs" />
+    <Compile Include="RouteEngineBuilder.cs" />
+    <Compile Include="Segment.cs" />
+    <Compile Include="SegmentReaderBuilder.cs" />
+    <Compile Include="SegmentsReader.cs" />
     <Compile Include="SimplestConstructorSelectionStrategy.cs" />
     <Compile Include="SpyErrorHandler.cs" />
     <Compile Include="StubCommandResolver.cs" />
@@ -91,6 +101,7 @@
     <Compile Include="TestTypeContainer.cs" />
     <Compile Include="TypeContainer.cs" />
     <Compile Include="TypeContainerBuilder.cs" />
+    <Compile Include="UnresolveableDependencyException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

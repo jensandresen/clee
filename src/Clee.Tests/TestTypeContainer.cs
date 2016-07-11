@@ -329,13 +329,4 @@ namespace Clee.Tests
 
         #endregion
     }
-
-    public class UnresolveableDependencyException : Exception
-    {
-    }
-
-    public class CircularDependencyException : Exception
-    {
-
-    }
 }
