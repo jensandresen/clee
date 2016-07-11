@@ -85,6 +85,7 @@
     <Compile Include="StubTypeResolver.cs" />
     <Compile Include="TestCleeEngine.cs" />
     <Compile Include="TestErrorHandlerEngine.cs" />
+    <Compile Include="TestGetOptParser.cs" />
     <Compile Include="TestRoute.cs" />
     <Compile Include="TestRouteEngine.cs" />
     <Compile Include="TestTypeContainer.cs" />
