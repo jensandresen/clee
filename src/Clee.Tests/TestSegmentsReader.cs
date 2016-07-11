@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Clee.Tests
 {
-    public class TestGetOptParser
+    public class TestSegmentsReader
     {
         [Theory]
         [InlineData(null)]
@@ -15,8 +15,8 @@ namespace Clee.Tests
         [InlineData("               ")]
         public void returns_expected_on_no_or_empty_input(string input)
         {
-            var sut = new GetOptParserBuilder().Build();
-            var result = sut.GetSegmentsFrom(input);
+            var sut = new SegmentReaderBuilder().Build();
+            var result = sut.ReadAllFrom(input);
 
             Assert.NotNull(result);
             Assert.Empty(result);
@@ -38,8 +38,8 @@ namespace Clee.Tests
         [InlineData("-f", "-f")]
         public void single_segment__returns_expected_value(string input, string expected)
         {
-            var sut = new GetOptParserBuilder().Build();
-            var result = sut.GetSegmentsFrom(input).Single();
+            var sut = new SegmentReaderBuilder().Build();
+            var result = sut.ReadAllFrom(input).Single();
 
             Assert.Equal(expected, result.Value);
         }
@@ -55,8 +55,8 @@ namespace Clee.Tests
         [InlineData("   \"foo\"", 3)]
         public void single_segment__returns_expected_begin_offset(string input, int expectedBeginOffset)
         {
-            var sut = new GetOptParserBuilder().Build();
-            var result = sut.GetSegmentsFrom(input).Single();
+            var sut = new SegmentReaderBuilder().Build();
+            var result = sut.ReadAllFrom(input).Single();
 
             Assert.Equal(expectedBeginOffset, result.BeginOffset);
         }
@@ -80,8 +80,8 @@ namespace Clee.Tests
         [InlineData("\"foo\"           ", 5)]
         public void single_segment__returns_expected_end_offset(string input, int expectedEndOffset)
         {
-            var sut = new GetOptParserBuilder().Build();
-            var result = sut.GetSegmentsFrom(input).Single();
+            var sut = new SegmentReaderBuilder().Build();
+            var result = sut.ReadAllFrom(input).Single();
 
             Assert.Equal(expectedEndOffset, result.EndOffset);
         }
@@ -91,9 +91,9 @@ namespace Clee.Tests
         [InlineData("\"foo bar\"", "\"foo bar\"")]
         public void supports_quoted_segment(string input, string expecteValue)
         {
-            var sut = new GetOptParserBuilder().Build();
+            var sut = new SegmentReaderBuilder().Build();
             var result = sut
-                .GetSegmentsFrom(input)
+                .ReadAllFrom(input)
                 .Select(x => x.Value)
                 .ToArray();
 
@@ -105,10 +105,10 @@ namespace Clee.Tests
         [InlineData("\" \"", "\" \"")]
         public void supports_empty_quoted_segment(string input, string expecteValue)
         {
-            var sut = new GetOptParserBuilder().Build();
+            var sut = new SegmentReaderBuilder().Build();
 
             var result = sut
-                .GetSegmentsFrom(input)
+                .ReadAllFrom(input)
                 .Select(x => x.Value)
                 .ToArray();
 
@@ -119,9 +119,9 @@ namespace Clee.Tests
         [InlineData("\"foo \\\" bar\"", "\"foo \\\" bar\"")]
         public void supports_quoted_segments_containing_escaped_quotes(string input, string expecteValue)
         {
-            var sut = new GetOptParserBuilder().Build();
+            var sut = new SegmentReaderBuilder().Build();
             var result = sut
-                .GetSegmentsFrom(input)
+                .ReadAllFrom(input)
                 .Select(x => x.Value)
                 .ToArray();
 
@@ -144,9 +144,9 @@ namespace Clee.Tests
         [InlineData("  foo  bar  ", "foo,bar")]
         public void returns_expected_segment_value_on_two_segments(string input, string expectedCsv)
         {
-            var sut = new GetOptParserBuilder().Build();
+            var sut = new SegmentReaderBuilder().Build();
             var result = sut
-                .GetSegmentsFrom(input)
+                .ReadAllFrom(input)
                 .Select(x => x.Value)
                 .ToArray();
 
@@ -162,9 +162,9 @@ namespace Clee.Tests
         [InlineData("\"foo\" \"bar\"", 6)]
         public void returns_expected_begin_offset_on_second_segment(string input, int expectedBeginOffset)
         {
-            var sut = new GetOptParserBuilder().Build();
+            var sut = new SegmentReaderBuilder().Build();
             var result = sut
-                .GetSegmentsFrom(input)
+                .ReadAllFrom(input)
                 .ToArray();
 
             Assert.Equal(expectedBeginOffset, result[1].BeginOffset);
@@ -185,9 +185,9 @@ namespace Clee.Tests
         [InlineData("1 2 3 4 5", "1,2,3,4,5")]
         public void returns_expected_segment_value_on_multiple_segments(string input, string expectedCsv)
         {
-            var sut = new GetOptParserBuilder().Build();
+            var sut = new SegmentReaderBuilder().Build();
             var result = sut
-                .GetSegmentsFrom(input)
+                .ReadAllFrom(input)
                 .Select(x => x.Value)
                 .ToArray();
 
@@ -200,9 +200,9 @@ namespace Clee.Tests
         [InlineData("foo bar baz qux", "0,4,8,12")]
         public void returns_expected_segment_begin_offset_on_multiple_segments(string input, string expectedCsv)
         {
-            var sut = new GetOptParserBuilder().Build();
+            var sut = new SegmentReaderBuilder().Build();
             var result = sut
-                .GetSegmentsFrom(input)
+                .ReadAllFrom(input)
                 .Select(x => x.BeginOffset)
                 .ToArray();
 
@@ -213,9 +213,9 @@ namespace Clee.Tests
         [InlineData("\"f\" \"o\" \"o\"", "\"f\",\"o\",\"o\"")]
         public void supports_multiple_quoted_segments(string input, string expecteCsv)
         {
-            var sut = new GetOptParserBuilder().Build();
+            var sut = new SegmentReaderBuilder().Build();
             var result = sut
-                .GetSegmentsFrom(input)
+                .ReadAllFrom(input)
                 .Select(x => x.Value)
                 .ToArray();
 
@@ -225,44 +225,28 @@ namespace Clee.Tests
         #endregion
     }
 
-    public class GetOptParser
-    {
-        public IEnumerable<Segment> GetSegmentsFrom(string text)
-        {
-            var reader = new SegmentsReader(text);
-            return reader.GetSegmentsFrom();
-        }
-    }
-
     public class SegmentsReader
     {
-        private readonly string _source;
-        private int _index = 0;
-
-        public SegmentsReader(string source)
+        public IEnumerable<Segment> ReadAllFrom(string source)
         {
-            _source = source;
-        }
-
-        public IEnumerable<Segment> GetSegmentsFrom()
-        {
-            if (string.IsNullOrWhiteSpace(_source))
+            if (string.IsNullOrWhiteSpace(source))
             {
                 return Enumerable.Empty<Segment>();
             }
 
             var result = new LinkedList<Segment>();
+            var index = 0;
 
-            while (_index < _source.Length)
+            while (index < source.Length)
             {
-                if (char.IsWhiteSpace(_source[_index]))
+                if (char.IsWhiteSpace(source[index]))
                 {
-                    _index++;
+                    index++;
                     continue;
                 }
 
-                var segment = ExtractSegment(_index);
-                _index = segment.EndOffset;
+                var segment = ExtractSegment(index, source);
+                index = segment.EndOffset;
 
                 result.AddLast(segment);
             }
@@ -270,15 +254,15 @@ namespace Clee.Tests
             return result;
         }
 
-        private Segment ExtractSegment(int beginOffset)
+        private Segment ExtractSegment(int beginOffset, string source)
         {
-            var isQuoted = QuotedSegmentStrategy.IsQuote(_source, beginOffset);
+            var isQuoted = QuotedSegmentStrategy.IsQuote(source, beginOffset);
 
             var analyzer = isQuoted ?
                 new QuotedSegmentStrategy() : 
                 new DefaultSegmentStrategy();
 
-            return analyzer.ExtractSegment(beginOffset, _source);
+            return analyzer.ExtractSegment(beginOffset, source);
         }
     }
 
@@ -363,11 +347,11 @@ namespace Clee.Tests
         }
     }
 
-    internal class GetOptParserBuilder
+    internal class SegmentReaderBuilder
     {
-        public GetOptParser Build()
+        public SegmentsReader Build()
         {
-            return new GetOptParser();
+            return new SegmentsReader();
         }
     }
 }
