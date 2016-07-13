@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using System;
+using System.Linq;
+using Xunit;
 
 namespace Clee.Tests
 {
@@ -42,19 +44,76 @@ namespace Clee.Tests
         }
 
         [Fact]
-        public void returns_expected_routes_when_registering_from_command()
+        public void returns_expected_routes_when_registering_from_command_1()
         {
             var sut = new RouteEngineBuilder().Build();
+            
             sut.RegisterRouteFrom<FooCommand>();
 
-            var expected = new[]
-            {
-                new RouteBuilder()
-                    .WithCommandType(typeof (FooCommand))
-                    .Build()
-            };
+            var expected = new RouteBuilder()
+                .WithCommandType(typeof (FooCommand))
+                .WithName("foo")
+                .Build();
 
-            Assert.Equal(expected, sut.Routes);
+            Assert.Equal(new[] {expected}, sut.Routes);
+        }
+
+        [Fact]
+        public void returns_expected_routes_when_registering_from_command_2()
+        {
+            var sut = new RouteEngineBuilder().Build();
+            
+            sut.RegisterRouteFrom<BarCommand>();
+
+            var expected = new RouteBuilder()
+                .WithCommandType(typeof (BarCommand))
+                .WithName("bar")
+                .Build();
+
+            Assert.Equal(new[] {expected}, sut.Routes);
+        }
+
+        [Fact]
+        public void when_registering_from_command_using_generic_api_the_route_has_expected_command_type_1()
+        {
+            var sut = new RouteEngineBuilder().Build();
+
+            sut.RegisterRouteFrom<FooCommand>();
+            var expectedCommandType = typeof (FooCommand);
+
+            Assert.Equal(
+                expected: new[] {expectedCommandType},
+                actual: sut.Routes.Select(x => x.CommandType)
+                );
+        }
+
+        [Fact]
+        public void when_registering_from_command_using_generic_api_the_route_has_expected_command_type_2()
+        {
+            var sut = new RouteEngineBuilder().Build();
+
+            sut.RegisterRouteFrom<BarCommand>();
+            var expectedCommandType = typeof (BarCommand);
+
+            Assert.Equal(
+                expected: new[] {expectedCommandType},
+                actual: sut.Routes.Select(x => x.CommandType)
+                );
+        }
+
+        [Theory]
+        [InlineData(typeof(FooCommand))]
+        [InlineData(typeof(BarCommand))]
+        public void when_registering_from_command_using_non_generic_api_the_route_has_expected_command_type(Type expectedCommandType)
+        {
+            var sut = new RouteEngineBuilder().Build();
+
+            sut.RegisterRouteFrom(expectedCommandType);
+
+            Assert.Equal(
+                expected: new[] {expectedCommandType},
+                actual: sut.Routes.Select(x => x.CommandType)
+                );
         }
 
         [Fact]
@@ -68,13 +127,51 @@ namespace Clee.Tests
             {
                 new RouteBuilder()
                     .WithCommandType(typeof (FooCommand))
+                    .WithName("foo")
                     .Build()
             };
 
             Assert.Equal(expected, sut.Routes);
         }
 
+        #region searching for routes
 
+        [Fact]
+        public void returns_expected_when_searching_for_a_route_when_none_has_been_registered()
+        {
+            var sut = new RouteEngineBuilder().Build();
+            var result = sut.FindRoute("foo");
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void returns_expected_route_when_searching_1()
+        {
+            var sut = new RouteEngineBuilder().Build();
+            sut.RegisterRouteFrom<FooCommand>();
+            
+            var result = sut.FindRoute("foo");
+
+            Assert.NotNull(result);
+            Assert.Equal("foo", result.Name);
+            Assert.Equal(typeof(FooCommand), result.CommandType);
+        }
+
+        [Fact]
+        public void returns_expected_route_when_searching_2()
+        {
+            var sut = new RouteEngineBuilder().Build();
+            sut.RegisterRouteFrom<BarCommand>();
+            
+            var result = sut.FindRoute("bar");
+
+            Assert.NotNull(result);
+            Assert.Equal("bar", result.Name);
+            Assert.Equal(typeof(BarCommand), result.CommandType);
+        }
+
+        #endregion
 
         #region dummy classes
 
@@ -82,6 +179,5 @@ namespace Clee.Tests
         private class BarCommand : DummyCommand { }
 
         #endregion
- 
     }
 }

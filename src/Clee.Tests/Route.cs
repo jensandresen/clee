@@ -5,10 +5,12 @@ namespace Clee.Tests
     public class Route
     {
         private readonly Type _commandType;
+        private readonly string _name;
 
-        public Route(Type commandType)
+        public Route(Type commandType, string name)
         {
             _commandType = commandType;
+            _name = name;
         }
 
         public Type CommandType
@@ -16,11 +18,16 @@ namespace Clee.Tests
             get { return _commandType; }
         }
 
+        public string Name
+        {
+            get { return _name; }
+        }
+
         #region equality functionality
 
         protected bool Equals(Route other)
         {
-            return Equals(_commandType, other._commandType);
+            return Equals(_commandType, other._commandType) && string.Equals(_name, other._name);
         }
 
         public override bool Equals(object obj)
@@ -42,9 +49,14 @@ namespace Clee.Tests
 
         public override int GetHashCode()
         {
-            return (_commandType != null
-                ? _commandType.GetHashCode()
-                : 0);
+            unchecked
+            {
+                return ((_commandType != null
+                    ? _commandType.GetHashCode()
+                    : 0)*397) ^ (_name != null
+                        ? _name.GetHashCode()
+                        : 0);
+            }
         }
 
         public static bool operator ==(Route left, Route right)

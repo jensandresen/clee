@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Clee.Tests
 {
@@ -20,7 +22,34 @@ namespace Clee.Tests
         public void RegisterRouteFrom<T>() where T : Command
         {
             var commandType = typeof (T);
-            RegisterRoute(new Route(commandType));
+            RegisterRouteFrom(commandType);
+        }
+
+        public void RegisterRouteFrom(Type commandType)
+        {
+            var name = ExtractNameFrom(commandType);
+
+            var route = new Route(
+                commandType: commandType,
+                name: name
+                );
+
+            RegisterRoute(route);
+        }
+
+        private static string ExtractNameFrom(Type commandType)
+        {
+            return commandType
+                .Name
+                .Replace("Command", "")
+                .ToLower();
+        }
+
+        public Route FindRoute(string input)
+        {
+            return _routes
+                .Where(x => x.Name == input)
+                .SingleOrDefault();
         }
     }
 }

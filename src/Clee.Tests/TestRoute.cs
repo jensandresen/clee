@@ -7,7 +7,10 @@ namespace Clee.Tests
         [Fact]
         public void command_type_returns_expected()
         {
-            var sut = new Route(typeof(DummyCommand));
+            var sut = new RouteBuilder()
+                .WithCommandType(typeof (DummyCommand))
+                .Build();
+
             Assert.Equal(typeof(DummyCommand), sut.CommandType);
         }
 
