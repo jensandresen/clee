@@ -57,12 +57,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgumentAttribute.cs" />
+    <Compile Include="ArgumentMetaData.cs" />
     <Compile Include="CircularDependencyException.cs" />
     <Compile Include="CleeEngine.cs" />
     <Compile Include="CleeEngineBuilder.cs" />
     <Compile Include="Command.cs" />
+    <Compile Include="CommandAttribute.cs" />
     <Compile Include="CommandBuilder.cs" />
     <Compile Include="CommandExecutionResultsType.cs" />
+    <Compile Include="CommandMetaData.cs" />
     <Compile Include="DefaultCreator.cs" />
     <Compile Include="DefaultErrorHandler.cs" />
     <Compile Include="DefaultSegmentStrategy.cs" />
@@ -93,6 +97,7 @@
     <Compile Include="StubErrorHandler.cs" />
     <Compile Include="StubErrorHandlerEngine.cs" />
     <Compile Include="StubTypeResolver.cs" />
+    <Compile Include="TestArgumentMetaData.cs" />
     <Compile Include="TestCleeEngine.cs" />
     <Compile Include="TestCommandMetaData.cs" />
     <Compile Include="TestErrorHandlerEngine.cs" />
