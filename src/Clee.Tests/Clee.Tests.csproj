@@ -94,6 +94,7 @@
     <Compile Include="StubErrorHandlerEngine.cs" />
     <Compile Include="StubTypeResolver.cs" />
     <Compile Include="TestCleeEngine.cs" />
+    <Compile Include="TestCommandMetaData.cs" />
     <Compile Include="TestErrorHandlerEngine.cs" />
     <Compile Include="TestSegmentsReader.cs" />
     <Compile Include="TestRoute.cs" />
