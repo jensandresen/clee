@@ -31,7 +31,7 @@ namespace Clee.Tests
 
             var route = new Route(
                 commandType: commandType,
-                name: name
+                path: name
                 );
 
             RegisterRoute(route);
@@ -48,7 +48,7 @@ namespace Clee.Tests
         public Route FindRoute(string input)
         {
             return _routes
-                .Where(x => x.Name == input)
+                .Where(x => x.Path == input)
                 .SingleOrDefault();
         }
     }

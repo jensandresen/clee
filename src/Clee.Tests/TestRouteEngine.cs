@@ -154,7 +154,7 @@ namespace Clee.Tests
             var result = sut.FindRoute("foo");
 
             Assert.NotNull(result);
-            Assert.Equal("foo", result.Name);
+            Assert.Equal("foo", result.Path);
             Assert.Equal(typeof(FooCommand), result.CommandType);
         }
 
@@ -167,7 +167,7 @@ namespace Clee.Tests
             var result = sut.FindRoute("bar");
 
             Assert.NotNull(result);
-            Assert.Equal("bar", result.Name);
+            Assert.Equal("bar", result.Path);
             Assert.Equal(typeof(BarCommand), result.CommandType);
         }
 

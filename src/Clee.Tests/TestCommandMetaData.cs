@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.Remoting.Messaging;
 using Xunit;
 
 namespace Clee.Tests
@@ -68,7 +69,7 @@ namespace Clee.Tests
         [Fact]
         public void returns_expected_arguments_from_command_type_with_single_argument()
         {
-            var metaData = new CommandMetaData(typeof(SingleArgumentCommand));
+            var metaData = new CommandMetaData(typeof(OneArgumentCommand));
             Assert.Single(metaData.Arguments);
         }
 
@@ -91,6 +92,44 @@ namespace Clee.Tests
             Assert.Throws<ArgumentNullException>(() => new CommandMetaData(null));
         }
 
+        [Fact]
+        public void returns_expected_when_comparing_two_equal_instances()
+        {
+            var left = new CommandMetaData(typeof(DummyCommand));
+            var right = new CommandMetaData(typeof(DummyCommand));
+
+            Assert.Equal(left, right);
+        }
+
+        [Fact]
+        public void returns_expected_when_comparing_two_equal_instances_using_operator()
+        {
+            var left = new CommandMetaData(typeof(DummyCommand));
+            var right = new CommandMetaData(typeof(DummyCommand));
+
+            Assert.True(left == right);
+            Assert.False(left != right);
+        }
+
+        [Fact]
+        public void returns_expected_when_comparing_two_non_equal_instances()
+        {
+            var left = new CommandMetaData(typeof(OneArgumentCommand));
+            var right = new CommandMetaData(typeof(TwoArgumentCommand));
+
+            Assert.NotEqual(left, right);
+        }
+
+        [Fact]
+        public void returns_expected_when_comparing_two_non_equal_instances_using_operator()
+        {
+            var left = new CommandMetaData(typeof(OneArgumentCommand));
+            var right = new CommandMetaData(typeof(TwoArgumentCommand));
+
+            Assert.True(left != right);
+            Assert.False(left == right);
+        }
+
         #region dummy classes
 
         private class NakedAndEmptyCommand : DummyCommand { }
@@ -106,7 +145,7 @@ namespace Clee.Tests
             public string Foo { get; set; }
         }
 
-        private class SingleArgumentCommand : DummyCommand
+        private class OneArgumentCommand : DummyCommand
         {
             [Argument]
             public string Foo { get; set; }

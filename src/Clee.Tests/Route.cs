@@ -4,30 +4,30 @@ namespace Clee.Tests
 {
     public class Route
     {
-        private readonly Type _commandType;
-        private readonly string _name;
+        private readonly CommandMetaData _commandMetaData;
+        private readonly string _path;
 
-        public Route(Type commandType, string name)
+        public Route(Type commandType, string path)
         {
-            _commandType = commandType;
-            _name = name;
+            _commandMetaData = new CommandMetaData(commandType);
+            _path = path;
         }
 
         public Type CommandType
         {
-            get { return _commandType; }
+            get { return _commandMetaData.CommandType; }
         }
 
-        public string Name
+        public string Path
         {
-            get { return _name; }
+            get { return _path; }
         }
 
         #region equality functionality
 
         protected bool Equals(Route other)
         {
-            return Equals(_commandType, other._commandType) && string.Equals(_name, other._name);
+            return Equals(_commandMetaData, other._commandMetaData) && string.Equals(_path, other._path);
         }
 
         public override bool Equals(object obj)
@@ -51,10 +51,10 @@ namespace Clee.Tests
         {
             unchecked
             {
-                return ((_commandType != null
-                    ? _commandType.GetHashCode()
-                    : 0)*397) ^ (_name != null
-                        ? _name.GetHashCode()
+                return ((_commandMetaData != null
+                    ? _commandMetaData.GetHashCode()
+                    : 0)*397) ^ (_path != null
+                        ? _path.GetHashCode()
                         : 0);
             }
         }
