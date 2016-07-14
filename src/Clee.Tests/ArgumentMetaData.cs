@@ -10,8 +10,24 @@ namespace Clee.Tests
 
         public ArgumentMetaData(PropertyInfo propertyInfo)
         {
+            if (propertyInfo == null)
+            {
+                throw new ArgumentNullException("propertyInfo");
+            }
+
             _propertyInfo = propertyInfo;
-            _attribute = _propertyInfo.GetCustomAttribute<ArgumentAttribute>();
+            _attribute = propertyInfo.GetCustomAttribute<ArgumentAttribute>();
+
+            if (_attribute == null)
+            {
+                throw new ArgumentException(
+                    message: string.Format("Property \"{0}\" on {1} is not decorated with the attribute {2}.",
+                        propertyInfo,
+                        propertyInfo.DeclaringType,
+                        typeof (ArgumentAttribute)),
+                    paramName: "propertyInfo"
+                    );
+            }
         }
 
         public Type ArgumentType

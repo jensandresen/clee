@@ -79,6 +79,18 @@ namespace Clee.Tests
             Assert.Equal(2, metaData.Arguments.Count());
         }
 
+        [Fact]
+        public void ctor_throws_exception_if_initialized_with_inproper_type()
+        {
+            Assert.Throws<ArgumentException>(() => new CommandMetaData(typeof (string)));
+        }
+
+        [Fact]
+        public void ctor_throws_exception_if_initialized_with_null()
+        {
+            Assert.Throws<ArgumentNullException>(() => new CommandMetaData(null));
+        }
+
         #region dummy classes
 
         private class NakedAndEmptyCommand : DummyCommand { }

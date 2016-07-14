@@ -11,6 +11,19 @@ namespace Clee.Tests
 
         public CommandMetaData(Type commandType)
         {
+            if (commandType == null)
+            {
+                throw new ArgumentNullException("commandType");
+            }
+
+            if (!typeof(Command).IsAssignableFrom(commandType))
+            {
+                throw new ArgumentException(
+                    message: string.Format("The type \"{0}\" does not derive from {1}.", commandType, typeof(Command)),
+                    paramName: "commandType"
+                    );
+            }
+
             _commandType = commandType;
         }
 

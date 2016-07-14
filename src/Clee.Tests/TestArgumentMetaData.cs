@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Xunit;
 
@@ -113,7 +114,28 @@ namespace Clee.Tests
             Assert.False(sut.ArgumentIsRequired);
         }
 
+        [Fact]
+        public void ctor_throws_exception_if_initialized_with_null()
+        {
+            Assert.Throws<ArgumentNullException>(() => new ArgumentMetaData(null));
+        }
+
+        [Fact]
+        public void ctor_throws_exception_if_initialized_with_property_without_the_proper_attribute()
+        {
+            var property = typeof(NoArgumentAttribute)
+                .GetProperties()
+                .SingleOrDefault();
+
+            Assert.Throws<ArgumentException>(() => new ArgumentMetaData(property));
+        }
+
         #region dummy classes
+
+        private class NoArgumentAttribute
+        {
+            public string Foo { get; set; }
+        }
 
         private class SingleArgument
         {
