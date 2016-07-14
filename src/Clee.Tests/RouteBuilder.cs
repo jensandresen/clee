@@ -27,7 +27,7 @@ namespace Clee.Tests
 
         public Route Build()
         {
-            return new Route(_commandType, _name);
+            return new Route(new CommandMetaData(_commandType), _name);
         }
     }
 }

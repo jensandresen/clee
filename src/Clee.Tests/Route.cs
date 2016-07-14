@@ -7,9 +7,9 @@ namespace Clee.Tests
         private readonly CommandMetaData _commandMetaData;
         private readonly string _path;
 
-        public Route(Type commandType, string path)
+        public Route(CommandMetaData commandMetaData, string path)
         {
-            _commandMetaData = new CommandMetaData(commandType);
+            _commandMetaData = commandMetaData;
             _path = path;
         }
 

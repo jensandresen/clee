@@ -27,22 +27,13 @@ namespace Clee.Tests
 
         public void RegisterRouteFrom(Type commandType)
         {
-            var name = ExtractNameFrom(commandType);
+            var commandMetaData = new CommandMetaData(commandType);
+            var name = commandMetaData.CommandName;
 
-            var route = new Route(
-                commandType: commandType,
+            RegisterRoute(new Route(
+                commandMetaData: commandMetaData,
                 path: name
-                );
-
-            RegisterRoute(route);
-        }
-
-        private static string ExtractNameFrom(Type commandType)
-        {
-            return commandType
-                .Name
-                .Replace("Command", "")
-                .ToLower();
+                ));
         }
 
         public Route FindRoute(string input)
