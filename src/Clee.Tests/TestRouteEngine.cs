@@ -46,13 +46,15 @@ namespace Clee.Tests
         [Fact]
         public void returns_expected_routes_when_registering_from_command_1()
         {
-            var sut = new RouteEngineBuilder().Build();
+            var sut = new RouteEngineBuilder()
+                .WithCommandPathStrategy(new StubCommandPathStrategy("foo"))
+                .Build();
             
             sut.RegisterRouteFrom<FooCommand>();
 
             var expected = new RouteBuilder()
                 .WithCommandType(typeof (FooCommand))
-                .WithName("foo")
+                .WithPath("foo")
                 .Build();
 
             Assert.Equal(new[] {expected}, sut.Routes);
@@ -61,13 +63,15 @@ namespace Clee.Tests
         [Fact]
         public void returns_expected_routes_when_registering_from_command_2()
         {
-            var sut = new RouteEngineBuilder().Build();
+            var sut = new RouteEngineBuilder()
+                .WithCommandPathStrategy(new StubCommandPathStrategy("bar"))
+                .Build();
             
             sut.RegisterRouteFrom<BarCommand>();
 
             var expected = new RouteBuilder()
                 .WithCommandType(typeof (BarCommand))
-                .WithName("bar")
+                .WithPath("bar")
                 .Build();
 
             Assert.Equal(new[] {expected}, sut.Routes);
@@ -119,7 +123,10 @@ namespace Clee.Tests
         [Fact]
         public void registering_from_a_command_is_idempotent()
         {
-            var sut = new RouteEngineBuilder().Build();
+            var sut = new RouteEngineBuilder()
+                .WithCommandPathStrategy(new StubCommandPathStrategy("foo"))
+                .Build();
+
             sut.RegisterRouteFrom<FooCommand>();
             sut.RegisterRouteFrom<FooCommand>();
 
@@ -127,12 +134,29 @@ namespace Clee.Tests
             {
                 new RouteBuilder()
                     .WithCommandType(typeof (FooCommand))
-                    .WithName("foo")
+                    .WithPath("foo")
                     .Build()
             };
 
             Assert.Equal(expected, sut.Routes);
         }
+
+        [Fact]
+        public void uses_path_strategy_to_generate_route_path()
+        {
+            var expected = "foo route";
+
+            var sut = new RouteEngineBuilder()
+                .WithCommandPathStrategy(new StubCommandPathStrategy(expected))
+                .Build();
+
+            sut.RegisterRouteFrom<FooCommand>();
+
+            var result = sut.Routes.Single();
+
+            Assert.Equal(expected, result.Path);
+        }
+
 
         #region searching for routes
 
@@ -146,29 +170,77 @@ namespace Clee.Tests
         }
 
         [Fact]
-        public void returns_expected_route_when_searching_1()
+        public void returns_expected_route_when_searching()
         {
-            var sut = new RouteEngineBuilder().Build();
-            sut.RegisterRouteFrom<FooCommand>();
+            var expected = new RouteBuilder()
+                .WithPath("foo-path")
+                .Build();
             
-            var result = sut.FindRoute("foo");
+            var sut = new RouteEngineBuilder().Build();
+            sut.RegisterRoute(expected);
 
-            Assert.NotNull(result);
-            Assert.Equal("foo", result.Path);
-            Assert.Equal(typeof(FooCommand), result.CommandType);
+            var result = sut.FindRoute(expected.Path);
+
+            Assert.Same(expected, result);
         }
 
         [Fact]
-        public void returns_expected_route_when_searching_2()
+        public void returns_expected_when_searching_and_not_finding_a_route()
         {
             var sut = new RouteEngineBuilder().Build();
-            sut.RegisterRouteFrom<BarCommand>();
-            
-            var result = sut.FindRoute("bar");
 
-            Assert.NotNull(result);
-            Assert.Equal("bar", result.Path);
-            Assert.Equal(typeof(BarCommand), result.CommandType);
+            sut.RegisterRoute(
+                route: new RouteBuilder()
+                    .WithPath("foo-path")
+                    .Build()
+                );
+
+            var result = sut.FindRoute("non-existing-path");
+
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void returns_expected_route_when_searching_and_having_multiple_routes_registered()
+        {
+            // arrange
+            var sut = new RouteEngineBuilder().Build();
+
+            sut.RegisterRoute(
+                route: new RouteBuilder()
+                    .WithPath("foo-path")
+                    .Build()
+                );
+
+            sut.RegisterRoute(
+                route: new RouteBuilder()
+                    .WithPath("bar-path")
+                    .Build()
+                );
+
+            sut.RegisterRoute(
+                route: new RouteBuilder()
+                    .WithPath("baz-path")
+                    .Build()
+                );
+
+            sut.RegisterRoute(
+                route: new RouteBuilder()
+                    .WithPath("qux-path")
+                    .Build()
+                );
+
+            var expected = new RouteBuilder()
+                .WithPath("expected-path")
+                .Build();
+
+            sut.RegisterRoute(expected);
+
+            // act
+            var result = sut.FindRoute(expected.Path);
+
+            // assert
+            Assert.Same(expected, result);
         }
 
         #endregion
@@ -179,5 +251,20 @@ namespace Clee.Tests
         private class BarCommand : DummyCommand { }
 
         #endregion
+    }
+
+    public class StubCommandPathStrategy : ICommandPathStrategy
+    {
+        private readonly string _result;
+
+        public StubCommandPathStrategy(string result)
+        {
+            _result = result;
+        }
+
+        public string GeneratePathFor(CommandMetaData metaData)
+        {
+            return _result;
+        }
     }
 }

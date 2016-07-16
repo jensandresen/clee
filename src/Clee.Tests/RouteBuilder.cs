@@ -5,12 +5,12 @@ namespace Clee.Tests
     internal class RouteBuilder
     {
         private Type _commandType;
-        private string _name;
+        private string _path;
 
         public RouteBuilder()
         {
             _commandType = typeof (DummyCommand);
-            _name = "dummy";
+            _path = "dummy";
         }
 
         public RouteBuilder WithCommandType(Type commandType)
@@ -19,15 +19,15 @@ namespace Clee.Tests
             return this;
         }
 
-        public RouteBuilder WithName(string name)
+        public RouteBuilder WithPath(string path)
         {
-            _name = name;
+            _path = path;
             return this;
         }
 
         public Route Build()
         {
-            return new Route(new CommandMetaData(_commandType), _name);
+            return new Route(new CommandMetaData(_commandType), _path);
         }
     }
 }

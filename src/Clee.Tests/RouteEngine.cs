@@ -7,6 +7,12 @@ namespace Clee.Tests
     public class RouteEngine
     {
         private readonly ISet<Route> _routes = new HashSet<Route>();
+        private readonly ICommandPathStrategy _commandPathStrategy;
+
+        public RouteEngine(ICommandPathStrategy commandPathStrategy)
+        {
+            _commandPathStrategy = commandPathStrategy;
+        }
 
         public IEnumerable<Route> Routes
         {
@@ -28,11 +34,11 @@ namespace Clee.Tests
         public void RegisterRouteFrom(Type commandType)
         {
             var commandMetaData = new CommandMetaData(commandType);
-            var name = commandMetaData.CommandName;
+            var path = _commandPathStrategy.GeneratePathFor(commandMetaData);
 
             RegisterRoute(new Route(
                 commandMetaData: commandMetaData,
-                path: name
+                path: path
                 ));
         }
 
@@ -42,5 +48,10 @@ namespace Clee.Tests
                 .Where(x => x.Path == input)
                 .SingleOrDefault();
         }
+    }
+
+    public interface ICommandPathStrategy
+    {
+        string GeneratePathFor(CommandMetaData metaData);
     }
 }
