@@ -5,9 +5,9 @@ namespace Clee.Tests
     public class Route
     {
         private readonly CommandMetaData _commandMetaData;
-        private readonly string _path;
+        private readonly Path _path;
 
-        public Route(CommandMetaData commandMetaData, string path)
+        public Route(CommandMetaData commandMetaData, Path path)
         {
             _commandMetaData = commandMetaData;
             _path = path;
@@ -18,7 +18,7 @@ namespace Clee.Tests
             get { return _commandMetaData.CommandType; }
         }
 
-        public string Path
+        public Path Path
         {
             get { return _path; }
         }
@@ -27,7 +27,7 @@ namespace Clee.Tests
 
         protected bool Equals(Route other)
         {
-            return Equals(_commandMetaData, other._commandMetaData) && string.Equals(_path, other._path);
+            return Equals(_commandMetaData, other._commandMetaData) && Equals(_path, other._path);
         }
 
         public override bool Equals(object obj)

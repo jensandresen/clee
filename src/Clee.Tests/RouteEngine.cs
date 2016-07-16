@@ -42,7 +42,7 @@ namespace Clee.Tests
                 ));
         }
 
-        public Route FindRoute(string input)
+        public Route FindRoute(Path input)
         {
             return _routes
                 .Where(x => x.Path == input)
@@ -52,6 +52,6 @@ namespace Clee.Tests
 
     public interface ICommandPathStrategy
     {
-        string GeneratePathFor(CommandMetaData metaData);
+        Path GeneratePathFor(CommandMetaData metaData);
     }
 }
