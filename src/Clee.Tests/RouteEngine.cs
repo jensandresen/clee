@@ -49,9 +49,4 @@ namespace Clee.Tests
                 .SingleOrDefault();
         }
     }
-
-    public interface ICommandPathStrategy
-    {
-        Path GeneratePathFor(CommandMetaData metaData);
-    }
 }

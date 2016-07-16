@@ -74,6 +74,7 @@
     <Compile Include="ErrorHandlerEngine.cs" />
     <Compile Include="ErrorHandlerEngineBuilder.cs" />
     <Compile Include="HumbleCreator.cs" />
+    <Compile Include="ICommandPathStrategy.cs" />
     <Compile Include="ICommandResolver.cs" />
     <Compile Include="IConstructorSelectionStrategy.cs" />
     <Compile Include="ICreator.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="SegmentsReader.cs" />
     <Compile Include="SimplestConstructorSelectionStrategy.cs" />
     <Compile Include="SpyErrorHandler.cs" />
+    <Compile Include="StubCommandPathStrategy.cs" />
     <Compile Include="StubCommandResolver.cs" />
     <Compile Include="StubErrorHandler.cs" />
     <Compile Include="StubErrorHandlerEngine.cs" />
