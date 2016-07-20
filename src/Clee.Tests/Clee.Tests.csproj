@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Argument.cs" />
     <Compile Include="ArgumentAttribute.cs" />
     <Compile Include="ArgumentMetaData.cs" />
     <Compile Include="CircularDependencyException.cs" />
@@ -73,6 +74,8 @@
     <Compile Include="DummyCommand.cs" />
     <Compile Include="ErrorHandlerEngine.cs" />
     <Compile Include="ErrorHandlerEngineBuilder.cs" />
+    <Compile Include="GetOptStyleParser.cs" />
+    <Compile Include="GetOptStyleParserBuilder.cs" />
     <Compile Include="HumbleCreator.cs" />
     <Compile Include="ICommandPathStrategy.cs" />
     <Compile Include="ICommandResolver.cs" />
@@ -82,6 +85,7 @@
     <Compile Include="IErrorHandlerEngine.cs" />
     <Compile Include="ITypeResolver.cs" />
     <Compile Include="NotSupportedTypeRegistrationException.cs" />
+    <Compile Include="ParseResult.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuotedSegmentStrategy.cs" />
@@ -100,6 +104,7 @@
     <Compile Include="StubErrorHandler.cs" />
     <Compile Include="StubErrorHandlerEngine.cs" />
     <Compile Include="StubTypeResolver.cs" />
+    <Compile Include="TestArgument.cs" />
     <Compile Include="TestArgumentMetaData.cs" />
     <Compile Include="TestCleeEngine.cs" />
     <Compile Include="TestCommandMetaData.cs" />
