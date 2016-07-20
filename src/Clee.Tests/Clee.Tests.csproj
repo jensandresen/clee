@@ -104,6 +104,7 @@
     <Compile Include="TestCleeEngine.cs" />
     <Compile Include="TestCommandMetaData.cs" />
     <Compile Include="TestErrorHandlerEngine.cs" />
+    <Compile Include="TestGetOptStyleParser.cs" />
     <Compile Include="TestPath.cs" />
     <Compile Include="TestSegmentsReader.cs" />
     <Compile Include="TestRoute.cs" />

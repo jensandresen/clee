@@ -115,7 +115,12 @@ namespace Clee.Tests
         }
 
         [Theory]
+        [InlineData("\"foo\\\"bar\"", "\"foo\\\"bar\"")]
         [InlineData("\"foo \\\" bar\"", "\"foo \\\" bar\"")]
+        [InlineData("\"foo\\\"\"", "\"foo\\\"\"")]
+        [InlineData("\"foo\\\" \"", "\"foo\\\" \"")]
+        [InlineData("\"\\\"bar\"", "\"\\\"bar\"")]
+        [InlineData("\" \\\"bar\"", "\" \\\"bar\"")]
         public void supports_quoted_segments_containing_escaped_quotes(string input, string expecteValue)
         {
             var sut = new SegmentReaderBuilder().Build();
