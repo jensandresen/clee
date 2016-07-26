@@ -162,11 +162,8 @@ namespace Clee.Tests
         [InlineData("foo\\\"bar", "foo\"bar")]
         public void unescapes_escaped_quotes_in_value(string quotedInputValue, string expectedArgumentValue)
         {
-            Console.WriteLine("input: " + quotedInputValue);
-            Console.WriteLine("expected: " + expectedArgumentValue);
-
             var sut = new GetOptStyleParserBuilder().Build();
-            var result = sut.Parse(string.Format("foo --bar {0}", quotedInputValue));
+            var result = sut.Parse(string.Format("foo --bar \"{0}\"", quotedInputValue));
 
             Assert.Equal(new[] { new Argument("bar", expectedArgumentValue) }, result.Arguments);
         }

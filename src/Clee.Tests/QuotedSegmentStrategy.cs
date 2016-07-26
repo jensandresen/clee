@@ -1,35 +1,38 @@
 namespace Clee.Tests
 {
-    public class QuotedSegmentStrategy : DefaultSegmentStrategy
+    public class QuotedSegmentStrategy : SegmentStrategyBase
     {
-        protected override bool IsStopChar(string source, int offset)
+        private static bool IsStopChar(string source, int offset)
         {
-            return IsQuote(source, offset) &&
-                   !IsEscapedQuote(source, offset);
+            return SegmentHelper.IsQuote(source, offset) &&
+                   !SegmentHelper.IsEscapedQuote(source, offset);
+        }
+
+        protected override bool IsValidSegmentStart(int beginOffset, string source)
+        {
+            return SegmentHelper.IsQuote(source, beginOffset);
         }
 
         protected override int FindEndOffset(string source, int beginOffset)
         {
-            var endOffset = base.FindEndOffset(source, beginOffset);
+            var endOffset = beginOffset + 1;
 
-            if (IsQuote(source, endOffset))
+            while (endOffset < source.Length && !IsStopChar(source, endOffset))
+            {
+                endOffset++;
+            }
+
+            if (endOffset >= source.Length)
+            {
+                throw new SegmentException(endOffset, source);
+            }
+
+            if (SegmentHelper.IsQuote(source, endOffset))
             {
                 endOffset++;
             }
 
             return endOffset;
-        }
-
-        public static bool IsQuote(string source, int offset)
-        {
-            return source[offset] == '"';
-        }
-
-        private static bool IsEscapedQuote(string source, int offset)
-        {
-            return offset > 0 &&
-                   source[offset] == '"' &&
-                   source[offset - 1] == '\\';
         }
     }
 }

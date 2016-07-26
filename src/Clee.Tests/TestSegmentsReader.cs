@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using Xunit;
 
@@ -227,5 +228,39 @@ namespace Clee.Tests
         }
 
         #endregion
+
+        #region errors
+
+        [Fact]
+        public void throws_expected_exception_when_quoted_segment_is_missing_ending_quote()
+        {
+            var sut = new SegmentReaderBuilder().Build();
+            var result = ExceptionHelper.Grab<SegmentException>(() => sut.ReadAllFrom("foo \"bar"));
+
+            Assert.NotNull(result);
+            Assert.Equal(8, result.ErrorOffset);
+        }
+
+        [Fact]
+        public void throws_expected_exception_when_quoted_segment_is_missing_beginning_quote()
+        {
+            var sut = new SegmentReaderBuilder().Build();
+            var result = ExceptionHelper.Grab<SegmentException>(() => sut.ReadAllFrom("foo bar\""));
+
+            Assert.NotNull(result);
+            Assert.Equal(7, result.ErrorOffset);
+        }
+
+        #endregion
+    }
+
+    public class ParseException : Exception
+    {
+        public ParseException(int errorOffset)
+        {
+            ErrorOffset = errorOffset;
+        }
+
+        public int ErrorOffset { get; private set; }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,11 +35,11 @@ namespace Clee.Tests
 
         private Segment ExtractSegment(int beginOffset, string source)
         {
-            var isQuoted = QuotedSegmentStrategy.IsQuote(source, beginOffset);
+            var isQuoted = SegmentHelper.IsQuote(source, beginOffset);
 
-            var analyzer = isQuoted ?
-                new QuotedSegmentStrategy() : 
-                new DefaultSegmentStrategy();
+            var analyzer = isQuoted
+                ? (ISegmentStrategy) new QuotedSegmentStrategy()
+                : (ISegmentStrategy) new DefaultSegmentStrategy();
 
             return analyzer.ExtractSegment(beginOffset, source);
         }

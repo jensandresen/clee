@@ -74,6 +74,7 @@
     <Compile Include="DummyCommand.cs" />
     <Compile Include="ErrorHandlerEngine.cs" />
     <Compile Include="ErrorHandlerEngineBuilder.cs" />
+    <Compile Include="ExceptionHelper.cs" />
     <Compile Include="GetOptStyleParser.cs" />
     <Compile Include="GetOptStyleParserBuilder.cs" />
     <Compile Include="HumbleCreator.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="ICreator.cs" />
     <Compile Include="IErrorHandler.cs" />
     <Compile Include="IErrorHandlerEngine.cs" />
+    <Compile Include="ISegmentStrategy.cs" />
     <Compile Include="ITypeResolver.cs" />
     <Compile Include="NotSupportedTypeRegistrationException.cs" />
     <Compile Include="ParseResult.cs" />
@@ -95,8 +97,10 @@
     <Compile Include="RouteEngine.cs" />
     <Compile Include="RouteEngineBuilder.cs" />
     <Compile Include="Segment.cs" />
+    <Compile Include="SegmentHelper.cs" />
     <Compile Include="SegmentReaderBuilder.cs" />
     <Compile Include="SegmentsReader.cs" />
+    <Compile Include="SegmentStrategyBase.cs" />
     <Compile Include="SimplestConstructorSelectionStrategy.cs" />
     <Compile Include="SpyErrorHandler.cs" />
     <Compile Include="StubCommandPathStrategy.cs" />
@@ -111,6 +115,7 @@
     <Compile Include="TestErrorHandlerEngine.cs" />
     <Compile Include="TestGetOptStyleParser.cs" />
     <Compile Include="TestPath.cs" />
+    <Compile Include="TestQuotedSegmentStrategy.cs" />
     <Compile Include="TestSegmentsReader.cs" />
     <Compile Include="TestRoute.cs" />
     <Compile Include="TestRouteEngine.cs" />
