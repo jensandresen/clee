@@ -260,7 +260,7 @@ namespace Clee.Tests
 
     public class ParseException : Exception
     {
-        public ParseException(int errorOffset)
+        public ParseException(int errorOffset, string message) : base(message)
         {
             ErrorOffset = errorOffset;
         }

@@ -31,7 +31,7 @@ namespace Clee.Tests
 
                 if (!seg.Value.StartsWith("-"))
                 {
-                    throw new ParseException(seg.BeginOffset);
+                    throw new ParseException(seg.BeginOffset, "Unknown argument definition.");
                 }
 
                 var argumentName = seg.Value.TrimStart('-');
@@ -67,7 +67,7 @@ namespace Clee.Tests
             if (pathCandidates.Length == 0)
             {
                 var offset = segments.First().BeginOffset;
-                throw new ParseException(offset);
+                throw new ParseException(offset, "Command definition is missing.");
             }
 
             var path = new Path(pathCandidates[0].Value);
