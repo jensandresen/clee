@@ -197,6 +197,34 @@ namespace Clee.Tests
             Assert.Equal(expectedErrorOffset, result.ErrorOffset);
         }
 
+        [Theory]
+        [InlineData("cmd --argname argvalue illegal_trailing_value")]
+        [InlineData("cmd --argname argvalue illegal_trailing_value another_illegal_trailing_value")]
+        [InlineData("cmd --arg1name arg1value --arg2name arg2value illegal_trailing_value")]
+        [InlineData("cmd --arg1name arg1value illegal_trailing_value --arg2name arg2value")]
+        public void throws_exception_on_illegal_trailing_argument_value(string input)
+        {
+            var sut = new GetOptStyleParserBuilder().Build();
+            Assert.Throws<ParseException>(() => sut.Parse(input));
+        }
+
+        [Fact]
+        public void returns_expected_error_offset_on_illegal_trailing_argument_value()
+        {
+            var input = "cmd --argname argvalue illegal_trailing_value";
+
+            var sut = new GetOptStyleParserBuilder().Build();
+
+            var result = ExceptionHelper
+                .From(() => sut.Parse(input))
+                .Grab<ParseException>();
+
+            Assert.Equal(
+                expected: input.IndexOf("illegal_trailing_value"),
+                actual: result.ErrorOffset
+                );
+        }
+
         #endregion
     }
 }

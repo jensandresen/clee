@@ -29,7 +29,12 @@ namespace Clee.Tests
             {
                 var seg = candidates.Dequeue();
 
-                var argumentName = seg.Value.Replace("-", "");
+                if (!seg.Value.StartsWith("-"))
+                {
+                    throw new ParseException(seg.BeginOffset);
+                }
+
+                var argumentName = seg.Value.TrimStart('-');
                 var argumentValue = "";
 
                 if (candidates.Count > 0)
