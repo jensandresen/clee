@@ -179,6 +179,24 @@ namespace Clee.Tests
             Assert.Throws<ParseException>(() => sut.Parse("--foo"));
         }
 
+        [Theory]
+        [InlineData("--foo", 0)]
+        [InlineData(" --foo", 1)]
+        [InlineData("  --foo", 2)]
+        [InlineData("-f", 0)]
+        [InlineData(" -f", 1)]
+        [InlineData("  -f", 2)]
+        public void returns_expected_error_offset_when_path_is_missing_from_input(string input, int expectedErrorOffset)
+        {
+            var sut = new GetOptStyleParserBuilder().Build();
+            
+            var result = ExceptionHelper
+                .From(() => sut.Parse(input))
+                .Grab<ParseException>();
+
+            Assert.Equal(expectedErrorOffset, result.ErrorOffset);
+        }
+
         #endregion
     }
 }

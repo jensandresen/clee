@@ -61,7 +61,8 @@ namespace Clee.Tests
 
             if (pathCandidates.Length == 0)
             {
-                throw new ParseException(0);
+                var offset = segments.First().BeginOffset;
+                throw new ParseException(offset);
             }
 
             var path = new Path(pathCandidates[0].Value);
