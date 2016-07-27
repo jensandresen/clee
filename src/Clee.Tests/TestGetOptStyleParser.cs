@@ -169,5 +169,16 @@ namespace Clee.Tests
         }
 
         #endregion
+
+        #region errors
+
+        [Fact]
+        public void throws_expected_exception_when_path_is_missing_from_input()
+        {
+            var sut = new GetOptStyleParserBuilder().Build();
+            Assert.Throws<ParseException>(() => sut.Parse("--foo"));
+        }
+
+        #endregion
     }
 }

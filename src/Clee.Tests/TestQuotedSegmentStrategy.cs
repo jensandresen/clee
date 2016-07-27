@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Xunit;
 
 namespace Clee.Tests
@@ -48,7 +47,9 @@ namespace Clee.Tests
         public void exception_thrown_indicates_where_the_issue_offset_is_located()
         {
             var sut = new QuotedSegmentStrategy();
-            var result = ExceptionHelper.Grab<SegmentException>(() => sut.ExtractSegment(0, "\"foo"));
+            var result = ExceptionHelper
+                .From(() => sut.ExtractSegment(0, "\"foo"))
+                .Grab<SegmentException>();
 
             Assert.Equal(4, result.ErrorOffset);
         }
@@ -59,7 +60,9 @@ namespace Clee.Tests
             var input = "\"foo";
 
             var sut = new QuotedSegmentStrategy();
-            var result = ExceptionHelper.Grab<SegmentException>(() => sut.ExtractSegment(0, input));
+            var result = ExceptionHelper
+                .From(() => sut.ExtractSegment(0, input))
+                .Grab<SegmentException>();
 
             Assert.Equal(input, result.Input);
         }
@@ -126,7 +129,9 @@ namespace Clee.Tests
         public void exception_thrown_indicates_where_the_issue_offset_is_located()
         {
             var sut = new DefaultSegmentStrategy();
-            var result = ExceptionHelper.Grab<SegmentException>(() => sut.ExtractSegment(0, "foo\""));
+            var result = ExceptionHelper
+                .From(() => sut.ExtractSegment(0, "foo\""))
+                .Grab<SegmentException>();
 
             Assert.Equal(3, result.ErrorOffset);
         }
@@ -137,7 +142,9 @@ namespace Clee.Tests
             var input = "foo\"";
 
             var sut = new DefaultSegmentStrategy();
-            var result = ExceptionHelper.Grab<SegmentException>(() => sut.ExtractSegment(0, input));
+            var result = ExceptionHelper
+                .From(() => sut.ExtractSegment(0, input))
+                .Grab<SegmentException>();
 
             Assert.Equal(input, result.Input);
         }

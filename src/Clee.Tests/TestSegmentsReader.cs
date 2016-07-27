@@ -235,7 +235,9 @@ namespace Clee.Tests
         public void throws_expected_exception_when_quoted_segment_is_missing_ending_quote()
         {
             var sut = new SegmentReaderBuilder().Build();
-            var result = ExceptionHelper.Grab<SegmentException>(() => sut.ReadAllFrom("foo \"bar"));
+            var result = ExceptionHelper
+                .From(() => sut.ReadAllFrom("foo \"bar"))
+                .Grab<SegmentException>();
 
             Assert.NotNull(result);
             Assert.Equal(8, result.ErrorOffset);
@@ -245,7 +247,9 @@ namespace Clee.Tests
         public void throws_expected_exception_when_quoted_segment_is_missing_beginning_quote()
         {
             var sut = new SegmentReaderBuilder().Build();
-            var result = ExceptionHelper.Grab<SegmentException>(() => sut.ReadAllFrom("foo bar\""));
+            var result = ExceptionHelper
+                .From(() => sut.ReadAllFrom("foo bar\""))
+                .Grab<SegmentException>();
 
             Assert.NotNull(result);
             Assert.Equal(7, result.ErrorOffset);

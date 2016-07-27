@@ -59,6 +59,11 @@ namespace Clee.Tests
                 .TakeWhile(x => !x.Value.StartsWith("-"))
                 .ToArray();
 
+            if (pathCandidates.Length == 0)
+            {
+                throw new ParseException(0);
+            }
+
             var path = new Path(pathCandidates[0].Value);
 
             foreach (var seg in pathCandidates.Skip(1))

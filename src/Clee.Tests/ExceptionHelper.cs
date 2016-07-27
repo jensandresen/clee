@@ -4,20 +4,35 @@ namespace Clee.Tests
 {
     public static class ExceptionHelper
     {
-        public static T Grab<T>(Action action) where T : Exception
+        public static ExceptionGrabber From(Action action)
         {
-            T exceptionThrown = null;
+            return new ExceptionGrabber(action);
+        }
 
-            try
+        public class ExceptionGrabber
+        {
+            private readonly Action _action;
+
+            public ExceptionGrabber(Action action)
             {
-                action();
-            }
-            catch (T err)
-            {
-                exceptionThrown = err;
+                _action = action;
             }
 
-            return exceptionThrown;
+            public T Grab<T>() where T : Exception
+            {
+                T exceptionThrown = null;
+
+                try
+                {
+                    _action();
+                }
+                catch (T err)
+                {
+                    exceptionThrown = err;
+                }
+
+                return exceptionThrown;
+            }
         }
     }
 }
