@@ -53,6 +53,19 @@ namespace Clee.Tests
 
                 var argumentValue = "";
 
+                if (argumentPrefixes == 1 && argumentName.Length > 1)
+                {
+                    foreach (char c in argumentName)
+                    {
+                        result.AddLast(new Argument(
+                        name: new string(c, 1), 
+                        value: argumentValue
+                        ));
+                    }
+
+                    continue;
+                }
+
                 if (candidates.Count > 0)
                 {
                     var nextSegment = candidates.Peek();

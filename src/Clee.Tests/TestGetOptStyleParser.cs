@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Xunit;
 
 namespace Clee.Tests
@@ -167,6 +168,24 @@ namespace Clee.Tests
 
             Assert.Equal(new[] { new Argument("bar", expectedArgumentValue) }, result.Arguments);
         }
+
+        [Fact]
+        public void supports_multi_flags()
+        {
+            var sut = new GetOptStyleParserBuilder().Build();
+
+            var result = sut.Parse("cmd arg -abc");
+
+            var expected = new[]
+            {
+                new Argument("a", ""),
+                new Argument("b", ""),
+                new Argument("c", ""),
+            };
+
+            Assert.Equal(expected, result.Arguments);
+        }
+
 
         #endregion
 
