@@ -225,6 +225,55 @@ namespace Clee.Tests
                 );
         }
 
+        [Theory]
+        [InlineData("---foo")]
+        [InlineData("----foo")]
+        [InlineData("-----foo")]
+        [InlineData("------foo")]
+        [InlineData("-- foo")]
+        [InlineData("- f")]
+        public void throws_exception_on_unsupported_argument_prefix(string argumentDefinition)
+        {
+            var input = string.Format("cmd {0}", argumentDefinition);
+
+            var sut = new GetOptStyleParserBuilder().Build();
+            Assert.Throws<ParseException>(() => sut.Parse(input));
+        }
+
+        [Theory]
+        [InlineData("cmd ---arg", 6)]
+        [InlineData("cmd ----arg", 6)]
+        [InlineData("cmd -- arg", 6)]
+        [InlineData("cmd --  arg", 6)]
+        [InlineData("cmd -  a", 5)]
+        [InlineData("cmd .arg", 4)]
+        [InlineData("cmd ..arg", 4)]
+        [InlineData("cmd \"arg\"", 4)]
+        public void returns_expected_error_offset_on_unsupported_argument_prefix(string input, int expectedOffset)
+        {
+            var sut = new GetOptStyleParserBuilder().Build();
+
+            var result = ExceptionHelper
+                .From(() => sut.Parse(input))
+                .Grab<ParseException>();
+
+            Assert.Equal(expectedOffset, result.ErrorOffset);
+        }
+
+        [Theory]
+        [InlineData("cmd \"arg\"", 4)]
+        [InlineData("\"arg\"", 0)]
+        public void returns_expected_error_offset_on_unsupported_quoted_path_segment(string input, int expectedOffset)
+        {
+            var sut = new GetOptStyleParserBuilder().Build();
+
+            var result = ExceptionHelper
+                .From(() => sut.Parse(input))
+                .Grab<ParseException>();
+
+            Assert.Equal(expectedOffset, result.ErrorOffset);
+        }
+
         #endregion
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Clee.Tests
@@ -21,8 +22,8 @@ namespace Clee.Tests
 
         private IEnumerable<Argument> GetArgumentsFrom(IEnumerable<Segment> segments)
         {
-            var candidates = new Queue<Segment>(segments.SkipWhile(x => !x.Value.StartsWith("-")));
-
+            var candidates = new Queue<Segment>(segments.SkipWhile(x => char.IsLetter(x.Value[0])));
+            
             var result = new LinkedList<Argument>();
 
             while (candidates.Count > 0)
@@ -34,7 +35,22 @@ namespace Clee.Tests
                     throw new ParseException(seg.BeginOffset, "Unknown argument definition.");
                 }
 
+                var argumentPrefixes = seg.Value
+                   .TakeWhile(x => x.Equals('-'))
+                   .Count();
+
+                if (argumentPrefixes > 2)
+                {
+                    throw new ParseException(seg.BeginOffset + 2, "Unexpected argument prefix found. Only one or two dashes are supported.");
+                }
+
                 var argumentName = seg.Value.TrimStart('-');
+
+                if (string.IsNullOrWhiteSpace(argumentName))
+                {
+                    throw new ParseException(seg.BeginOffset + argumentPrefixes, "Argument name is missing.");
+                }
+
                 var argumentValue = "";
 
                 if (candidates.Count > 0)
@@ -60,8 +76,14 @@ namespace Clee.Tests
 
         private Path GetPathFrom(IEnumerable<Segment> segments)
         {
+            var firstSegment = segments.FirstOrDefault();
+            if (firstSegment != null && firstSegment.Value.StartsWith("\""))
+            {
+                throw new ParseException(firstSegment.BeginOffset, "Unsupported character \" in command name.");
+            }
+
             var pathCandidates = segments
-                .TakeWhile(x => !x.Value.StartsWith("-"))
+                .TakeWhile(x => char.IsLetter(x.Value[0]))
                 .ToArray();
 
             if (pathCandidates.Length == 0)
