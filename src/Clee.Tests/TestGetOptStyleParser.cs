@@ -147,6 +147,19 @@ namespace Clee.Tests
         }
 
         [Theory]
+        [InlineData("foo", "foo")]
+        [InlineData("bar", "bar")]
+        [InlineData("\"foo bar\"", "foo bar")]
+        [InlineData("\"foo\\\"bar\"", "foo\"bar")]
+        public void returns_expected_arguments_when_single_short_name_argument_with_value_has_been_passed(string inputValue, string expectedValue)
+        {
+            var sut = new GetOptStyleParserBuilder().Build();
+            var result = sut.Parse("foo -b " + inputValue);
+
+            Assert.Equal(new[] {new Argument("b", expectedValue)}, result.Arguments);
+        }
+
+        [Theory]
         [InlineData("\"foo\"", "foo")]
         [InlineData("\"bar\"", "bar")]
         [InlineData("\"baz\"", "baz")]
@@ -181,6 +194,27 @@ namespace Clee.Tests
                 new Argument("a", ""),
                 new Argument("b", ""),
                 new Argument("c", ""),
+            };
+
+            Assert.Equal(expected, result.Arguments);
+        }
+
+        [Theory]
+        [InlineData("foo", "foo")]
+        [InlineData("bar", "bar")]
+        [InlineData("\"foo bar\"", "foo bar")]
+        [InlineData("\"foo\\\"bar\"", "foo\"bar")]
+        public void multi_flags_gets_expected_value_if_value_when_present(string inputValue, string expectedValue)
+        {
+            var sut = new GetOptStyleParserBuilder().Build();
+
+            var result = sut.Parse("cmd arg -abc " + inputValue);
+
+            var expected = new[]
+            {
+                new Argument("a", ""),
+                new Argument("b", ""),
+                new Argument("c", expectedValue),
             };
 
             Assert.Equal(expected, result.Arguments);
@@ -260,8 +294,8 @@ namespace Clee.Tests
         }
 
         [Theory]
-        [InlineData("cmd ---arg", 6)]
-        [InlineData("cmd ----arg", 6)]
+        [InlineData("cmd ---arg", 4)]
+        [InlineData("cmd ----arg", 4)]
         [InlineData("cmd -- arg", 6)]
         [InlineData("cmd --  arg", 6)]
         [InlineData("cmd -  a", 5)]

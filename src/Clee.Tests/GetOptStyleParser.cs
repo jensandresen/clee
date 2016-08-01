@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Clee.Tests
@@ -22,69 +21,7 @@ namespace Clee.Tests
 
         private IEnumerable<Argument> GetArgumentsFrom(IEnumerable<Segment> segments)
         {
-            var candidates = new Queue<Segment>(segments.SkipWhile(x => char.IsLetter(x.Value[0])));
-            
-            var result = new LinkedList<Argument>();
-
-            while (candidates.Count > 0)
-            {
-                var seg = candidates.Dequeue();
-
-                if (!seg.Value.StartsWith("-"))
-                {
-                    throw new ParseException(seg.BeginOffset, "Unknown argument definition.");
-                }
-
-                var argumentPrefixes = seg.Value
-                   .TakeWhile(x => x.Equals('-'))
-                   .Count();
-
-                if (argumentPrefixes > 2)
-                {
-                    throw new ParseException(seg.BeginOffset + 2, "Unexpected argument prefix found. Only one or two dashes are supported.");
-                }
-
-                var argumentName = seg.Value.TrimStart('-');
-
-                if (string.IsNullOrWhiteSpace(argumentName))
-                {
-                    throw new ParseException(seg.BeginOffset + argumentPrefixes, "Argument name is missing.");
-                }
-
-                var argumentValue = "";
-
-                if (argumentPrefixes == 1 && argumentName.Length > 1)
-                {
-                    foreach (char c in argumentName)
-                    {
-                        result.AddLast(new Argument(
-                        name: new string(c, 1), 
-                        value: argumentValue
-                        ));
-                    }
-
-                    continue;
-                }
-
-                if (candidates.Count > 0)
-                {
-                    var nextSegment = candidates.Peek();
-                    if (nextSegment != null && !nextSegment.Value.StartsWith("-"))
-                    {
-                        var temp = candidates.Dequeue();
-                        argumentValue = temp.Value;
-                        argumentValue = argumentValue.Trim('"');
-                        argumentValue = argumentValue.Replace("\\\"", "\"");
-                    }
-                }
-
-                result.AddLast(new Argument(
-                    name: argumentName,
-                    value: argumentValue
-                    ));
-            }
-
-            return result;
+            return new ArgumentReader(segments).ReadAll();
         }
 
         private Path GetPathFrom(IEnumerable<Segment> segments)
@@ -122,6 +59,192 @@ namespace Clee.Tests
             return segmentsReader
                 .ReadAllFrom(input)
                 .ToArray();
+        }
+    }
+
+    internal class ArgumentReader
+    {
+        private readonly Segment[] _segments;
+
+        public ArgumentReader(IEnumerable<Segment> segments)
+        {
+            _segments = segments
+                .SkipWhile(x => char.IsLetter(x.Value[0]))
+                .ToArray();
+        }
+
+        public IEnumerable<Argument> ReadAll()
+        {
+            var result = new LinkedList<Argument>();
+
+            var index = 0;
+
+            while (index < _segments.Length)
+            {
+                var argumentSegment = new ArgumentSegment(_segments[index]);
+                argumentSegment.Validate();
+
+                index++;
+
+                ValueSegment valueSegment;
+                if (TryCreateValueSegment(index, out valueSegment))
+                {
+                    index++;
+                }
+
+                if (argumentSegment.IsMulti)
+                {
+                    var list = ConvertToMultipleArguments(argumentSegment.Name, valueSegment.Value);
+
+                    foreach (var argument in list)
+                    {
+                        result.AddLast(argument);
+                    }
+                }
+                else
+                {
+                    result.AddLast(new Argument(
+                        name: argumentSegment.Name,
+                        value: valueSegment.Value
+                        ));
+                }
+            }
+
+            return result;
+        }
+
+        private IEnumerable<Argument> ConvertToMultipleArguments(string argumentName, string argumentValue)
+        {
+            for (var index = 0; index < argumentName.Length; index++)
+            {
+                var isLastArgument = index == argumentName.Length - 1;
+
+                var name = argumentName[index];
+                var value = "";
+
+                if (isLastArgument)
+                {
+                    value = argumentValue;
+                }
+
+                yield return new Argument(
+                    name: new string(name, 1),
+                    value: value
+                    );
+            }
+        }
+
+        private bool TryCreateValueSegment(int index, out ValueSegment result)
+        {
+            if (index < _segments.Length)
+            {
+                var valueSegment = new ValueSegment(_segments[index]);
+
+                if (valueSegment.IsValid)
+                {
+                    result = valueSegment;
+                    return true;
+                }
+            }
+            
+            result = ValueSegment.NoValue;
+            return false;
+        }
+    }
+
+    internal class ArgumentSegment
+    {
+        private readonly Segment _segment;
+
+        public ArgumentSegment(Segment segment)
+        {
+            _segment = segment;
+        }
+
+        private bool IsShort
+        {
+            get { return PrefixCount == 1; }
+        }
+
+        private bool IsLong
+        {
+            get { return PrefixCount == 2; }
+        }
+
+        public bool IsMulti
+        {
+            get { return IsShort && Name.Length > 1; }
+        }
+
+        private int PrefixCount
+        {
+            get
+            {
+                var dashes = _segment
+                    .Value
+                    .TakeWhile(x => x.Equals('-'));
+
+                return dashes.Count();
+            }
+        }
+
+        public string Name
+        {
+            get { return _segment.Value.TrimStart('-'); }
+        }
+
+        private int BeginOffset
+        {
+            get { return _segment.BeginOffset; }
+        }
+
+        public void Validate()
+        {
+            if (!(IsShort || IsLong))
+            {
+                throw new ParseException(BeginOffset, "Unrecognized argument definition. Please use one or two dashes (- or --) to begin an argument definition followed by a valid argument name.");
+            }
+
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                throw new ParseException(BeginOffset + PrefixCount, "Argument name is missing.");
+            }
+        }
+    }
+
+    internal class ValueSegment
+    {
+        public static readonly ValueSegment NoValue = new ValueSegment(null);
+
+        private readonly Segment _segment;
+
+        public ValueSegment(Segment segment)
+        {
+            _segment = segment;
+        }
+
+        public string Value
+        {
+            get
+            {
+                if (_segment == null)
+                {
+                    return "";
+                }
+
+                return _segment
+                    .Value
+                    .Trim('"')
+                    .Replace("\\\"", "\"");
+            }
+        }
+
+        public bool IsValid
+        {
+            get
+            {
+                return !_segment.Value.StartsWith("-");
+            }
         }
     }
 }
