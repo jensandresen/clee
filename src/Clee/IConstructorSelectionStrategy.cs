@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Clee.Tests
+namespace Clee
 {
     public interface IConstructorSelectionStrategy
     {

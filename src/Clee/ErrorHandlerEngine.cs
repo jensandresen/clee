@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
-namespace Clee.Tests
+namespace Clee
 {
     public class ErrorHandlerEngine : IErrorHandlerEngine
     {

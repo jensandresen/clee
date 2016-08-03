@@ -1,4 +1,4 @@
-namespace Clee.Tests
+namespace Clee
 {
     public class QuotedSegmentStrategy : SegmentStrategyBase
     {

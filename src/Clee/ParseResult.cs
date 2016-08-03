@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Clee.Tests
+namespace Clee
 {
     public class ParseResult
     {

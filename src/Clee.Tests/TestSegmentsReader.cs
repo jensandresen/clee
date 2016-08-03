@@ -1,5 +1,4 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Linq;
 using Clee.Tests.Builders;
 using Clee.Tests.Helpers;
@@ -258,15 +257,5 @@ namespace Clee.Tests
         }
 
         #endregion
-    }
-
-    public class ParseException : Exception
-    {
-        public ParseException(int errorOffset, string message) : base(message)
-        {
-            ErrorOffset = errorOffset;
-        }
-
-        public int ErrorOffset { get; private set; }
     }
 }

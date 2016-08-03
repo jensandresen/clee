@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Clee.Tests
+namespace Clee
 {
     public class SegmentsReader
     {
