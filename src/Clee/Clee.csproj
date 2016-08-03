@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Argument.cs" />
+    <Compile Include="ArgumentAttribute.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

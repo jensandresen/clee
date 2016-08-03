@@ -59,8 +59,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Argument.cs" />
-    <Compile Include="ArgumentAttribute.cs" />
     <Compile Include="ArgumentMetaData.cs" />
     <Compile Include="CircularDependencyException.cs" />
     <Compile Include="CleeEngine.cs" />
