@@ -59,13 +59,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArgumentMetaData.cs" />
     <Compile Include="CircularDependencyException.cs" />
     <Compile Include="CleeEngine.cs" />
     <Compile Include="CleeEngineBuilder.cs" />
     <Compile Include="CommandBuilder.cs" />
     <Compile Include="CommandExecutionResultsType.cs" />
-    <Compile Include="CommandMetaData.cs" />
     <Compile Include="DefaultCreator.cs" />
     <Compile Include="DefaultErrorHandler.cs" />
     <Compile Include="DefaultSegmentStrategy.cs" />
