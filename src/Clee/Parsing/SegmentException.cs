@@ -1,6 +1,6 @@
 using System;
 
-namespace Clee
+namespace Clee.Parsing
 {
     public class SegmentException : Exception
     {

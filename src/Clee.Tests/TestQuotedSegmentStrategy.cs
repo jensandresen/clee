@@ -1,4 +1,5 @@
-﻿using Clee.Tests.Helpers;
+﻿using Clee.Parsing;
+using Clee.Tests.Helpers;
 using Xunit;
 
 namespace Clee.Tests

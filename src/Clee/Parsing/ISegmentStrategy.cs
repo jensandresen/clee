@@ -1,4 +1,4 @@
-namespace Clee
+namespace Clee.Parsing
 {
     public interface ISegmentStrategy
     {

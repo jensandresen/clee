@@ -1,4 +1,4 @@
-namespace Clee
+namespace Clee.Parsing
 {
     public class QuotedSegmentStrategy : SegmentStrategyBase
     {

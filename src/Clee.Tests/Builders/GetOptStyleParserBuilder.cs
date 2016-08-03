@@ -1,3 +1,5 @@
+using Clee.Parsing;
+
 namespace Clee.Tests.Builders
 {
     internal class GetOptStyleParserBuilder

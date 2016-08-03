@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Clee
+namespace Clee.Parsing
 {
     public class GetOptStyleParser
     {

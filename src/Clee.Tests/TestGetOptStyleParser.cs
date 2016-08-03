@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Clee.Parsing;
 using Clee.Tests.Builders;
 using Clee.Tests.Helpers;
 using Xunit;
