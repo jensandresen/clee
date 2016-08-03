@@ -74,8 +74,8 @@
     <Compile Include="DefaultErrorHandler.cs" />
     <Compile Include="DefaultSegmentStrategy.cs" />
     <Compile Include="ErrorHandlerEngine.cs" />
-    <Compile Include="ExceptionHelper.cs" />
     <Compile Include="GetOptStyleParser.cs" />
+    <Compile Include="Helpers\ExceptionHelper.cs" />
     <Compile Include="HumbleCreator.cs" />
     <Compile Include="ICommandPathStrategy.cs" />
     <Compile Include="ICommandResolver.cs" />

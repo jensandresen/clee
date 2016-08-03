@@ -1,6 +1,6 @@
 using System;
 
-namespace Clee.Tests
+namespace Clee.Tests.Helpers
 {
     public static class ExceptionHelper
     {
