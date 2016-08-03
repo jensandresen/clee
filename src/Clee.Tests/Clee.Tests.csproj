@@ -59,19 +59,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\CleeEngineBuilder.cs" />
+    <Compile Include="Builders\CommandBuilder.cs" />
+    <Compile Include="Builders\ErrorHandlerEngineBuilder.cs" />
+    <Compile Include="Builders\GetOptStyleParserBuilder.cs" />
+    <Compile Include="Builders\RouteBuilder.cs" />
+    <Compile Include="Builders\RouteEngineBuilder.cs" />
+    <Compile Include="Builders\SegmentReaderBuilder.cs" />
+    <Compile Include="Builders\TypeContainerBuilder.cs" />
     <Compile Include="CircularDependencyException.cs" />
     <Compile Include="CleeEngine.cs" />
-    <Compile Include="CleeEngineBuilder.cs" />
-    <Compile Include="CommandBuilder.cs" />
     <Compile Include="CommandExecutionResultsType.cs" />
     <Compile Include="DefaultCreator.cs" />
     <Compile Include="DefaultErrorHandler.cs" />
     <Compile Include="DefaultSegmentStrategy.cs" />
     <Compile Include="ErrorHandlerEngine.cs" />
-    <Compile Include="ErrorHandlerEngineBuilder.cs" />
     <Compile Include="ExceptionHelper.cs" />
     <Compile Include="GetOptStyleParser.cs" />
-    <Compile Include="GetOptStyleParserBuilder.cs" />
     <Compile Include="HumbleCreator.cs" />
     <Compile Include="ICommandPathStrategy.cs" />
     <Compile Include="ICommandResolver.cs" />
@@ -88,12 +92,9 @@
     <Compile Include="QuotedSegmentStrategy.cs" />
     <Compile Include="ReturnCode.cs" />
     <Compile Include="Route.cs" />
-    <Compile Include="RouteBuilder.cs" />
     <Compile Include="RouteEngine.cs" />
-    <Compile Include="RouteEngineBuilder.cs" />
     <Compile Include="Segment.cs" />
     <Compile Include="SegmentHelper.cs" />
-    <Compile Include="SegmentReaderBuilder.cs" />
     <Compile Include="SegmentsReader.cs" />
     <Compile Include="SegmentStrategyBase.cs" />
     <Compile Include="SimplestConstructorSelectionStrategy.cs" />
@@ -117,7 +118,6 @@
     <Compile Include="TestRouteEngine.cs" />
     <Compile Include="TestTypeContainer.cs" />
     <Compile Include="TypeContainer.cs" />
-    <Compile Include="TypeContainerBuilder.cs" />
     <Compile Include="UnresolveableDependencyException.cs" />
   </ItemGroup>
   <ItemGroup>

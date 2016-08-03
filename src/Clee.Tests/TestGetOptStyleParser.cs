@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Clee.Tests.Builders;
 using Xunit;
 
 namespace Clee.Tests

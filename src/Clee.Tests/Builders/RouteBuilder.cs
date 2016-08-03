@@ -1,7 +1,7 @@
 using System;
 using Clee.Tests.TestDoubles;
 
-namespace Clee.Tests
+namespace Clee.Tests.Builders
 {
     internal class RouteBuilder
     {

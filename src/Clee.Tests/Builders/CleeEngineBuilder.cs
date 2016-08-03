@@ -1,6 +1,6 @@
 using Moq;
 
-namespace Clee.Tests
+namespace Clee.Tests.Builders
 {
     internal class CleeEngineBuilder
     {

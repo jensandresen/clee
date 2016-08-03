@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Runtime.Serialization;
+using Clee.Tests.Builders;
 using Moq;
 using Xunit;
 
