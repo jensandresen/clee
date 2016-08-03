@@ -1,4 +1,5 @@
 using System;
+using Clee.ErrorHandling;
 
 namespace Clee.Tests.TestDoubles
 {

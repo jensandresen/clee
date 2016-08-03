@@ -47,11 +47,11 @@
     <Compile Include="CommandAttribute.cs" />
     <Compile Include="CommandExecutionResultsType.cs" />
     <Compile Include="CommandMetaData.cs" />
-    <Compile Include="DefaultErrorHandler.cs" />
-    <Compile Include="ErrorHandlerEngine.cs" />
+    <Compile Include="ErrorHandling\DefaultErrorHandler.cs" />
+    <Compile Include="ErrorHandling\ErrorHandlerEngine.cs" />
+    <Compile Include="ErrorHandling\IErrorHandler.cs" />
+    <Compile Include="ErrorHandling\IErrorHandlerEngine.cs" />
     <Compile Include="HumbleCreator.cs" />
-    <Compile Include="IErrorHandler.cs" />
-    <Compile Include="IErrorHandlerEngine.cs" />
     <Compile Include="Parsing\ArgumentReader.cs" />
     <Compile Include="Parsing\ArgumentSegment.cs" />
     <Compile Include="Parsing\DefaultSegmentStrategy.cs" />

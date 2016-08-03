@@ -1,3 +1,4 @@
+using Clee.ErrorHandling;
 using Clee.TypeResolving;
 using Moq;
 

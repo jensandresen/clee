@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Clee.TypeResolving;
 
-namespace Clee
+namespace Clee.ErrorHandling
 {
     public class ErrorHandlerEngine : IErrorHandlerEngine
     {

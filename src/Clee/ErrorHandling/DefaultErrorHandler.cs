@@ -1,6 +1,6 @@
 using System;
 
-namespace Clee
+namespace Clee.ErrorHandling
 {
     public class DefaultErrorHandler : IErrorHandler<Exception>
     {

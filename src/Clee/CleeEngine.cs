@@ -1,4 +1,5 @@
 using System;
+using Clee.ErrorHandling;
 using Clee.TypeResolving;
 
 namespace Clee
