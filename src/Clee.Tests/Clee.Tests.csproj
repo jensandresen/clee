@@ -65,8 +65,6 @@
     <Compile Include="CircularDependencyException.cs" />
     <Compile Include="CleeEngine.cs" />
     <Compile Include="CleeEngineBuilder.cs" />
-    <Compile Include="Command.cs" />
-    <Compile Include="CommandAttribute.cs" />
     <Compile Include="CommandBuilder.cs" />
     <Compile Include="CommandExecutionResultsType.cs" />
     <Compile Include="CommandMetaData.cs" />
