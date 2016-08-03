@@ -1,4 +1,4 @@
-namespace Clee
+namespace Clee.Routing
 {
     public interface ICommandPathStrategy
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace Clee
+namespace Clee.Routing
 {
     public class Route
     {

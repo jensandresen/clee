@@ -52,7 +52,6 @@
     <Compile Include="DefaultErrorHandler.cs" />
     <Compile Include="ErrorHandlerEngine.cs" />
     <Compile Include="HumbleCreator.cs" />
-    <Compile Include="ICommandPathStrategy.cs" />
     <Compile Include="ICommandResolver.cs" />
     <Compile Include="IConstructorSelectionStrategy.cs" />
     <Compile Include="ICreator.cs" />
@@ -74,11 +73,12 @@
     <Compile Include="Parsing\SegmentsReader.cs" />
     <Compile Include="Parsing\SegmentStrategyBase.cs" />
     <Compile Include="Parsing\ValueSegment.cs" />
-    <Compile Include="Path.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReturnCode.cs" />
-    <Compile Include="Route.cs" />
-    <Compile Include="RouteEngine.cs" />
+    <Compile Include="Routing\ICommandPathStrategy.cs" />
+    <Compile Include="Routing\Path.cs" />
+    <Compile Include="Routing\Route.cs" />
+    <Compile Include="Routing\RouteEngine.cs" />
     <Compile Include="SimplestConstructorSelectionStrategy.cs" />
     <Compile Include="TypeContainer.cs" />
     <Compile Include="UnresolveableDependencyException.cs" />

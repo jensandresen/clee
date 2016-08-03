@@ -1,4 +1,5 @@
 ﻿using System;
+using Clee.Routing;
 using Xunit;
 
 namespace Clee.Tests

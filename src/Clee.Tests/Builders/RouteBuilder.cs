@@ -1,4 +1,5 @@
 using System;
+using Clee.Routing;
 using Clee.Tests.TestDoubles;
 
 namespace Clee.Tests.Builders

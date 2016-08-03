@@ -1,3 +1,4 @@
+using Clee.Routing;
 using Moq;
 
 namespace Clee.Tests.Builders

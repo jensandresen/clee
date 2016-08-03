@@ -1,4 +1,6 @@
-﻿namespace Clee.Tests.TestDoubles
+﻿using Clee.Routing;
+
+namespace Clee.Tests.TestDoubles
 {
     public class StubCommandPathStrategy : ICommandPathStrategy
     {
