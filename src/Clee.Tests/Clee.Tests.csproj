@@ -67,7 +67,6 @@
     <Compile Include="Builders\RouteEngineBuilder.cs" />
     <Compile Include="Builders\SegmentReaderBuilder.cs" />
     <Compile Include="Builders\TypeContainerBuilder.cs" />
-    <Compile Include="CircularDependencyException.cs" />
     <Compile Include="CleeEngine.cs" />
     <Compile Include="CommandExecutionResultsType.cs" />
     <Compile Include="DefaultCreator.cs" />
@@ -85,7 +84,6 @@
     <Compile Include="IErrorHandlerEngine.cs" />
     <Compile Include="ISegmentStrategy.cs" />
     <Compile Include="ITypeResolver.cs" />
-    <Compile Include="NotSupportedTypeRegistrationException.cs" />
     <Compile Include="ParseResult.cs" />
     <Compile Include="Path.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -118,7 +116,6 @@
     <Compile Include="TestRouteEngine.cs" />
     <Compile Include="TestTypeContainer.cs" />
     <Compile Include="TypeContainer.cs" />
-    <Compile Include="UnresolveableDependencyException.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

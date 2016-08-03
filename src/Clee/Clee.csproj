@@ -42,10 +42,13 @@
     <Compile Include="Argument.cs" />
     <Compile Include="ArgumentAttribute.cs" />
     <Compile Include="ArgumentMetaData.cs" />
+    <Compile Include="CircularDependencyException.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandAttribute.cs" />
     <Compile Include="CommandMetaData.cs" />
+    <Compile Include="NotSupportedTypeRegistrationException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnresolveableDependencyException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
