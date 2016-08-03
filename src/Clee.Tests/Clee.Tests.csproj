@@ -75,6 +75,7 @@
     <Compile Include="TestCommandMetaData.cs" />
     <Compile Include="TestDefaultSegmentStrategy.cs" />
     <Compile Include="TestDoubles\DummyCommand.cs" />
+    <Compile Include="TestDoubles\HumbleCreator.cs" />
     <Compile Include="TestDoubles\SpyErrorHandler.cs" />
     <Compile Include="TestDoubles\StubCommandPathStrategy.cs" />
     <Compile Include="TestDoubles\StubCommandResolver.cs" />

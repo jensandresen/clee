@@ -1,7 +1,7 @@
 using System;
 using Clee.TypeResolving;
 
-namespace Clee
+namespace Clee.Tests.TestDoubles
 {
     public class HumbleCreator : ICreator
     {
