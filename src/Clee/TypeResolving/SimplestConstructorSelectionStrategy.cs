@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace Clee
+namespace Clee.TypeResolving
 {
     public class SimplestConstructorSelectionStrategy : IConstructorSelectionStrategy
     {

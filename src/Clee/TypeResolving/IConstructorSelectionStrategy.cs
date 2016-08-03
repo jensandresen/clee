@@ -1,7 +1,7 @@
 using System;
 using System.Reflection;
 
-namespace Clee
+namespace Clee.TypeResolving
 {
     public interface IConstructorSelectionStrategy
     {

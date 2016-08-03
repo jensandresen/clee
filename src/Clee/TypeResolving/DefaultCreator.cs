@@ -1,6 +1,6 @@
 using System;
 
-namespace Clee
+namespace Clee.TypeResolving
 {
     public class DefaultCreator : ICreator
     {

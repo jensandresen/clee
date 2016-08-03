@@ -1,5 +1,6 @@
 ﻿using Clee.Tests.Builders;
 using Clee.Tests.TestDoubles;
+using Clee.TypeResolving;
 using Moq;
 using Xunit;
 

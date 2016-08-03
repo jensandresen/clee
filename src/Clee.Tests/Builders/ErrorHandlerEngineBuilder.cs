@@ -1,3 +1,4 @@
+using Clee.TypeResolving;
 using Moq;
 
 namespace Clee.Tests.Builders

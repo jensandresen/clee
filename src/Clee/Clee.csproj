@@ -42,23 +42,16 @@
     <Compile Include="Argument.cs" />
     <Compile Include="ArgumentAttribute.cs" />
     <Compile Include="ArgumentMetaData.cs" />
-    <Compile Include="CircularDependencyException.cs" />
     <Compile Include="CleeEngine.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="CommandAttribute.cs" />
     <Compile Include="CommandExecutionResultsType.cs" />
     <Compile Include="CommandMetaData.cs" />
-    <Compile Include="DefaultCreator.cs" />
     <Compile Include="DefaultErrorHandler.cs" />
     <Compile Include="ErrorHandlerEngine.cs" />
     <Compile Include="HumbleCreator.cs" />
-    <Compile Include="ICommandResolver.cs" />
-    <Compile Include="IConstructorSelectionStrategy.cs" />
-    <Compile Include="ICreator.cs" />
     <Compile Include="IErrorHandler.cs" />
     <Compile Include="IErrorHandlerEngine.cs" />
-    <Compile Include="ITypeResolver.cs" />
-    <Compile Include="NotSupportedTypeRegistrationException.cs" />
     <Compile Include="Parsing\ArgumentReader.cs" />
     <Compile Include="Parsing\ArgumentSegment.cs" />
     <Compile Include="Parsing\DefaultSegmentStrategy.cs" />
@@ -79,9 +72,16 @@
     <Compile Include="Routing\Path.cs" />
     <Compile Include="Routing\Route.cs" />
     <Compile Include="Routing\RouteEngine.cs" />
-    <Compile Include="SimplestConstructorSelectionStrategy.cs" />
-    <Compile Include="TypeContainer.cs" />
-    <Compile Include="UnresolveableDependencyException.cs" />
+    <Compile Include="TypeResolving\CircularDependencyException.cs" />
+    <Compile Include="TypeResolving\DefaultCreator.cs" />
+    <Compile Include="TypeResolving\ICommandResolver.cs" />
+    <Compile Include="TypeResolving\IConstructorSelectionStrategy.cs" />
+    <Compile Include="TypeResolving\ICreator.cs" />
+    <Compile Include="TypeResolving\ITypeResolver.cs" />
+    <Compile Include="TypeResolving\NotSupportedTypeRegistrationException.cs" />
+    <Compile Include="TypeResolving\SimplestConstructorSelectionStrategy.cs" />
+    <Compile Include="TypeResolving\TypeContainer.cs" />
+    <Compile Include="TypeResolving\UnresolveableDependencyException.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

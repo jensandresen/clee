@@ -1,4 +1,4 @@
-namespace Clee
+namespace Clee.TypeResolving
 {
     public interface ITypeResolver
     {

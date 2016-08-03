@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Runtime.Serialization;
 using Clee.Tests.Builders;
+using Clee.TypeResolving;
 using Moq;
 using Xunit;
 

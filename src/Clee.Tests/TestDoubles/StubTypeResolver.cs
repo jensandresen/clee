@@ -1,3 +1,5 @@
+using Clee.TypeResolving;
+
 namespace Clee.Tests.TestDoubles
 {
     public class StubTypeResolver : ITypeResolver

@@ -1,3 +1,5 @@
+using Clee.TypeResolving;
+
 namespace Clee.Tests.Builders
 {
     internal class TypeContainerBuilder
