@@ -67,7 +67,6 @@
     <Compile Include="DefaultCreator.cs" />
     <Compile Include="DefaultErrorHandler.cs" />
     <Compile Include="DefaultSegmentStrategy.cs" />
-    <Compile Include="DummyCommand.cs" />
     <Compile Include="ErrorHandlerEngine.cs" />
     <Compile Include="ErrorHandlerEngineBuilder.cs" />
     <Compile Include="ExceptionHelper.cs" />
@@ -102,6 +101,7 @@
     <Compile Include="TestArgumentMetaData.cs" />
     <Compile Include="TestCleeEngine.cs" />
     <Compile Include="TestCommandMetaData.cs" />
+    <Compile Include="TestDoubles\DummyCommand.cs" />
     <Compile Include="TestDoubles\SpyErrorHandler.cs" />
     <Compile Include="TestDoubles\StubCommandPathStrategy.cs" />
     <Compile Include="TestDoubles\StubCommandResolver.cs" />

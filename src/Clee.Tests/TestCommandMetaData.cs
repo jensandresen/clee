@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Remoting.Messaging;
+using Clee.Tests.TestDoubles;
 using Xunit;
 
 namespace Clee.Tests
