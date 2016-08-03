@@ -1,6 +1,6 @@
 using System;
 
-namespace Clee.Tests
+namespace Clee.Tests.TestDoubles
 {
     public class StubErrorHandler<T> : IErrorHandler<T> where T : Exception
     {

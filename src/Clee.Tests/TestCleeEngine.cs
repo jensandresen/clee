@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Clee.Tests.TestDoubles;
+using Moq;
 using Xunit;
 
 namespace Clee.Tests

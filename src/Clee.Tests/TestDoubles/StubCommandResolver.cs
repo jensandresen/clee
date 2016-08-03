@@ -1,4 +1,4 @@
-namespace Clee.Tests
+namespace Clee.Tests.TestDoubles
 {
     public class StubCommandResolver : ICommandResolver
     {
