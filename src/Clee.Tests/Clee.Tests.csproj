@@ -84,6 +84,7 @@
     <Compile Include="TestDoubles\StubTypeResolver.cs" />
     <Compile Include="TestErrorHandlerEngine.cs" />
     <Compile Include="TestGetOptStyleParser.cs" />
+    <Compile Include="TestNameAsPathStrategy.cs" />
     <Compile Include="TestPath.cs" />
     <Compile Include="TestQuotedSegmentStrategy.cs" />
     <Compile Include="TestSegmentsReader.cs" />

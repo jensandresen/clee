@@ -68,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReturnCode.cs" />
     <Compile Include="Routing\ICommandPathStrategy.cs" />
+    <Compile Include="Routing\NameAsPathStrategy.cs" />
     <Compile Include="Routing\Path.cs" />
     <Compile Include="Routing\Route.cs" />
     <Compile Include="Routing\RouteEngine.cs" />
