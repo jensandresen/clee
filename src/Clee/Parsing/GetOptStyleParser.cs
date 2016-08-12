@@ -4,7 +4,12 @@ using Clee.Routing;
 
 namespace Clee.Parsing
 {
-    public class GetOptStyleParser
+    public interface IParser
+    {
+        ParseResult Parse(string input);
+    }
+
+    public class GetOptStyleParser : IParser
     {
         public ParseResult Parse(string input)
         {

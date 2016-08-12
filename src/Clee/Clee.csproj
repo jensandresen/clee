@@ -51,6 +51,7 @@
     <Compile Include="ErrorHandling\ErrorHandlerEngine.cs" />
     <Compile Include="ErrorHandling\IErrorHandler.cs" />
     <Compile Include="ErrorHandling\IErrorHandlerEngine.cs" />
+    <Compile Include="Mapping\IArgumentMapper.cs" />
     <Compile Include="Parsing\ArgumentReader.cs" />
     <Compile Include="Parsing\ArgumentSegment.cs" />
     <Compile Include="Parsing\DefaultSegmentStrategy.cs" />

@@ -4,7 +4,12 @@ using System.Linq;
 
 namespace Clee.Routing
 {
-    public class RouteEngine
+    public interface IRouteFinder
+    {
+        Route FindRoute(Path input);
+    }
+
+    public class RouteEngine : IRouteFinder
     {
         private readonly ISet<Route> _routes = new HashSet<Route>();
         private readonly ICommandPathStrategy _commandPathStrategy;

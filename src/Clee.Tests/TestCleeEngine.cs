@@ -23,7 +23,7 @@ namespace Clee.Tests
         public void returns_expected_error_code_if_command_is_null()
         {
             var sut = new CleeEngineBuilder().Build();
-            var result = sut.Execute(null);
+            var result = sut.Execute((Command) null);
 
             Assert.Equal((int) CommandExecutionResultsType.Error, result);
         }
