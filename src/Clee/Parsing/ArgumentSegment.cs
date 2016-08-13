@@ -11,12 +11,12 @@ namespace Clee.Parsing
             _segment = segment;
         }
 
-        private bool IsShort
+        public bool IsShort
         {
             get { return PrefixCount == 1; }
         }
 
-        private bool IsLong
+        public bool IsLong
         {
             get { return PrefixCount == 2; }
         }

@@ -2,20 +2,22 @@ namespace Clee
 {
     public class Argument
     {
-        public Argument(string name, string value)
+        public Argument(string name, string value, bool isShortName)
         {
             Name = name;
             Value = value;
+            IsShortName = isShortName;
         }
 
         public string Name { get; private set; }
         public string Value { get; private set; }
+        public bool IsShortName { get; private set; }
 
         #region equality members
 
         protected bool Equals(Argument other)
         {
-            return string.Equals(Name, other.Name) && string.Equals(Value, other.Value);
+            return string.Equals(Name, other.Name) && string.Equals(Value, other.Value) && IsShortName == other.IsShortName;
         }
 
         public override bool Equals(object obj)
@@ -39,11 +41,14 @@ namespace Clee
         {
             unchecked
             {
-                return ((Name != null
+                var hashCode = (Name != null
                     ? Name.GetHashCode()
-                    : 0)*397) ^ (Value != null
-                        ? Value.GetHashCode()
-                        : 0);
+                    : 0);
+                hashCode = (hashCode*397) ^ (Value != null
+                    ? Value.GetHashCode()
+                    : 0);
+                hashCode = (hashCode*397) ^ IsShortName.GetHashCode();
+                return hashCode;
             }
         }
 
@@ -58,5 +63,15 @@ namespace Clee
         }
 
         #endregion
+
+        public static Argument CreateLongNamed(string name, string value)
+        {
+            return new Argument(name, value, false);
+        }
+
+        public static Argument CreateShortNamed(string name, string value)
+        {
+            return new Argument(name, value, true);
+        }
     }
 }

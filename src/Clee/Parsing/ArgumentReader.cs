@@ -33,18 +33,28 @@ namespace Clee.Parsing
                     index++;
                 }
 
-                if (argumentSegment.IsMulti)
+                if (argumentSegment.IsShort)
                 {
-                    var list = ConvertToMultipleArguments(argumentSegment.Name, valueSegment.Value);
-
-                    foreach (var argument in list)
+                    if (argumentSegment.IsMulti)
                     {
-                        result.AddLast(argument);
+                        var list = ConvertToMultipleArguments(argumentSegment.Name, valueSegment.Value);
+
+                        foreach (var argument in list)
+                        {
+                            result.AddLast(argument);
+                        }                        
+                    }
+                    else
+                    {
+                        result.AddLast(Argument.CreateShortNamed(
+                            name: argumentSegment.Name,
+                            value: valueSegment.Value
+                            ));
                     }
                 }
-                else
+                else if (argumentSegment.IsLong)
                 {
-                    result.AddLast(new Argument(
+                    result.AddLast(Argument.CreateLongNamed(
                         name: argumentSegment.Name,
                         value: valueSegment.Value
                         ));
@@ -68,7 +78,7 @@ namespace Clee.Parsing
                     value = argumentValue;
                 }
 
-                yield return new Argument(
+                yield return Argument.CreateShortNamed(
                     name: new string(name, 1),
                     value: value
                     );

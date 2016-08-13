@@ -70,6 +70,7 @@
     <Compile Include="Helpers\ExceptionHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestArgument.cs" />
+    <Compile Include="TestArgumentMapper.cs" />
     <Compile Include="TestArgumentMetaData.cs" />
     <Compile Include="TestCleeEngine.cs" />
     <Compile Include="TestCommandMetaData.cs" />

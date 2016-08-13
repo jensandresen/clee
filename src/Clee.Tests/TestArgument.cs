@@ -7,8 +7,8 @@ namespace Clee.Tests
         [Fact]
         public void returns_expected_when_comparing_two_equal_instances()
         {
-            var left = new Argument("foo", "bar");
-            var right = new Argument("foo", "bar");
+            var left = new Argument("foo", "bar", false);
+            var right = new Argument("foo", "bar", false);
 
             Assert.Equal(left, right);
         }
@@ -16,8 +16,8 @@ namespace Clee.Tests
         [Fact]
         public void returns_expected_when_comparing_two_equal_instances_using_operators()
         {
-            var left = new Argument("foo", "bar");
-            var right = new Argument("foo", "bar");
+            var left = new Argument("foo", "bar", false);
+            var right = new Argument("foo", "bar", false);
 
             Assert.True(left == right);
             Assert.False(left != right);
@@ -26,8 +26,8 @@ namespace Clee.Tests
         [Fact]
         public void returns_expected_when_comparing_two_non_equal_instances()
         {
-            var left = new Argument("foo", "bar");
-            var right = new Argument("baz", "qux");
+            var left = new Argument("foo", "bar", false);
+            var right = new Argument("baz", "qux", false);
 
             Assert.NotEqual(left, right);
         }
@@ -35,8 +35,8 @@ namespace Clee.Tests
         [Fact]
         public void returns_expected_when_comparing_two_non_equal_instances_using_operators()
         {
-            var left = new Argument("foo", "bar");
-            var right = new Argument("baz", "qux");
+            var left = new Argument("foo", "bar", false);
+            var right = new Argument("baz", "qux", false);
 
             Assert.True(left != right);
             Assert.False(left == right);
