@@ -45,7 +45,7 @@ namespace Clee.Mapping
                 if (argument != null)
                 {
                     inputArguments.Remove(argument);
-                    property.SetValue(command, argument.Value);
+                    AssignValueToCommandProperty(command, property, argument.Value);
                 }
             }
 
@@ -54,6 +54,11 @@ namespace Clee.Mapping
                 var commandMetaData = new CommandMetaData(command.GetType());
                 throw new UnknownCommandArgumentsException(commandMetaData, inputArguments);
             }
+        }
+
+        private void AssignValueToCommandProperty(Command command, PropertyInfo property, object value)
+        {
+            property.SetValue(command, value);
         }
 
         private static bool IsMatch(Argument argument, ArgumentMetaData metaData)
