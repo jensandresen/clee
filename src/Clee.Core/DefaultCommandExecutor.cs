@@ -36,7 +36,22 @@ namespace Clee
             }
 
             var method = GetExecuteMethodFor(arguments);
-            method.Invoke(command, new[] { arguments });
+
+            try
+            {
+                method.Invoke(command, new[] { arguments });
+            }
+            catch (TargetInvocationException err)
+            {
+                if (err.InnerException != null)
+                {
+                    throw err.InnerException;
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
 
         private MethodInfo GetExecuteMethodFor(object arguments)

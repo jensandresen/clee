@@ -70,6 +70,7 @@
     <Compile Include="ICommandExecutor.cs" />
     <Compile Include="ICommandFactory.cs" />
     <Compile Include="ICommandRegistry.cs" />
+    <Compile Include="IHaveAnExitCode.cs" />
     <Compile Include="IOutputWriter.cs" />
     <Compile Include="ManualCommandFactory.cs" />
     <Compile Include="Parsing\DefaultChangeTypeParser.cs" />

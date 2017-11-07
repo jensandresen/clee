@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Clee.Configurations;
@@ -20,6 +21,8 @@ namespace Clee
         private IOutputWriter _outputWriter;
 
         private GeneralSettings _settings = new GeneralSettings();
+
+        private Action<int> _exitCodeAssigner;
         private ICommandLineParser _commandLineParser = new DefaultCommandLineParser();
 
         public CleeEngine(ICommandRegistry commandRegistry, ICommandFactory commandFactory, 
@@ -43,6 +46,7 @@ namespace Clee
 
             _history = new LinkedList<HistoryEntry>();
             _outputWriter = new DefaultOutputWriter();
+            _exitCodeAssigner = exitCode => Environment.ExitCode = exitCode;
         }
 
         public GeneralSettings Settings
@@ -133,13 +137,49 @@ namespace Clee
                 var argumentType = TypeUtils.ExtractArgumentTypesFromCommand(commandInstance).First();
                 var argumentInstance = _mapper.Map(argumentType, args);
 
-                _commandExecutor.Execute(commandInstance, argumentInstance);
+                var exitCode = 0;
+
+                try
+                {
+                    _commandExecutor.Execute(commandInstance, argumentInstance);
+                }
+                catch (Exception err)
+                {
+                    exitCode = ExtractExitCodeFrom(err);
+
+                    if (!_settings.ThrowOnExceptions)
+                    {
+                        _outputWriter.WriteLine("Error while executing command.");
+                        _outputWriter.WriteLine("");
+                        _outputWriter.WriteLine(err.ToString());
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                finally
+                {
+                    _exitCodeAssigner(exitCode);
+                }
 
                 _history.AddLast(new HistoryEntry(
                     commandName: string.IsNullOrWhiteSpace(commandName) ? "help" : commandName,
                     implementationType: commandInstance.GetType()
                     ));
             });
+        }
+
+        private int ExtractExitCodeFrom(Exception exception)
+        {
+            var exceptionWithExitCode = exception as IHaveAnExitCode;
+
+            if (exceptionWithExitCode != null)
+            {
+                return exceptionWithExitCode.ExitCode;
+            }
+
+            return -1; // default exit code for unknown/unhandled exceptions
         }
 
         private void ExecuteCommandHandler(string commandName, Action<object> commandHandler)
@@ -193,6 +233,11 @@ namespace Clee
             }
 
             _outputWriter = outputWriter;
+        }
+
+        public void SetExitCodeAssigner(Action<int> assignExitCode)
+        {
+            _exitCodeAssigner = assignExitCode;
         }
 
         public static CleeEngine CreateDefault()

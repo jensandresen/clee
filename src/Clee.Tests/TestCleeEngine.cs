@@ -3,6 +3,7 @@ using System.Linq;
 using Clee.SystemCommands;
 using Clee.Tests.Builders;
 using Clee.Tests.TestDoubles;
+using Clee.Tests.TestDoubles.Dummies;
 using Moq;
 using Xunit;
 
@@ -248,11 +249,147 @@ namespace Clee.Tests
             Assert.Equal("help", sut.History.Single().CommandName);
         }
 
+        [Fact]
+        public void does_not_throw_exception_on_command_exception_when_disabled_in_settings()
+        {
+            var errorCommand = new ExceptionThrowingCommand();
+
+            var engine = CleeEngine.Create(cfg =>
+            {
+                cfg.Settings(s => { s.ThrowOnExceptions = false; });
+                cfg.Factory(f => f.Use(new StubCommandFactory(errorCommand)));
+                cfg.Registry(r => r.Register("foo", errorCommand.GetType()));
+            });
+
+            engine.Execute("foo");
+        }
+
+        [Fact]
+        public void throws_exception_on_command_exception_when_enabled_in_settings()
+        {
+            var errorCommand = new ExceptionThrowingCommand();
+
+            var engine = CleeEngine.Create(cfg =>
+            {
+                cfg.Settings(s => { s.ThrowOnExceptions = true; });
+                cfg.Factory(f => f.Use(new StubCommandFactory(errorCommand)));
+                cfg.Registry(r => r.Register("foo", errorCommand.GetType()));
+            });
+
+            Assert.Throws<CustomCommandException>(() => engine.Execute("foo"));
+        }
+
+        [Fact]
+        public void has_expected_exit_code_when_command_does_NOT_throw_exception()
+        {
+            var exitCode = 0;
+
+            var errorCommand = new FooCommand();
+
+            var engine = CleeEngine.Create(cfg =>
+            {
+                cfg.Factory(f => f.Use(new StubCommandFactory(errorCommand)));
+                cfg.Registry(r => r.Register("foo", errorCommand.GetType()));
+            });
+
+            engine.SetExitCodeAssigner(code => exitCode = code);
+
+            engine.Execute("foo");
+
+            Assert.Equal(0, exitCode);
+        }
+
+        [Fact]
+        public void has_expected_exit_code_when_command_throws_exception()
+        {
+            var exitCode = 0;
+
+            var errorCommand = new ExceptionThrowingCommand();
+
+            var engine = CleeEngine.Create(cfg =>
+            {
+                cfg.Settings(s => { s.ThrowOnExceptions = false; });
+                cfg.Factory(f => f.Use(new StubCommandFactory(errorCommand)));
+                cfg.Registry(r => r.Register("foo", errorCommand.GetType()));
+            });
+
+            engine.SetExitCodeAssigner(code => exitCode = code);
+
+            engine.Execute("foo");
+
+            Assert.Equal(-1, exitCode);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void has_expected_exit_code_from_command_exception(int expectedExitCode)
+        {
+            var exitCode = 0;
+
+            var errorCommand = new ExceptionThrowingCommandWithExitCode(expectedExitCode);
+
+            var engine = CleeEngine.Create(cfg =>
+            {
+                cfg.Settings(s => { s.ThrowOnExceptions = false; });
+                cfg.Factory(f => f.Use(new StubCommandFactory(errorCommand)));
+                cfg.Registry(r => r.Register("foo", errorCommand.GetType()));
+            });
+
+            engine.SetExitCodeAssigner(code => exitCode = code);
+
+            engine.Execute("foo");
+
+            Assert.Equal(expectedExitCode, exitCode);
+        }
+
         #region test data
 
         public struct IdArgument : ICommandArguments
         {
             public string Id { get; set; }
+        }
+
+        private class ExceptionThrowingCommand : ICommand<EmptyArgument>
+        {
+            public void Execute(EmptyArgument args)
+            {
+                throw new CustomCommandException($"Error from {this.GetType().Name} command.");
+            }
+        }
+
+        private class ExceptionThrowingCommandWithExitCode : ICommand<EmptyArgument>
+        {
+            private readonly int _exitCode;
+
+            public ExceptionThrowingCommandWithExitCode(int exitCode)
+            {
+                _exitCode = exitCode;
+            }
+
+            public void Execute(EmptyArgument args)
+            {
+                throw new ExceptionWithExitCode(_exitCode);
+            }
+        }
+
+        private class ExceptionWithExitCode : Exception, IHaveAnExitCode
+        {
+            public ExceptionWithExitCode(int exitCode)
+            {
+                ExitCode = exitCode;
+            }
+
+            public int ExitCode { get; private set; }
+        }
+
+        private class CustomCommandException : Exception
+        {
+            public CustomCommandException(string message) : base(message)
+            {
+                
+            }
         }
 
         #endregion
