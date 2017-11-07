@@ -56,8 +56,9 @@ if ($version -ne $null -or $major -or $minor -or $patch) {
 try {
 	$outputDir = resolve-path ".\build"
 	push-location
-	cd ".\src\Clee.Core\"
-	nuget pack -output "$outputDir" -build -Prop Configuration=Release
+    cd ".\src\Clee.Core\"
+    $projectFile = ".\Clee.Core.csproj"
+	nuget pack "$projectFile" -output "$outputDir" -build -Prop Configuration=Release
 }
 finally {
 	pop-location
