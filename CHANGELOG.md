@@ -1,5 +1,10 @@
 # Changelog #
 
+
+__v1.4.0__
+
+Added support for Nullable properties on `ICommandArguments` implementations (e.g. `public Guid? NullableGuid { get; set; }`).
+
 __v1.3.0__
 
 Changed behavior for dealing with unhandled exceptions. They are now caught and an application exit code is now returned to the console. Old behavior can be introduced by accessing the settings configuration when configuring the engine.
