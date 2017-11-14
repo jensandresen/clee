@@ -84,6 +84,14 @@ namespace Clee
             object result;
             IValueParser valueParser;
 
+            var isNullable = targetType.IsGenericType &&
+                             targetType.GetGenericTypeDefinition() == typeof(Nullable<>);
+
+            if (isNullable)
+            {
+                targetType = Nullable.GetUnderlyingType(targetType);
+            }
+
             if (_valueParsers.TryGetValue(targetType, out valueParser))
             {
                 if (valueParser.TryParse(inputValue, format, out result))

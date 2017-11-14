@@ -360,5 +360,39 @@ namespace Clee.Tests
 
             Assert.Equal(1, result.Id.Value);
         }
+
+        [Fact]
+        public void can_map_nullable_guid()
+        {
+            var expected = Guid.NewGuid();
+
+            var sut = new DefaultArgumentMapper();
+            var result = (RelaxedNullableArgument)sut.Map(typeof(RelaxedNullableArgument), new[] { new Argument("nullableguid", expected.ToString("N")) });
+
+            Assert.Equal(expected, result.NullableGuid);
+            Assert.Equal(expected, result.NullableGuid.Value);
+        }
+
+        [Fact]
+        public void can_map_nullable_int()
+        {
+            var expected = 1;
+
+            var sut = new DefaultArgumentMapper();
+            var result = (RelaxedNullableArgument)sut.Map(typeof(RelaxedNullableArgument), new[] { new Argument("nullableint", expected.ToString()) });
+
+            Assert.Equal(expected, result.NullableInt);
+            Assert.Equal(expected, result.NullableInt.Value);
+        }
+
+        private class RelaxedNullableArgument : ICommandArguments
+        {
+            [Value(IsOptional = true)]
+            public Guid? NullableGuid { get; set; }
+
+            [Value(IsOptional = true)]
+            public int? NullableInt { get; set; }
+        }
+
     }
 }
